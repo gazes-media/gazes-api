@@ -1,0 +1,32 @@
+{
+  "name": "gaze-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel src --out-dir dist",
+    "start": "node dist/server.js",
+    "dev": "nodemon src/server.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "@ffmpeg/core": "^0.11.0",
+    "@ffmpeg/ffmpeg": "^0.11.6",
+    "cheerio": "^1.0.0-rc.12",
+    "fastify": "^4.15.0",
+    "ffmpeg": "^0.0.4",
+    "firebase-admin": "^11.6.0",
+    "glob": "^10.2.1",
+    "nodemon": "^2.0.22"
+  },
+  "devDependencies": {
+    "@types/ffmpeg": "^1.0.4",
+    "@types/node": "^18.15.11",
+    "babel": "^6.23.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.4"
+  }
+}
