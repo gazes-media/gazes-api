@@ -2,6 +2,7 @@ import { FastifyReply, FastifyRequest } from 'fastify'
 import { app } from '../../server'
 import { Animes } from '../../store/animes.store'
 import ffmpeg from 'ffmpeg'
+import fs from 'fs'
 import { execSync } from 'child_process'
 
 app.addRoute('/animes/:lang/:id/:episode/download', async (request: FastifyRequest, reply: FastifyReply) => {
@@ -51,5 +52,6 @@ app.addRoute('/animes/:lang/:id/:episode/download', async (request: FastifyReque
     }
 
     // m3u8 to mp4
-    execSync(`ffmpeg -y -i "${m3u8.uri}" "./test.mp4"`)
+    execSync(`ffmpeg -y -i "${"https://proxy.ketsuna.com/?url="+ encodeURIComponent(m3u8.uri)}" -protocol_whitelist https,tls,file,tcp -bsf:a aac_adtstoasc -vcodec copy "${anime.title} - ${episodeNb}.mp4"`)
+    return reply.send(fs.createReadStream(`${anime.title} - ${episodeNb}.mp4`)).status(200).header('Content-Type', 'video/mp4').header('Content-Disposition', `attachment; filename="${anime.title} - ${episodeNb}.mp4"`).header('Content-Length', fs.statSync(`${anime.title} - ${episodeNb}.mp4`).size).header('Accept-Ranges', 'bytes').header('Connection', 'keep-alive');
 })
