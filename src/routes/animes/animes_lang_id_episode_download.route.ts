@@ -1,9 +1,30 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { app } from '../../server'
 import { Animes } from '../../store/animes.store'
-import ffmpeg from 'ffmpeg'
-import fs from 'fs'
-import { execSync } from 'child_process'
+import { access, constants, createReadStream, readFile, stat, statSync, unlink, unlinkSync } from 'fs'
+import { execSync, spawn, spawnSync } from 'child_process'
+import path from 'path'
+import { Readable } from 'stream'
+
+function waitForFileToExist(filePath: string, timeout = 5000, interval = 100) {
+    return new Promise((resolve, reject) => {
+        const startTime = Date.now()
+
+        const checkFile = () => {
+            access(filePath, constants.F_OK, (err) => {
+                if (!err) {
+                    resolve(null)
+                } else if (Date.now() - startTime >= timeout) {
+                    reject(new Error(`Timeout waiting for file ${filePath} to exist`))
+                } else {
+                    setTimeout(checkFile, interval)
+                }
+            })
+        }
+
+        checkFile()
+    })
+}
 
 app.addRoute('/animes/:lang/:id/:episode/download', async (request: FastifyRequest, reply: FastifyReply) => {
     let lang = (request.params as { lang: string }).lang
@@ -51,7 +72,39 @@ app.addRoute('/animes/:lang/:id/:episode/download', async (request: FastifyReque
         })
     }
 
-    // m3u8 to mp4
-    execSync(`ffmpeg -y -i "${"https://proxy.ketsuna.com/?url="+ encodeURIComponent(m3u8.uri)}" -protocol_whitelist https,tls,file,tcp -bsf:a aac_adtstoasc -vcodec copy "${anime.title} - ${episodeNb}.mp4"`)
-    return reply.send(fs.createReadStream(`${anime.title} - ${episodeNb}.mp4`)).status(200).header('Content-Type', 'video/mp4').header('Content-Disposition', `attachment; filename="${anime.title} - ${episodeNb}.mp4"`).header('Content-Length', fs.statSync(`${anime.title} - ${episodeNb}.mp4`).size).header('Accept-Ranges', 'bytes').header('Connection', 'keep-alive');
+    // convert m3u8 to mp4 and send it
+    let animeTitle = anime.title
+    let m3u8Uri = m3u8.uri
+    let tempFilePath = `./tmp/${Date.now()}-${encodeURIComponent(animeTitle)}.mp4`
+
+    await new Promise((resolve) => {
+        const ffmpegProcess = spawn('ffmpeg', [
+            '-y',
+            '-i',
+            `https://proxy.ketsuna.com/?url=${encodeURIComponent(m3u8Uri)}`,
+            '-protocol_whitelist',
+            'https,tls,file,tcp',
+            '-bsf:a',
+            'aac_adtstoasc',
+            '-vcodec',
+            'copy',
+            tempFilePath,
+        ])
+
+        ffmpegProcess.on('spawn', () => {
+            console.log('starting')
+        })
+
+        ffmpegProcess.on('exit', () => {
+            reply
+                .code(200)
+                .header('Content-Type', 'video/mp4')
+                .header('Content-Length', statSync(tempFilePath).size)
+                .header('Accept-Ranges', 'bytes')
+                .header('Content-Disposition', `attachment; filename=${path.basename(tempFilePath)}`)
+                .send(createReadStream(tempFilePath))
+
+            unlinkSync(tempFilePath)
+        })
+    })
 })

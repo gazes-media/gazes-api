@@ -2,6 +2,7 @@ import fastify, { FastifyInstance } from 'fastify'
 import { glob } from 'glob'
 import { cert, initializeApp } from 'firebase-admin/app'
 import { Animes } from './store/animes.store'
+import multipart from '@fastify/multipart'
 
 /* The App class initializes a server, handles routes and middleware, starts and stops the server, and
 toggles a smart cache feature for Animes. */
@@ -17,7 +18,7 @@ export class App {
      * their paths.
      */
     public async handleRoutes() {
-        let routes = await glob('**/*.route.*')
+        let routes = await glob('**/*.route.ts')
         routes.forEach((routePath) => {
             console.log(routePath)
             import(routePath.replace('src', '.'))
@@ -28,7 +29,7 @@ export class App {
      * This function imports all middleware files in the project.
      */
     public async handleMiddlewares() {
-        let middlewares = await glob('**/*.middleware.*')
+        let middlewares = await glob('**/*.middleware.ts')
         middlewares.forEach((MiddlewarePath) => {
             import(MiddlewarePath.replace('src', '.'))
         })
@@ -67,8 +68,9 @@ export class App {
                 databaseURL: 'https://animaflix-53e15-default-rtdb.europe-west1.firebasedatabase.app/',
             })
 
-            this.toggleSmartCache()
+            this.server.register(multipart)
 
+            await this.toggleSmartCache()
             await this.handleMiddlewares()
             await this.handleRoutes()
             await this.server.listen({ port })
@@ -94,14 +96,18 @@ export class App {
     /**
      * This function toggles a smart cache for Animes and refreshes it every 10 minutes.
      */
-    private toggleSmartCache() {
-        if (!Animes.all[0]) {
-            Animes.fetch()
-        }
+    private async toggleSmartCache() {
+        return new Promise(async (resolve) => {
+            if (!Animes.all[0]) {
+                await Animes.fetch()
+                console.log(`${Animes.all.length} animes loaded (vf+vostfr)`)
+                resolve(null)
+            }
 
-        setInterval(() => {
-            Animes.fetch()
-            console.log('♻️ cache refreshed')
-        }, 600000)
+            setInterval(() => {
+                Animes.fetch()
+                console.log('♻️ cache refreshed')
+            }, 600000)
+        })
     }
 }
