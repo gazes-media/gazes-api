@@ -14,8 +14,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const server_1 = require("../../server");
 const animes_store_1 = require("../../store/animes.store");
-const fs_1 = __importDefault(require("fs"));
+const fs_1 = require("fs");
 const child_process_1 = require("child_process");
+const path_1 = __importDefault(require("path"));
+function waitForFileToExist(filePath, timeout = 5000, interval = 100) {
+    return new Promise((resolve, reject) => {
+        const startTime = Date.now();
+        const checkFile = () => {
+            (0, fs_1.access)(filePath, fs_1.constants.F_OK, (err) => {
+                if (!err) {
+                    resolve(null);
+                }
+                else if (Date.now() - startTime >= timeout) {
+                    reject(new Error(`Timeout waiting for file ${filePath} to exist`));
+                }
+                else {
+                    setTimeout(checkFile, interval);
+                }
+            });
+        };
+        checkFile();
+    });
+}
 server_1.app.addRoute('/animes/:lang/:id/:episode/download', (request, reply) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     let lang = request.params.lang;
@@ -54,27 +74,35 @@ server_1.app.addRoute('/animes/:lang/:id/:episode/download', (request, reply) =>
             error: 'm3u8 for this episode not found',
         });
     }
+    // convert m3u8 to mp4 and send it
     let animeTitle = anime.title;
-    // m3u8 to mp4
-    const args = [
-        '-y',
-        '-i',
-        `https://proxy.ketsuna.com/?url=${encodeURIComponent(m3u8.uri)}`,
-        '-protocol_whitelist',
-        'https,tls,file,tcp',
-        '-bsf:a',
-        'aac_adtstoasc',
-        '-vcodec',
-        'copy',
-        `${animeTitle} - ${episodeNb}.mp4`,
-    ];
-    const ffmpeg = (0, child_process_1.spawn)('ffmpeg', args);
-    return reply
-        .send(fs_1.default.createReadStream(`${anime.title} - ${episodeNb}.mp4`))
-        .status(200)
-        .header('Content-Type', 'video/mp4')
-        .header('Content-Disposition', `attachment; filename="${anime.title} - ${episodeNb}.mp4"`)
-        .header('Content-Length', fs_1.default.statSync(`${anime.title} - ${episodeNb}.mp4`).size)
-        .header('Accept-Ranges', 'bytes')
-        .header('Connection', 'keep-alive');
+    let m3u8Uri = m3u8.uri;
+    let tempFilePath = `./tmp/${Date.now()}-${encodeURIComponent(animeTitle)}.mp4`;
+    yield new Promise((resolve) => {
+        const ffmpegProcess = (0, child_process_1.spawn)('ffmpeg', [
+            '-y',
+            '-i',
+            `https://proxy.ketsuna.com/?url=${encodeURIComponent(m3u8Uri)}`,
+            '-protocol_whitelist',
+            'https,tls,file,tcp',
+            '-bsf:a',
+            'aac_adtstoasc',
+            '-vcodec',
+            'copy',
+            tempFilePath,
+        ]);
+        ffmpegProcess.on('spawn', () => {
+            console.log('starting');
+        });
+        ffmpegProcess.on('exit', () => {
+            reply
+                .code(200)
+                .header('Content-Type', 'video/mp4')
+                .header('Content-Length', (0, fs_1.statSync)(tempFilePath).size)
+                .header('Accept-Ranges', 'bytes')
+                .header('Content-Disposition', `attachment; filename=${path_1.default.basename(tempFilePath)}`)
+                .send((0, fs_1.createReadStream)(tempFilePath));
+            (0, fs_1.unlinkSync)(tempFilePath);
+        });
+    });
 }));

@@ -40,6 +40,7 @@ const fastify_1 = __importDefault(require("fastify"));
 const glob_1 = require("glob");
 const app_1 = require("firebase-admin/app");
 const animes_store_1 = require("./store/animes.store");
+const multipart_1 = __importDefault(require("@fastify/multipart"));
 /* The App class initializes a server, handles routes and middleware, starts and stops the server, and
 toggles a smart cache feature for Animes. */
 class App {
@@ -52,10 +53,10 @@ class App {
      */
     handleRoutes() {
         return __awaiter(this, void 0, void 0, function* () {
-            let routes = yield (0, glob_1.glob)('**/*.route.js');
+            let routes = yield (0, glob_1.glob)('**/*.route.ts');
             routes.forEach((routePath) => {
                 console.log(routePath);
-                Promise.resolve(`${routePath.replace('dist', '.')}`).then(s => __importStar(require(s)));
+                Promise.resolve(`${routePath.replace('src', '.')}`).then(s => __importStar(require(s)));
             });
         });
     }
@@ -64,9 +65,9 @@ class App {
      */
     handleMiddlewares() {
         return __awaiter(this, void 0, void 0, function* () {
-            let middlewares = yield (0, glob_1.glob)('**/*.middleware.js');
+            let middlewares = yield (0, glob_1.glob)('**/*.middleware.ts');
             middlewares.forEach((MiddlewarePath) => {
-                Promise.resolve(`${MiddlewarePath.replace('dist', '.')}`).then(s => __importStar(require(s)));
+                Promise.resolve(`${MiddlewarePath.replace('src', '.')}`).then(s => __importStar(require(s)));
             });
         });
     }
@@ -101,7 +102,8 @@ class App {
                     credential: (0, app_1.cert)(serviceAccount),
                     databaseURL: 'https://animaflix-53e15-default-rtdb.europe-west1.firebasedatabase.app/',
                 });
-                this.toggleSmartCache();
+                this.server.register(multipart_1.default);
+                yield this.toggleSmartCache();
                 yield this.handleMiddlewares();
                 yield this.handleRoutes();
                 yield this.server.listen({ port });
@@ -130,13 +132,21 @@ class App {
      * This function toggles a smart cache for Animes and refreshes it every 10 minutes.
      */
     toggleSmartCache() {
-        if (!animes_store_1.Animes.all[0]) {
-            animes_store_1.Animes.fetch();
-        }
-        setInterval(() => {
-            animes_store_1.Animes.fetch();
-            console.log('♻️ cache refreshed');
-        }, 600000);
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve) => __awaiter(this, void 0, void 0, function* () {
+                if (!animes_store_1.Animes.all[0]) {
+                    yield animes_store_1.Animes.fetch();
+                    yield animes_store_1.Animes.getLatestEpisodes();
+                    console.log(`${animes_store_1.Animes.all.length} animes loaded (vf+vostfr)`);
+                    resolve(null);
+                }
+                setInterval(() => {
+                    animes_store_1.Animes.fetch();
+                    animes_store_1.Animes.getLatestEpisodes();
+                    console.log('♻️ cache refreshed');
+                }, 600000);
+            }));
+        });
     }
 }
 exports.App = App;

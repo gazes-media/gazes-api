@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "babel src --out-dir dist",
+    "build": "tsc -p .",
     "start": "node dist/server.js",
     "dev": "nodemon src/server.ts"
   },

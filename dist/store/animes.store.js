@@ -33,6 +33,25 @@ class Animes {
         });
     }
     /**
+     * This function retrieves the latest episodes from a neko website.
+     * it store them into the latest array.
+     */
+    static getLatestEpisodes() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const res = yield fetch("https://neko.ketsuna.com");
+            const data = yield res.text();
+            let lastEpisode = [];
+            const parsedData = /var lastEpisodes = (.+)\;/gm.exec(data);
+            if (parsedData) {
+                lastEpisode = JSON.parse(parsedData[1]);
+            }
+            this.latest = lastEpisode;
+        });
+    }
+    static convertEpisodeToNumber(episode) {
+        return Number(episode.replace("Ep. ", ""));
+    }
+    /**
      * This function retrieves information about an anime by its ID and language, including its
      * synopsis, cover URL, and episodes.
      *
@@ -147,4 +166,5 @@ class Animes {
 Animes.all = [];
 Animes.vf = [];
 Animes.vostfr = [];
+Animes.latest = [];
 exports.Animes = Animes;
