@@ -17,7 +17,7 @@ app.addRoute('/animes/rss', async (request: FastifyRequest, reply: FastifyReply)
             link: `https://deril-fr.github.io/anime/${anime.lang}/${Animes.all.find((a) => a.title === anime.title)?.id}/episode/${Animes.convertEpisodeToNumber(anime.episode)}`,
             description: `Episode ${Animes.convertEpisodeToNumber(anime.episode)} de ${anime.title}`,
             pubDate: new Date(anime.timestamp* 1000).toUTCString(),
-            image: anime.url_image
+            image: anime.url_bg
         }
     })
 
