@@ -22,8 +22,7 @@ server_1.app.addRoute('/animes/rss', (request, reply) => __awaiter(void 0, void 
             image: anime.url_image
         };
     });
-    let rss = `
-    <?xml version="1.0" encoding="UTF-8"?>
+    let rss = `<?xml version="1.0" encoding="UTF-8"?>
         <rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
     <channel>
         <title>Gaze RSS Feed</title>

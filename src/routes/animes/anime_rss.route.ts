@@ -21,8 +21,7 @@ app.addRoute('/animes/rss', async (request: FastifyRequest, reply: FastifyReply)
         }
     })
 
-    let rss = `
-    <?xml version="1.0" encoding="UTF-8"?>
+    let rss = `<?xml version="1.0" encoding="UTF-8"?>
         <rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
     <channel>
         <title>Gaze RSS Feed</title>
