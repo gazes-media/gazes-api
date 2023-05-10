@@ -19,7 +19,7 @@ server_1.app.addRoute('/animes/rss', (request, reply) => __awaiter(void 0, void 
             link: `https://deril-fr.github.io/anime/${anime.lang}/${(_a = animes_store_1.Animes.all.find((a) => a.title === anime.title)) === null || _a === void 0 ? void 0 : _a.id}/episode/${animes_store_1.Animes.convertEpisodeToNumber(anime.episode)}`,
             description: `Episode ${animes_store_1.Animes.convertEpisodeToNumber(anime.episode)} de ${anime.title}`,
             pubDate: new Date(anime.timestamp * 1000).toUTCString(),
-            image: anime.url_image
+            image: anime.url_bg
         };
     });
     let rss = `<?xml version="1.0" encoding="UTF-8"?>
