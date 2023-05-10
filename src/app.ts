@@ -20,8 +20,11 @@ export class App {
     public async handleRoutes() {
         let routes = await glob('**/*.route.{js,ts}')
         routes.forEach((routePath) => {
-            console.log(routePath)
-            import(routePath.replace('src', '.'))
+            import(__dirname + '/' + routePath.replace("dist\\","").replace("src\\","")).then((route) => {
+                console.log(routePath + ' imported')
+            }).catch((err) => {
+                console.log('Javascript or typescript file not found.')
+            })
         })
     }
 

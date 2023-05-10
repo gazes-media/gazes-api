@@ -56,7 +56,11 @@ class App {
             let routes = yield (0, glob_1.glob)('**/*.route.{js,ts}');
             routes.forEach((routePath) => {
                 console.log(routePath);
-                Promise.resolve(`${routePath.replace('src', '.')}`).then(s => __importStar(require(s)));
+                Promise.resolve(`${__dirname + '/' + routePath.replace("dist\\", "").replace("src\\", "")}`).then(s => __importStar(require(s))).then((route) => {
+                    console.log(route + " imported");
+                }).catch((err) => {
+                    console.log(err);
+                });
             });
         });
     }
