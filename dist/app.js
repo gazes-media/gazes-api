@@ -53,7 +53,7 @@ class App {
      */
     handleRoutes() {
         return __awaiter(this, void 0, void 0, function* () {
-            let routes = yield (0, glob_1.glob)('**/*.route.ts');
+            let routes = yield (0, glob_1.glob)('**/*.route.{js,ts}');
             routes.forEach((routePath) => {
                 console.log(routePath);
                 Promise.resolve(`${routePath.replace('src', '.')}`).then(s => __importStar(require(s)));
@@ -65,7 +65,7 @@ class App {
      */
     handleMiddlewares() {
         return __awaiter(this, void 0, void 0, function* () {
-            let middlewares = yield (0, glob_1.glob)('**/*.middleware.ts');
+            let middlewares = yield (0, glob_1.glob)('**/*.middleware.{js,ts}');
             middlewares.forEach((MiddlewarePath) => {
                 Promise.resolve(`${MiddlewarePath.replace('src', '.')}`).then(s => __importStar(require(s)));
             });

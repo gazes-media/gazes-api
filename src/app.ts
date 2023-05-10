@@ -18,7 +18,7 @@ export class App {
      * their paths.
      */
     public async handleRoutes() {
-        let routes = await glob('**/*.route.ts')
+        let routes = await glob('**/*.route.{js,ts}')
         routes.forEach((routePath) => {
             console.log(routePath)
             import(routePath.replace('src', '.'))
@@ -29,7 +29,7 @@ export class App {
      * This function imports all middleware files in the project.
      */
     public async handleMiddlewares() {
-        let middlewares = await glob('**/*.middleware.ts')
+        let middlewares = await glob('**/*.middleware.{js,ts}')
         middlewares.forEach((MiddlewarePath) => {
             import(MiddlewarePath.replace('src', '.'))
         })
