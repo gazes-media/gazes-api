@@ -16,7 +16,7 @@ exports.app = void 0;
 const app_1 = require("./app");
 const node_process_1 = __importDefault(require("node:process"));
 exports.app = new app_1.App();
-exports.app.start(3000);
+exports.app.start(4236);
 // stop the server correctly on ctrl+c unix
 node_process_1.default.on('SIGINT', () => __awaiter(void 0, void 0, void 0, function* () {
     console.log('SIGINT signal received. Stopping server...');

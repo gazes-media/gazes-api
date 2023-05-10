@@ -3,7 +3,7 @@ import { App } from './app'
 import process from 'node:process'
 
 export const app = new App()
-app.start(3000)
+app.start(4236)
 
 // stop the server correctly on ctrl+c unix
 process.on('SIGINT', async () => {
