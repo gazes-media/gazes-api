@@ -3,11 +3,13 @@ import { Episode } from '../interfaces/episode.interface'
 import { load } from 'cheerio'
 import Subtitlesvtt from '../interfaces/subtitlesvtt.interface'
 import { PstreamData } from '../interfaces/pstreamdata.interface'
+import LastEpisodes from '../interfaces/latest.interface'
 
 export class Animes {
     public static all: Anime[] = []
     public static vf: Anime[] = []
     public static vostfr: Anime[] = []
+    public static latest: LastEpisodes[] = []
 
     /**
      * This method fetch animes in VF and VOSTFR and the result json into VF, VOSTFR.
@@ -30,6 +32,22 @@ export class Animes {
             }),
         ]
     }
+
+    /**
+     * This function retrieves the latest episodes from a neko website.
+     * it store them into the latest array.
+     */
+    public static async getLatestEpisodes() {
+            const res = await fetch("https://neko.ketsuna.com")
+            const data = await res.text();
+            let lastEpisode: LastEpisodes[] = [];
+            const parsedData = /var lastEpisodes = (.+)\;/gm.exec(data);
+            if (parsedData) {
+                lastEpisode = JSON.parse(parsedData[1]);
+            }
+            this.latest = lastEpisode;
+        }
+        
 
     /**
      * This function retrieves information about an anime by its ID and language, including its

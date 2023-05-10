@@ -100,12 +100,14 @@ export class App {
         return new Promise(async (resolve) => {
             if (!Animes.all[0]) {
                 await Animes.fetch()
+                await Animes.getLatestEpisodes();
                 console.log(`${Animes.all.length} animes loaded (vf+vostfr)`)
                 resolve(null)
             }
 
             setInterval(() => {
                 Animes.fetch()
+                Animes.getLatestEpisodes();
                 console.log('♻️ cache refreshed')
             }, 600000)
         })
