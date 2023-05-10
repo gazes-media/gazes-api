@@ -55,11 +55,10 @@ class App {
         return __awaiter(this, void 0, void 0, function* () {
             let routes = yield (0, glob_1.glob)('**/*.route.{js,ts}');
             routes.forEach((routePath) => {
-                console.log(routePath);
                 Promise.resolve(`${__dirname + '/' + routePath.replace("dist\\", "").replace("src\\", "")}`).then(s => __importStar(require(s))).then((route) => {
-                    console.log(route + " imported");
+                    console.log(routePath + ' imported');
                 }).catch((err) => {
-                    console.log(err);
+                    console.log('Javascript or typescript file not found.');
                 });
             });
         });
