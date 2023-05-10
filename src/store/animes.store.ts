@@ -48,7 +48,9 @@ export class Animes {
             this.latest = lastEpisode;
         }
         
-
+    public static convertEpisodeToNumber(episode: string) {
+        return Number(episode.replace("Ep. ", ""));
+    }
     /**
      * This function retrieves information about an anime by its ID and language, including its
      * synopsis, cover URL, and episodes.
