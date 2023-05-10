@@ -77,7 +77,7 @@ server_1.app.addRoute('/animes/:lang/:id/:episode/download', (request, reply) =>
     // convert m3u8 to mp4 and send it
     let animeTitle = anime.title;
     let m3u8Uri = m3u8.uri;
-    let tempFilePath = `./tmp/${Date.now()}-${encodeURIComponent(animeTitle)}.mp4`;
+    let tempFilePath = `./${Date.now()}-${encodeURIComponent(animeTitle)}.mp4`;
     yield new Promise((resolve) => {
         const ffmpegProcess = (0, child_process_1.spawn)('ffmpeg', [
             '-y',
