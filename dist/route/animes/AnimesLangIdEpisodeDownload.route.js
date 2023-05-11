@@ -298,7 +298,7 @@ var AnimesLangIdEpisodeDownloadRoute = /*#__PURE__*/ function(Route) {
                                             });
                                             video.on("close", function(code) {
                                                 console.log("child process exited with code ".concat(code));
-                                                resolve(reply.send(_fs.default.createReadStream(videoName)).status(200).header("Content-Type", "video/mp4").header("Content-Disposition", 'attachment; filename="'.concat(videoName, '"')).header("Content-Length", _fs.default.statSync(videoName).size).header("Accept-Ranges", "bytes").header("Connection", "keep-alive"));
+                                                resolve(reply.status(200).header("Content-Type", "video/mp4").header("Content-Disposition", 'attachment; filename="'.concat(videoName, '"')).header("Content-Length", _fs.default.statSync(videoName).size).header("Accept-Ranges", "bytes").header("Connection", "keep-alive").send(_fs.default.createReadStream(videoName)));
                                                 _fs.default.unlinkSync(videoName);
                                             });
                                             return [
