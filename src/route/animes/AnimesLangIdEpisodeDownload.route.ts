@@ -1,7 +1,7 @@
 import { HTTPMethods, RouteHandlerMethod } from "fastify";
 import { Route } from "../Route";
 import { AnimeStore } from "../../store/animes.store";
-import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
+import { spawn } from "child_process";
 import fs from "fs";
 import axios from "axios";
 
@@ -36,16 +36,17 @@ export class AnimesLangIdEpisodeDownloadRoute extends Route {
 
       //   TODO convert m3u8 uri to mp4
       const videoUrl = "https://proxy.ketsuna.com/?url=" + encodeURIComponent(uri);
-      const videoName = new Date().getTime();
+      const videoName = new Date().getTime() + anime.title + " " + episodeNumber + ".mp4";
 
-      const ffmpeg = createFFmpeg({ log: true });
-      await ffmpeg.load();
+      const video = spawn(`ffmpeg -y -i "${videoUrl}" -protocol_whitelist https,tls,file,tcp -bsf:a aac_adtstoasc -vcodec copy "${videoName}"`, {
+        shell: true,
+      });
 
-      ffmpeg.FS("writeFile", `${videoName}.m3u8`, await fetchFile(videoUrl));
-      await ffmpeg.run("-i", `${videoName}.m3u8`, `${videoName}.mp4`);
-      await fs.promises.writeFile(`${videoName}.mp4`, ffmpeg.FS("readFile", `${videoName}.mp4`));
+      video.on("close", (code) => {
+        console.log(`child process exited with code ${code}`);
+        return resolve(reply.send(fs.createReadStream(videoName)).status(200).header('Content-Type', 'video/mp4').header('Content-Disposition', `attachment; filename="${videoName}"`).header('Content-Length', fs.statSync(videoName).size).header('Accept-Ranges', 'bytes').header('Connection', 'keep-alive'));
+      });
 
-      return resolve(reply.status(200).send("ok"));
     });
   };
 }

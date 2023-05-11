@@ -365,38 +365,32 @@ var AnimeStore = /*#__PURE__*/ function() {
                         return [
                             2,
                             new Promise(function() {
-                                var _ref = _async_to_generator(function(resolve, reject) {
-                                    var _exec, episodeUrl, _ref, episodeHtml, pstreamUrl, baseUrl, pstreamUrlEncoded, pstreamUrlProxy, _ref1, pstreamHtml, loadedHtml, scripts, scriptSources, videoUrl, subtitlesVtt, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, scriptSource, _exec1, _ref2, pstreamScript, videoUrlBase64, _exec2, base64, pstream, err;
+                                var _ref = _async_to_generator(function(resolve) {
+                                    var _exec, episodeUrl, _ref, nekoData, pstreamUrl, _ref1, pstreamData, baseurl, loadedHTML, scripts, scriptsSrc, m3u8Url, subtitlesvtt, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, scriptSrc, _exec1, _ref2, pstreamScript, m3u8UrlB64, b64, pstream, _exec2, b641, pstream1, _exec3, b642, pstream2, err;
                                     return _ts_generator(this, function(_state) {
                                         switch(_state.label){
                                             case 0:
-                                                episodeUrl = "https://neko.ketsuna.com".concat(episode.url);
+                                                episodeUrl = "https://neko.ketsuna.com" + episode.url;
                                                 return [
                                                     4,
                                                     _axios.default.get(episodeUrl)
                                                 ];
                                             case 1:
-                                                _ref = _state.sent(), episodeHtml = _ref.data;
-                                                pstreamUrl = (_exec = /(\n(.*)video\[0] = ')(.*)(';)/gm.exec(episodeHtml)) === null || _exec === void 0 ? void 0 : _exec[3];
-                                                if (!pstreamUrl) {
-                                                    resolve(undefined);
-                                                }
-                                                baseUrl = pstreamUrl.split("/").slice(0, 3).join("/");
-                                                pstreamUrlEncoded = encodeURIComponent(pstreamUrl);
-                                                pstreamUrlProxy = "https://proxy.ketsuna.com/?url=".concat(pstreamUrlEncoded);
+                                                _ref = _state.sent(), nekoData = _ref.data;
+                                                pstreamUrl = (_exec = /(\n(.*)video\[0] = ')(.*)(';)/gm.exec(nekoData)) === null || _exec === void 0 ? void 0 : _exec[3];
                                                 return [
                                                     4,
-                                                    _axios.default.get(pstreamUrlProxy)
+                                                    _axios.default.get("https://proxy.ketsuna.com/?url=".concat(encodeURIComponent(pstreamUrl)))
                                                 ];
                                             case 2:
-                                                _ref1 = _state.sent(), pstreamHtml = _ref1.data;
-                                                loadedHtml = (0, _cheerio.load)(pstreamHtml);
-                                                scripts = loadedHtml("script");
-                                                scriptSources = scripts.map(function(i, el) {
-                                                    return loadedHtml(el).attr("src");
+                                                _ref1 = _state.sent(), pstreamData = _ref1.data;
+                                                baseurl = pstreamUrl.split("/").slice(0, 3).join("/");
+                                                loadedHTML = (0, _cheerio.load)(pstreamData);
+                                                scripts = loadedHTML("script");
+                                                scriptsSrc = scripts.map(function(i, el) {
+                                                    return loadedHTML(el).attr("src");
                                                 }).get();
-                                                videoUrl = "";
-                                                subtitlesVtt = [];
+                                                m3u8Url = "", subtitlesvtt = [];
                                                 _iteratorNormalCompletion = true, _didIteratorError = false, _iteratorError = undefined;
                                                 _state.label = 3;
                                             case 3:
@@ -406,44 +400,62 @@ var AnimeStore = /*#__PURE__*/ function() {
                                                     9,
                                                     10
                                                 ]);
-                                                _iterator = scriptSources[Symbol.iterator]();
+                                                _iterator = scriptsSrc[Symbol.iterator]();
                                                 _state.label = 4;
                                             case 4:
                                                 if (!!(_iteratorNormalCompletion = (_step = _iterator.next()).done)) return [
                                                     3,
                                                     7
                                                 ];
-                                                scriptSource = _step.value;
+                                                scriptSrc = _step.value;
                                                 return [
                                                     4,
-                                                    _axios.default.get("https://proxy.ketsuna.com/?url=".concat(encodeURIComponent(scriptSource)))
+                                                    _axios.default.get("https://proxy.ketsuna.com/?url=".concat(encodeURIComponent(scriptSrc)))
                                                 ];
                                             case 5:
                                                 _ref2 = _state.sent(), pstreamScript = _ref2.data;
-                                                videoUrlBase64 = (_exec1 = /e.parseJSON\(atob\(t\).slice\(2\)\)\}\(\"([^;]*)"\),/gm.exec(pstreamScript)) === null || _exec1 === void 0 ? void 0 : _exec1[1];
-                                                if (!videoUrlBase64) {
-                                                    ;
-                                                    videoUrlBase64 = (_exec2 = /n=atob\("([^"]+)"/gm.exec(pstreamScript)) === null || _exec2 === void 0 ? void 0 : _exec2[1];
-                                                }
-                                                if (!videoUrlBase64) {
-                                                    return [
-                                                        3,
-                                                        6
-                                                    ];
-                                                }
-                                                base64 = JSON.parse(atob(videoUrlBase64).slice(2));
-                                                pstream = base64;
-                                                videoUrl = Object.values(pstream).find(function(data) {
-                                                    if (typeof data === "string") {
-                                                        return data.startsWith("https://");
-                                                    }
-                                                });
-                                                subtitlesVtt = pstream.subtitlesvtt;
-                                                if (videoUrl) {
+                                                m3u8UrlB64 = (_exec1 = /e.parseJSON\(atob\(t\).slice\(2\)\)\}\(\"([^;]*)"\),/gm.exec(pstreamScript)) === null || _exec1 === void 0 ? void 0 : _exec1[1];
+                                                if (m3u8UrlB64) {
+                                                    b64 = JSON.parse(atob(m3u8UrlB64).slice(2));
+                                                    pstream = b64;
+                                                    m3u8Url = Object.values(pstream).find(function(data) {
+                                                        return typeof data === "string" && data.startsWith("https://");
+                                                    });
+                                                    subtitlesvtt = pstream.subtitlesvtt;
                                                     return [
                                                         3,
                                                         7
                                                     ];
+                                                } else {
+                                                    ;
+                                                    m3u8UrlB64 = (_exec2 = /e.parseJSON\(n\)}\(\"([^;]*)"\),/gm.exec(pstreamScript)) === null || _exec2 === void 0 ? void 0 : _exec2[1];
+                                                    if (m3u8UrlB64) {
+                                                        b641 = JSON.parse(atob(m3u8UrlB64).slice(2));
+                                                        pstream1 = b641;
+                                                        m3u8Url = Object.values(pstream1).find(function(data) {
+                                                            return typeof data === "string" && data.startsWith("https://");
+                                                        });
+                                                        subtitlesvtt = pstream1.subtitlesvtt;
+                                                        return [
+                                                            3,
+                                                            7
+                                                        ];
+                                                    } else {
+                                                        ;
+                                                        m3u8UrlB64 = (_exec3 = /n=atob\("([^"]+)"/gm.exec(pstreamScript)) === null || _exec3 === void 0 ? void 0 : _exec3[1];
+                                                        if (m3u8UrlB64) {
+                                                            b642 = JSON.parse(atob(m3u8UrlB64).replace(/\|\|\|/, "").slice(29));
+                                                            pstream2 = b642;
+                                                            m3u8Url = Object.values(pstream2).find(function(data) {
+                                                                return typeof data === "string" && data.startsWith("https://");
+                                                            });
+                                                            subtitlesvtt = pstream2.subtitlesvtt;
+                                                            return [
+                                                                3,
+                                                                7
+                                                            ];
+                                                        }
+                                                    }
                                                 }
                                                 _state.label = 6;
                                             case 6:
@@ -479,21 +491,22 @@ var AnimeStore = /*#__PURE__*/ function() {
                                                     7
                                                 ];
                                             case 10:
-                                                if (!videoUrl) {
+                                                if (m3u8Url !== "") {
+                                                    resolve({
+                                                        uri: m3u8Url,
+                                                        subtitlesVtt: subtitlesvtt,
+                                                        baseUrl: baseurl
+                                                    });
+                                                } else {
                                                     resolve(undefined);
                                                 }
-                                                resolve({
-                                                    uri: videoUrl,
-                                                    subtitlesVtt: subtitlesVtt,
-                                                    baseUrl: baseUrl
-                                                });
                                                 return [
                                                     2
                                                 ];
                                         }
                                     });
                                 });
-                                return function(resolve, reject) {
+                                return function(resolve) {
                                     return _ref.apply(this, arguments);
                                 };
                             }())

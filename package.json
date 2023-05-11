@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "npx nodemon  --exec \"npx ts-node --swc src/index.ts\"",
-    "build": "npx swc src/ -d dist/"
+    "build": "npx swc src/ -d dist/",
+    "start": "node dist/index.js"
   },
   "author": "gaze,trail,garder500",
   "license": "MIT",

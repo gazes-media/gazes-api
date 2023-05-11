@@ -10,7 +10,7 @@ Object.defineProperty(exports, "AnimesLangIdEpisodeDownloadRoute", {
 });
 var _Route = require("../Route");
 var _animesstore = require("../../store/animes.store");
-var _ffmpeg = require("@ffmpeg/ffmpeg");
+var _child_process = require("child_process");
 var _fs = /*#__PURE__*/ _interop_require_default(require("fs"));
 function _assert_this_initialized(self) {
     if (self === void 0) {
@@ -242,7 +242,7 @@ var AnimesLangIdEpisodeDownloadRoute = /*#__PURE__*/ function(Route) {
                         2,
                         new Promise(function() {
                             var _ref = _async_to_generator(function(resolve, reject) {
-                                var _request_params, lang, id, episodeNumber, anime, episode, _ref, uri, subtitlesVtt, baseUrl, videoUrl, videoName, ffmpeg, _, _tmp;
+                                var _request_params, lang, id, episodeNumber, anime, episode, _ref, uri, subtitlesVtt, baseUrl, videoUrl, videoName, video;
                                 return _ts_generator(this, function(_state) {
                                     switch(_state.label){
                                         case 0:
@@ -292,44 +292,22 @@ var AnimesLangIdEpisodeDownloadRoute = /*#__PURE__*/ function(Route) {
                                         case 2:
                                             _ref = _state.sent(), uri = _ref.uri, subtitlesVtt = _ref.subtitlesVtt, baseUrl = _ref.baseUrl;
                                             videoUrl = "https://proxy.ketsuna.com/?url=" + encodeURIComponent(uri);
-                                            videoName = new Date().getTime();
-                                            ffmpeg = (0, _ffmpeg.createFFmpeg)({
-                                                log: true
+                                            videoName = new Date().getTime() + anime.title + " " + episodeNumber + ".mp4";
+                                            video = (0, _child_process.spawn)('ffmpeg -y -i "'.concat(videoUrl, '" -protocol_whitelist https,tls,file,tcp -bsf:a aac_adtstoasc -vcodec copy "').concat(videoName, '"'), {
+                                                shell: true
+                                            });
+                                            video.stdout.on("data", function(data) {
+                                                console.log("stdout: ".concat(data));
+                                            });
+                                            video.stderr.on("data", function(data) {
+                                                console.error("stderr: ".concat(data));
+                                            });
+                                            video.on("close", function(code) {
+                                                console.log("child process exited with code ".concat(code));
+                                                return resolve(reply.send(_fs.default.createReadStream(videoName)).status(200).header("Content-Type", "video/mp4").header("Content-Disposition", 'attachment; filename="'.concat(videoName, '"')).header("Content-Length", _fs.default.statSync(videoName).size).header("Accept-Ranges", "bytes").header("Connection", "keep-alive"));
                                             });
                                             return [
-                                                4,
-                                                ffmpeg.load()
-                                            ];
-                                        case 3:
-                                            _state.sent();
-                                            _ = ffmpeg.FS;
-                                            _tmp = [
-                                                "writeFile",
-                                                "".concat(videoName, ".m3u8")
-                                            ];
-                                            return [
-                                                4,
-                                                (0, _ffmpeg.fetchFile)(videoUrl)
-                                            ];
-                                        case 4:
-                                            _.apply(ffmpeg, _tmp.concat([
-                                                _state.sent()
-                                            ]));
-                                            return [
-                                                4,
-                                                ffmpeg.run("-i", "".concat(videoName, ".m3u8"), "".concat(videoName, ".mp4"))
-                                            ];
-                                        case 5:
-                                            _state.sent();
-                                            return [
-                                                4,
-                                                _fs.default.promises.writeFile("".concat(videoName, ".mp4"), ffmpeg.FS("readFile", "".concat(videoName, ".mp4")))
-                                            ];
-                                        case 6:
-                                            _state.sent();
-                                            return [
-                                                2,
-                                                resolve(reply.status(200).send("ok"))
+                                                2
                                             ];
                                     }
                                 });
