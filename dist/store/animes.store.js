@@ -1,170 +1,511 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Animes = void 0;
-const cheerio_1 = require("cheerio");
-class Animes {
-    /**
-     * This method fetch animes in VF and VOSTFR and the result json into VF, VOSTFR.
-     * Then it combines VF and VOSTFR into one array (all) and map it to add the language to the anime object.
-     */
-    static fetch() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const VOSTFR_URL = 'https://neko.ketsuna.com/animes-search-vostfr.json';
-            const VF_URL = 'https://neko.ketsuna.com/animes-search-vf.json';
-            this.vostfr = yield (yield fetch(VOSTFR_URL)).json();
-            this.vf = yield (yield fetch(VF_URL)).json();
-            this.all = [
-                ...this.vostfr.map((anime) => {
-                    return Object.assign(Object.assign({}, anime), { lang: 'vostfr' });
-                }),
-                ...this.vf.map((anime) => {
-                    return Object.assign(Object.assign({}, anime), { lang: 'vf' });
-                }),
-            ];
-        });
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+Object.defineProperty(exports, "AnimeStore", {
+    enumerable: true,
+    get: function() {
+        return AnimeStore;
     }
-    /**
-     * This function retrieves the latest episodes from a neko website.
-     * it store them into the latest array.
-     */
-    static getLatestEpisodes() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const res = yield fetch("https://neko.ketsuna.com");
-            const data = yield res.text();
-            let lastEpisode = [];
-            const parsedData = /var lastEpisodes = (.+)\;/gm.exec(data);
-            if (parsedData) {
-                lastEpisode = JSON.parse(parsedData[1]);
-            }
-            this.latest = lastEpisode;
-        });
+});
+var _axios = /*#__PURE__*/ _interop_require_default(require("axios"));
+var _cheerio = require("cheerio");
+function _array_like_to_array(arr, len) {
+    if (len == null || len > arr.length) len = arr.length;
+    for(var i = 0, arr2 = new Array(len); i < len; i++)arr2[i] = arr[i];
+    return arr2;
+}
+function _array_without_holes(arr) {
+    if (Array.isArray(arr)) return _array_like_to_array(arr);
+}
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+    try {
+        var info = gen[key](arg);
+        var value = info.value;
+    } catch (error) {
+        reject(error);
+        return;
     }
-    static convertEpisodeToNumber(episode) {
-        return Number(episode.replace("Ep. ", ""));
-    }
-    /**
-     * This function retrieves information about an anime by its ID and language, including its
-     * synopsis, cover URL, and episodes.
-     *
-     * @param {number} id - The ID of the anime that we want to retrieve information for.
-     * @param {'vf' | 'vostfr'} lang - A string parameter that specifies the language of the anime to
-     * be retrieved. It can only be either 'vf' or 'vostfr'.
-     * @returns an object that contains information about an anime, including its synopsis, cover URL,
-     * and episodes. The object is created by finding the anime with the specified ID in either the
-     * 'vf' or 'vostfr' language array, fetching the full HTML page for the anime from a website, and
-     * parsing the relevant information from the HTML page.
-     */
-    static getAnimeById(id, lang) {
-        var _a, _b, _c;
-        return __awaiter(this, void 0, void 0, function* () {
-            let anime = this[lang].find((anime) => anime.id == id);
-            if (!anime)
-                return false;
-            let fullAnimeHtmlPage = yield (yield fetch('https://neko.ketsuna.com/' + anime.url)).text();
-            const synopsis = (_a = /(<div class="synopsis">\n<p>\n)(.*)/gm.exec(fullAnimeHtmlPage)) === null || _a === void 0 ? void 0 : _a[2];
-            const cover_url = (_b = /(<div id="head" style="background-image: url\()(.*)(\);)/gm.exec(fullAnimeHtmlPage)) === null || _b === void 0 ? void 0 : _b[2];
-            const episodes = JSON.parse((_c = /var episodes = (.+)\;/gm.exec(fullAnimeHtmlPage)) === null || _c === void 0 ? void 0 : _c[1]);
-            return Object.assign(Object.assign({}, anime), { synopsis, cover_url, episodes });
-        });
-    }
-    /**
-     * This function retrieves the m3u8 URL and subtitles for a given episode from a specific website.
-     * @param {Episode} episode - The episode parameter is an object representing an anime episode,
-     * which is used to fetch the m3u8 URL and subtitles for the episode.
-     */
-    static getEpisodeM3u8(episode) {
-        var _a, _b, _c, _d;
-        return __awaiter(this, void 0, void 0, function* () {
-            const neko_data = yield (yield fetch('https://neko.ketsuna.com' + episode.url)).text();
-            const pstream_url = (_a = /(\n(.*)video\[0] = ')(.*)(';)/gm.exec(neko_data)) === null || _a === void 0 ? void 0 : _a[3];
-            const pstream_data = yield (yield fetch('https://proxy.ketsuna.com/?url=' + encodeURIComponent(pstream_url))).text();
-            // extract base url from pstream_url to extract online the origine of the url. It's the base url of the video
-            const baseurl = pstream_url.split('/').slice(0, 3).join('/');
-            const loadedHTML = (0, cheerio_1.load)(pstream_data);
-            // get every script tag in the page
-            const scripts = loadedHTML('script');
-            // Map every script tag to get online the src attribute
-            const scriptsSrc = scripts.map((i, el) => loadedHTML(el).attr('src')).get();
-            let m3u8_url = '', subtitlesvtt = [];
-            for (const scriptSrc of scriptsSrc) {
-                const pstream_script = yield (yield fetch('https://proxy.ketsuna.com/?url=' + encodeURIComponent(scriptSrc))).text();
-                // check if the script contains the m3u8 url
-                let m3u8_url_B64 = (_b = /e.parseJSON\(atob\(t\).slice\(2\)\)\}\(\"([^;]*)"\),/gm.exec(pstream_script)) === null || _b === void 0 ? void 0 : _b[1];
-                if (m3u8_url_B64) {
-                    console.log(m3u8_url_B64);
-                    const b64 = JSON.parse(atob(m3u8_url_B64).slice(2));
-                    const pstream = b64;
-                    m3u8_url = Object.values(pstream).find((data) => {
-                        // check if data is a string
-                        if (typeof data === 'string') {
-                            return data.startsWith('https://');
-                        }
-                    });
-                    // check if the script contains the subtitles
-                    subtitlesvtt = pstream.subtitlesvtt;
-                    break;
-                }
-                else {
-                    m3u8_url_B64 = (_c = /e.parseJSON\(n\)}\(\"([^;]*)"\),/gm.exec(pstream_script)) === null || _c === void 0 ? void 0 : _c[1];
-                    if (m3u8_url_B64) {
-                        console.log(m3u8_url_B64);
-                        const b64 = JSON.parse(atob(m3u8_url_B64).slice(2));
-                        const pstream = b64;
-                        m3u8_url = Object.values(pstream).find((data) => {
-                            // check if data is a string
-                            if (typeof data === 'string') {
-                                return data.startsWith('https://');
-                            }
-                        });
-                        // check if the script contains the subtitles
-                        subtitlesvtt = pstream.subtitlesvtt;
-                        break;
-                    }
-                    else {
-                        m3u8_url_B64 = (_d = /n=atob\("([^"]+)"/gm.exec(pstream_script)) === null || _d === void 0 ? void 0 : _d[1];
-                        if (m3u8_url_B64) {
-                            console.log(m3u8_url_B64);
-                            const b64 = JSON.parse(atob(m3u8_url_B64)
-                                .replace(/\|\|\|/, '')
-                                .slice(29));
-                            const pstream = b64;
-                            m3u8_url = Object.values(pstream).find((data) => {
-                                // check if data is a string
-                                if (typeof data === 'string') {
-                                    return data.startsWith('https://');
-                                }
-                            });
-                            // check if the script contains the subtitles
-                            subtitlesvtt = pstream.subtitlesvtt;
-                            break;
-                        }
-                    }
-                }
-            }
-            if (m3u8_url !== '') {
-                return {
-                    uri: m3u8_url,
-                    subtitlesvtt: subtitlesvtt,
-                    baseurl: baseurl,
-                };
-            }
-            else {
-                return false;
-            }
-        });
+    if (info.done) {
+        resolve(value);
+    } else {
+        Promise.resolve(value).then(_next, _throw);
     }
 }
-Animes.all = [];
-Animes.vf = [];
-Animes.vostfr = [];
-Animes.latest = [];
-exports.Animes = Animes;
+function _async_to_generator(fn) {
+    return function() {
+        var self = this, args = arguments;
+        return new Promise(function(resolve, reject) {
+            var gen = fn.apply(self, args);
+            function _next(value) {
+                asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+            }
+            function _throw(err) {
+                asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+            }
+            _next(undefined);
+        });
+    };
+}
+function _class_call_check(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
+function _defineProperties(target, props) {
+    for(var i = 0; i < props.length; i++){
+        var descriptor = props[i];
+        descriptor.enumerable = descriptor.enumerable || false;
+        descriptor.configurable = true;
+        if ("value" in descriptor) descriptor.writable = true;
+        Object.defineProperty(target, descriptor.key, descriptor);
+    }
+}
+function _create_class(Constructor, protoProps, staticProps) {
+    if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) _defineProperties(Constructor, staticProps);
+    return Constructor;
+}
+function _define_property(obj, key, value) {
+    if (key in obj) {
+        Object.defineProperty(obj, key, {
+            value: value,
+            enumerable: true,
+            configurable: true,
+            writable: true
+        });
+    } else {
+        obj[key] = value;
+    }
+    return obj;
+}
+function _interop_require_default(obj) {
+    return obj && obj.__esModule ? obj : {
+        default: obj
+    };
+}
+function _iterable_to_array(iter) {
+    if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
+}
+function _non_iterable_spread() {
+    throw new TypeError("Invalid attempt to spread non-iterable instance.\\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+function _object_spread(target) {
+    for(var i = 1; i < arguments.length; i++){
+        var source = arguments[i] != null ? arguments[i] : {};
+        var ownKeys = Object.keys(source);
+        if (typeof Object.getOwnPropertySymbols === "function") {
+            ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function(sym) {
+                return Object.getOwnPropertyDescriptor(source, sym).enumerable;
+            }));
+        }
+        ownKeys.forEach(function(key) {
+            _define_property(target, key, source[key]);
+        });
+    }
+    return target;
+}
+function ownKeys(object, enumerableOnly) {
+    var keys = Object.keys(object);
+    if (Object.getOwnPropertySymbols) {
+        var symbols = Object.getOwnPropertySymbols(object);
+        if (enumerableOnly) {
+            symbols = symbols.filter(function(sym) {
+                return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+            });
+        }
+        keys.push.apply(keys, symbols);
+    }
+    return keys;
+}
+function _object_spread_props(target, source) {
+    source = source != null ? source : {};
+    if (Object.getOwnPropertyDescriptors) {
+        Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+    } else {
+        ownKeys(Object(source)).forEach(function(key) {
+            Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+        });
+    }
+    return target;
+}
+function _to_consumable_array(arr) {
+    return _array_without_holes(arr) || _iterable_to_array(arr) || _unsupported_iterable_to_array(arr) || _non_iterable_spread();
+}
+function _unsupported_iterable_to_array(o, minLen) {
+    if (!o) return;
+    if (typeof o === "string") return _array_like_to_array(o, minLen);
+    var n = Object.prototype.toString.call(o).slice(8, -1);
+    if (n === "Object" && o.constructor) n = o.constructor.name;
+    if (n === "Map" || n === "Set") return Array.from(n);
+    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _array_like_to_array(o, minLen);
+}
+function _ts_generator(thisArg, body) {
+    var f, y, t, g, _ = {
+        label: 0,
+        sent: function() {
+            if (t[0] & 1) throw t[1];
+            return t[1];
+        },
+        trys: [],
+        ops: []
+    };
+    return(g = {
+        next: verb(0),
+        "throw": verb(1),
+        "return": verb(2)
+    }, typeof Symbol === "function" && (g[Symbol.iterator] = function() {
+        return this;
+    }), g);
+    function verb(n) {
+        return function(v) {
+            return step([
+                n,
+                v
+            ]);
+        };
+    }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while(_)try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [
+                op[0] & 2,
+                t.value
+            ];
+            switch(op[0]){
+                case 0:
+                case 1:
+                    t = op;
+                    break;
+                case 4:
+                    _.label++;
+                    return {
+                        value: op[1],
+                        done: false
+                    };
+                case 5:
+                    _.label++;
+                    y = op[1];
+                    op = [
+                        0
+                    ];
+                    continue;
+                case 7:
+                    op = _.ops.pop();
+                    _.trys.pop();
+                    continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+                        _ = 0;
+                        continue;
+                    }
+                    if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
+                        _.label = op[1];
+                        break;
+                    }
+                    if (op[0] === 6 && _.label < t[1]) {
+                        _.label = t[1];
+                        t = op;
+                        break;
+                    }
+                    if (t && _.label < t[2]) {
+                        _.label = t[2];
+                        _.ops.push(op);
+                        break;
+                    }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop();
+                    continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) {
+            op = [
+                6,
+                e
+            ];
+            y = 0;
+        } finally{
+            f = t = 0;
+        }
+        if (op[0] & 5) throw op[1];
+        return {
+            value: op[0] ? op[1] : void 0,
+            done: true
+        };
+    }
+}
+var vostfrUrl = "https://neko.ketsuna.com/animes-search-vostfr.json";
+var vfUrl = "https://neko.ketsuna.com/animes-search-vf.json";
+var AnimeStore = /*#__PURE__*/ function() {
+    "use strict";
+    function AnimeStore() {
+        _class_call_check(this, AnimeStore);
+    }
+    _create_class(AnimeStore, null, [
+        {
+            key: "fetchAll",
+            value: /* The function fetches data from two different URLs and 
+  combines them into one array with a language property added to 
+  each object.*/ function fetchAll() {
+                var _this = this;
+                return _async_to_generator(function() {
+                    return _ts_generator(this, function(_state) {
+                        switch(_state.label){
+                            case 0:
+                                return [
+                                    4,
+                                    _axios.default.get(vostfrUrl)
+                                ];
+                            case 1:
+                                _this.vostfr = _state.sent().data;
+                                return [
+                                    4,
+                                    _axios.default.get(vfUrl)
+                                ];
+                            case 2:
+                                _this.vf = _state.sent().data;
+                                _this.all = _to_consumable_array(_this.vostfr.map(function(anime) {
+                                    return _object_spread_props(_object_spread({}, anime), {
+                                        lang: "vostfr"
+                                    });
+                                })).concat(_to_consumable_array(_this.vf.map(function(anime) {
+                                    return _object_spread_props(_object_spread({}, anime), {
+                                        lang: "vf"
+                                    });
+                                })));
+                                return [
+                                    2
+                                ];
+                        }
+                    });
+                })();
+            }
+        },
+        {
+            key: "fetchLatest",
+            value: /* This function fetches the latest episodes from a website 
+  and stores them in an array. */ function fetchLatest() {
+                var _this = this;
+                return _async_to_generator(function() {
+                    var data, parsedData, latestEpisodes;
+                    return _ts_generator(this, function(_state) {
+                        switch(_state.label){
+                            case 0:
+                                return [
+                                    4,
+                                    _axios.default.get("https://neko.ketsuna.com")
+                                ];
+                            case 1:
+                                data = _state.sent().data;
+                                parsedData = /var lastEpisodes = (.+)\;/gm.exec(data);
+                                latestEpisodes = [];
+                                if (parsedData) latestEpisodes = JSON.parse(parsedData[1]);
+                                _this.latest = latestEpisodes;
+                                return [
+                                    2
+                                ];
+                        }
+                    });
+                })();
+            }
+        },
+        {
+            key: "episodeToNumber",
+            value: /* This function converts a string representing an episode
+  number to a number data type in TypeScript. */ function episodeToNumber(episode) {
+                return Number(episode.replace("Ep. ", ""));
+            }
+        },
+        {
+            key: "get",
+            value: /* This function retrieves information about an anime based on 
+  its ID and language, including its synopsis, cover image URL, 
+  and episodes. */ function get(id, lang) {
+                var _this = this;
+                return _async_to_generator(function() {
+                    var _exec, _exec1, _exec2, anime, _ref, animeHtml, synopsis, coverUrl, episodes;
+                    return _ts_generator(this, function(_state) {
+                        switch(_state.label){
+                            case 0:
+                                anime = _this[lang].find(function(anime) {
+                                    return anime.id.toString() == id;
+                                });
+                                if (!anime) return [
+                                    2,
+                                    Promise.resolve(undefined)
+                                ];
+                                return [
+                                    4,
+                                    _axios.default.get("https://neko.ketsuna.com/".concat(anime.url))
+                                ];
+                            case 1:
+                                _ref = _state.sent(), animeHtml = _ref.data;
+                                synopsis = (_exec = /(<div class="synopsis">\n<p>\n)(.*)/gm.exec(animeHtml)) === null || _exec === void 0 ? void 0 : _exec[2];
+                                coverUrl = (_exec1 = /(<div id="head" style="background-image: url\()(.*)(\);)/gm.exec(animeHtml)) === null || _exec1 === void 0 ? void 0 : _exec1[2];
+                                episodes = JSON.parse((_exec2 = /var episodes = (.+)\;/gm.exec(animeHtml)) === null || _exec2 === void 0 ? void 0 : _exec2[1]);
+                                return [
+                                    2,
+                                    _object_spread_props(_object_spread({}, anime), {
+                                        synopsis: synopsis,
+                                        coverUrl: coverUrl,
+                                        episodes: episodes
+                                    })
+                                ];
+                        }
+                    });
+                })();
+            }
+        },
+        {
+            key: "getEpisodeVideo",
+            value: /* This function retrieves the video URL and subtitle data for a given episode URL. */ function getEpisodeVideo(episode) {
+                return _async_to_generator(function() {
+                    return _ts_generator(this, function(_state) {
+                        return [
+                            2,
+                            new Promise(function() {
+                                var _ref = _async_to_generator(function(resolve, reject) {
+                                    var _exec, episodeUrl, _ref, episodeHtml, pstreamUrl, baseUrl, pstreamUrlEncoded, pstreamUrlProxy, _ref1, pstreamHtml, loadedHtml, scripts, scriptSources, videoUrl, subtitlesVtt, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, scriptSource, _exec1, _ref2, pstreamScript, videoUrlBase64, _exec2, base64, pstream, err;
+                                    return _ts_generator(this, function(_state) {
+                                        switch(_state.label){
+                                            case 0:
+                                                episodeUrl = "https://neko.ketsuna.com".concat(episode.url);
+                                                return [
+                                                    4,
+                                                    _axios.default.get(episodeUrl)
+                                                ];
+                                            case 1:
+                                                _ref = _state.sent(), episodeHtml = _ref.data;
+                                                pstreamUrl = (_exec = /(\n(.*)video\[0] = ')(.*)(';)/gm.exec(episodeHtml)) === null || _exec === void 0 ? void 0 : _exec[3];
+                                                if (!pstreamUrl) {
+                                                    resolve(undefined);
+                                                }
+                                                baseUrl = pstreamUrl.split("/").slice(0, 3).join("/");
+                                                pstreamUrlEncoded = encodeURIComponent(pstreamUrl);
+                                                pstreamUrlProxy = "https://proxy.ketsuna.com/?url=".concat(pstreamUrlEncoded);
+                                                return [
+                                                    4,
+                                                    _axios.default.get(pstreamUrlProxy)
+                                                ];
+                                            case 2:
+                                                _ref1 = _state.sent(), pstreamHtml = _ref1.data;
+                                                loadedHtml = (0, _cheerio.load)(pstreamHtml);
+                                                scripts = loadedHtml("script");
+                                                scriptSources = scripts.map(function(i, el) {
+                                                    return loadedHtml(el).attr("src");
+                                                }).get();
+                                                videoUrl = "";
+                                                subtitlesVtt = [];
+                                                _iteratorNormalCompletion = true, _didIteratorError = false, _iteratorError = undefined;
+                                                _state.label = 3;
+                                            case 3:
+                                                _state.trys.push([
+                                                    3,
+                                                    8,
+                                                    9,
+                                                    10
+                                                ]);
+                                                _iterator = scriptSources[Symbol.iterator]();
+                                                _state.label = 4;
+                                            case 4:
+                                                if (!!(_iteratorNormalCompletion = (_step = _iterator.next()).done)) return [
+                                                    3,
+                                                    7
+                                                ];
+                                                scriptSource = _step.value;
+                                                return [
+                                                    4,
+                                                    _axios.default.get("https://proxy.ketsuna.com/?url=".concat(encodeURIComponent(scriptSource)))
+                                                ];
+                                            case 5:
+                                                _ref2 = _state.sent(), pstreamScript = _ref2.data;
+                                                videoUrlBase64 = (_exec1 = /e.parseJSON\(atob\(t\).slice\(2\)\)\}\(\"([^;]*)"\),/gm.exec(pstreamScript)) === null || _exec1 === void 0 ? void 0 : _exec1[1];
+                                                if (!videoUrlBase64) {
+                                                    ;
+                                                    videoUrlBase64 = (_exec2 = /n=atob\("([^"]+)"/gm.exec(pstreamScript)) === null || _exec2 === void 0 ? void 0 : _exec2[1];
+                                                }
+                                                if (!videoUrlBase64) {
+                                                    return [
+                                                        3,
+                                                        6
+                                                    ];
+                                                }
+                                                base64 = JSON.parse(atob(videoUrlBase64).slice(2));
+                                                pstream = base64;
+                                                videoUrl = Object.values(pstream).find(function(data) {
+                                                    if (typeof data === "string") {
+                                                        return data.startsWith("https://");
+                                                    }
+                                                });
+                                                subtitlesVtt = pstream.subtitlesvtt;
+                                                if (videoUrl) {
+                                                    return [
+                                                        3,
+                                                        7
+                                                    ];
+                                                }
+                                                _state.label = 6;
+                                            case 6:
+                                                _iteratorNormalCompletion = true;
+                                                return [
+                                                    3,
+                                                    4
+                                                ];
+                                            case 7:
+                                                return [
+                                                    3,
+                                                    10
+                                                ];
+                                            case 8:
+                                                err = _state.sent();
+                                                _didIteratorError = true;
+                                                _iteratorError = err;
+                                                return [
+                                                    3,
+                                                    10
+                                                ];
+                                            case 9:
+                                                try {
+                                                    if (!_iteratorNormalCompletion && _iterator.return != null) {
+                                                        _iterator.return();
+                                                    }
+                                                } finally{
+                                                    if (_didIteratorError) {
+                                                        throw _iteratorError;
+                                                    }
+                                                }
+                                                return [
+                                                    7
+                                                ];
+                                            case 10:
+                                                if (!videoUrl) {
+                                                    resolve(undefined);
+                                                }
+                                                resolve({
+                                                    uri: videoUrl,
+                                                    subtitlesVtt: subtitlesVtt,
+                                                    baseUrl: baseUrl
+                                                });
+                                                return [
+                                                    2
+                                                ];
+                                        }
+                                    });
+                                });
+                                return function(resolve, reject) {
+                                    return _ref.apply(this, arguments);
+                                };
+                            }())
+                        ];
+                    });
+                })();
+            }
+        }
+    ]);
+    return AnimeStore;
+}();
+_define_property(AnimeStore, "all", []);
+_define_property(AnimeStore, "vf", []);
+_define_property(AnimeStore, "vostfr", []);
+_define_property(AnimeStore, "latest", []);

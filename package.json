@@ -1,33 +1,26 @@
 {
-  "name": "gaze-api",
+  "name": "@gaze/api",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "api of gaze streaming service",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "tsc -p .",
-    "start": "node dist/server.js",
-    "dev": "nodemon src/server.ts"
+    "dev": "npx nodemon  --exec \"npx ts-node --swc src/index.ts\"",
+    "build": "npx swc src/ -d dist/"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "gaze,trail,garder500",
+  "license": "MIT",
   "dependencies": {
     "@fastify/multipart": "^7.6.0",
-    "axios": "^1.3.6",
+    "@ffmpeg/core": "^0.11.0",
+    "@ffmpeg/ffmpeg": "^0.11.6",
+    "axios": "^1.4.0",
     "cheerio": "^1.0.0-rc.12",
-    "fastify": "^4.15.0",
-    "ffmpeg": "^0.0.4",
-    "firebase-admin": "^11.7.0",
-    "fluent-ffmpeg": "^2.1.2",
-    "glob": "^10.2.1",
-    "nodemon": "^2.0.22"
+    "fastify": "^4.17.0",
+    "firebase-admin": "^11.8.0",
+    "node-fetch": "^3.3.1"
   },
   "devDependencies": {
-    "@types/ffmpeg": "^1.0.4",
-    "@types/fluent-ffmpeg": "^2.1.21",
-    "@types/node": "^18.15.11",
-    "babel-cli": "^6.26.0",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.0.4"
+    "@swc/cli": "^0.1.62",
+    "@swc/core": "^1.3.57"
   }
 }
