@@ -296,10 +296,15 @@ var AnimesLangIdEpisodeDownloadRoute = /*#__PURE__*/ function(Route) {
                                             video = (0, _child_process.spawn)('ffmpeg -y -i "'.concat(videoUrl, '" -protocol_whitelist https,tls,file,tcp -bsf:a aac_adtstoasc -vcodec copy "').concat(videoName, '"'), {
                                                 shell: true
                                             });
-                                            video.on("close", function(code) {
+                                            video.stderr.on("data", function(data) {
+                                                console.log(data.toString());
+                                            });
+                                            video.on("exit", function(code) {
                                                 console.log("child process exited with code ".concat(code));
-                                                resolve(reply.status(200).header("Content-Type", "video/mp4").header("Content-Disposition", 'attachment; filename="'.concat(videoName, '"')).header("Content-Length", _fs.default.statSync(videoName).size).header("Accept-Ranges", "bytes").header("Connection", "keep-alive").send(_fs.default.createReadStream(videoName)));
-                                                _fs.default.unlinkSync(videoName);
+                                                setTimeout(function() {
+                                                    _fs.default.unlinkSync(videoName);
+                                                }, 1000 * 60 * 3);
+                                                return resolve(reply.status(200).header("Content-Type", "video/mp4").header("Content-Disposition", 'attachment; filename="'.concat(videoName, '"')).header("Accept-Ranges", "bytes").header("Connection", "keep-alive").send(_fs.default.createReadStream(videoName)));
                                             });
                                             return [
                                                 2

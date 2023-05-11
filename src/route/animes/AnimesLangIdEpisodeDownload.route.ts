@@ -41,11 +41,16 @@ export class AnimesLangIdEpisodeDownloadRoute extends Route {
       const video = spawn(`ffmpeg -y -i "${videoUrl}" -protocol_whitelist https,tls,file,tcp -bsf:a aac_adtstoasc -vcodec copy "${videoName}"`, {
         shell: true,
       });
+      video.stderr.on("data", (data) => {
+        console.log(data.toString());
+      });
 
-      video.on("close", (code) => {
+      video.on("exit", (code) => {
         console.log(`child process exited with code ${code}`);
-        resolve(reply.status(200).header('Content-Type', 'video/mp4').header('Content-Disposition', `attachment; filename="${videoName}"`).header('Content-Length', fs.statSync(videoName).size).header('Accept-Ranges', 'bytes').header('Connection', 'keep-alive').send(fs.createReadStream(videoName)));
-        fs.unlinkSync(videoName);
+        setTimeout(() => {
+          fs.unlinkSync(videoName);
+        }, 1000 * 60 * 3);        
+        return resolve(reply.status(200).header('Content-Type', 'video/mp4').header('Content-Disposition', `attachment; filename="${videoName}"`).header('Accept-Ranges', 'bytes').header('Connection', 'keep-alive').send(fs.createReadStream(videoName)));
       });
 
     });
