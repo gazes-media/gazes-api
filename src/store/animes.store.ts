@@ -60,64 +60,59 @@ export class AnimeStore {
 
   /* This function retrieves the video URL and subtitle data for a given episode URL. */
   static async getEpisodeVideo(episode: Episode): Promise<undefined | { uri: string; subtitlesVtt: Subtitlesvtt[]; baseUrl: string }> {
-    return new Promise(async (resolve, reject) => {
-      const episodeUrl = `https://neko.ketsuna.com${episode.url}`;
-      const { data: episodeHtml } = await axios.get(episodeUrl);
-
-      const pstreamUrl = /(\n(.*)video\[0] = ')(.*)(';)/gm.exec(episodeHtml)?.[3];
-      if (!pstreamUrl) {
-        resolve(undefined);
-      }
-
-      const baseUrl = pstreamUrl.split("/").slice(0, 3).join("/");
-      const pstreamUrlEncoded = encodeURIComponent(pstreamUrl);
-      const pstreamUrlProxy = `https://proxy.ketsuna.com/?url=${pstreamUrlEncoded}`;
-
-      const { data: pstreamHtml } = await axios.get(pstreamUrlProxy);
-      const loadedHtml = load(pstreamHtml);
-
-      const scripts = loadedHtml("script");
-      const scriptSources = scripts.map((i, el) => loadedHtml(el).attr("src")).get();
-
-      let videoUrl = "";
-      let subtitlesVtt: Subtitlesvtt[] = [];
-
-      for (const scriptSource of scriptSources) {
-        const { data: pstreamScript } = await axios.get(`https://proxy.ketsuna.com/?url=${encodeURIComponent(scriptSource)}`);
-
-        let videoUrlBase64 = /e.parseJSON\(atob\(t\).slice\(2\)\)\}\(\"([^;]*)"\),/gm.exec(pstreamScript)?.[1];
-        if (!videoUrlBase64) {
-          videoUrlBase64 = /n=atob\("([^"]+)"/gm.exec(pstreamScript)?.[1];
-        }
-
-        if (!videoUrlBase64) {
-          continue;
-        }
-
-        const base64 = JSON.parse(atob(videoUrlBase64).slice(2));
-        const pstream: PstreamData = base64;
-
-        videoUrl = Object.values(pstream).find((data: any) => {
-          if (typeof data === "string") {
-            return data.startsWith("https://");
-          }
-        });
-
-        subtitlesVtt = pstream.subtitlesvtt;
-        if (videoUrl) {
+    return new Promise(async (resolve) => {
+      const episodeUrl = "https://neko.ketsuna.com" + episode.url;
+      const { data: nekoData } = await axios.get<string>(episodeUrl);
+      const pstreamUrl = /(\n(.*)video\[0] = ')(.*)(';)/gm.exec(nekoData)?.[3] as string;
+      const { data: pstreamData } = await axios.get<string>(`https://proxy.ketsuna.com/?url=${encodeURIComponent(pstreamUrl)}`);
+      const baseurl = pstreamUrl.split("/").slice(0, 3).join("/");
+      const loadedHTML = load(pstreamData);
+      const scripts = loadedHTML("script");
+      const scriptsSrc = scripts.map((i, el) => loadedHTML(el).attr("src")).get();
+      let m3u8Url: string = "",
+        subtitlesvtt: Subtitlesvtt[] = [];
+      for (const scriptSrc of scriptsSrc) {
+        const { data: pstreamScript } = await axios.get<string>(`https://proxy.ketsuna.com/?url=${encodeURIComponent(scriptSrc)}`);
+        let m3u8UrlB64 = /e.parseJSON\(atob\(t\).slice\(2\)\)\}\(\"([^;]*)"\),/gm.exec(pstreamScript)?.[1] as string;
+        if (m3u8UrlB64) {
+          const b64 = JSON.parse(atob(m3u8UrlB64).slice(2));
+          const pstream: PstreamData = b64;
+          m3u8Url = Object.values(pstream).find((data: any) => typeof data === "string" && data.startsWith("https://")) as string;
+          subtitlesvtt = pstream.subtitlesvtt;
           break;
+        } else {
+          m3u8UrlB64 = /e.parseJSON\(n\)}\(\"([^;]*)"\),/gm.exec(pstreamScript)?.[1] as string;
+          if (m3u8UrlB64) {
+            const b64 = JSON.parse(atob(m3u8UrlB64).slice(2));
+            const pstream: PstreamData = b64;
+            m3u8Url = Object.values(pstream).find((data: any) => typeof data === "string" && data.startsWith("https://")) as string;
+            subtitlesvtt = pstream.subtitlesvtt;
+            break;
+          } else {
+            m3u8UrlB64 = /n=atob\("([^"]+)"/gm.exec(pstreamScript)?.[1] as string;
+            if (m3u8UrlB64) {
+              const b64 = JSON.parse(
+                atob(m3u8UrlB64)
+                  .replace(/\|\|\|/, "")
+                  .slice(29)
+              );
+              const pstream: PstreamData = b64;
+              m3u8Url = Object.values(pstream).find((data: any) => typeof data === "string" && data.startsWith("https://")) as string;
+              subtitlesvtt = pstream.subtitlesvtt;
+              break;
+            }
+          }
         }
       }
-
-      if (!videoUrl) {
+      if (m3u8Url !== "") {
+        resolve({
+          uri: m3u8Url,
+          subtitlesVtt: subtitlesvtt,
+          baseUrl: baseurl,
+        });
+      } else {
         resolve(undefined);
       }
-
-      resolve({
-        uri: videoUrl,
-        subtitlesVtt,
-        baseUrl,
-      } as { uri: string; subtitlesVtt: Subtitlesvtt[]; baseUrl: string });
     });
   }
 }
