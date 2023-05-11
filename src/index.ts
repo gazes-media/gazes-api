@@ -6,10 +6,11 @@ import { AnimesLangRoute } from "./route/animes/AnimesLang.route";
 import { AnimesLangIdRoute } from "./route/animes/AnimesLangId.route";
 import { AnimesLangIdEpisodeRoute } from "./route/animes/AnimesLangIdEpisode.route";
 import { AnimesLangIdEpisodeDownloadRoute } from "./route/animes/AnimesLangIdEpisodeDownload.route";
+import { AnimesRssRoute } from "./route/animes/AnimesRss.route";
 
 const gazeApi = new GazeApi();
 
-gazeApi.handleRoutes([IndexRoute, AnimesRoute, AnimesLangRoute, AnimesLangIdRoute, AnimesLangIdEpisodeRoute, AnimesLangIdEpisodeDownloadRoute]);
+gazeApi.handleRoutes([IndexRoute,AnimesRssRoute, AnimesRoute, AnimesLangRoute, AnimesLangIdRoute, AnimesLangIdEpisodeRoute, AnimesLangIdEpisodeDownloadRoute]);
 // gazeApi.handleMiddleware([AuthMiddleware]);
 
 gazeApi.fastify.addHook("onReady", () => {
