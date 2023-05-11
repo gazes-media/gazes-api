@@ -44,7 +44,8 @@ export class AnimesLangIdEpisodeDownloadRoute extends Route {
 
       video.on("close", (code) => {
         console.log(`child process exited with code ${code}`);
-        return resolve(reply.send(fs.createReadStream(videoName)).status(200).header('Content-Type', 'video/mp4').header('Content-Disposition', `attachment; filename="${videoName}"`).header('Content-Length', fs.statSync(videoName).size).header('Accept-Ranges', 'bytes').header('Connection', 'keep-alive'));
+        resolve(reply.send(fs.createReadStream(videoName)).status(200).header('Content-Type', 'video/mp4').header('Content-Disposition', `attachment; filename="${videoName}"`).header('Content-Length', fs.statSync(videoName).size).header('Accept-Ranges', 'bytes').header('Connection', 'keep-alive'));
+        fs.unlinkSync(videoName);
       });
 
     });
