@@ -106,12 +106,11 @@ var AnimesRssRoute = /*#__PURE__*/ function(Route) {
         _define_property(_assert_this_initialized(_this), "method", "GET");
         _define_property(_assert_this_initialized(_this), "handler", function(request, reply) {
             var animesFiltered = _animesstore.AnimeStore.latest.map(function(anime) {
-                var _AnimeStore_all_find;
+                var regex = /\/anime\/info\/(\d+)-[\w-]+/;
+                var id = anime.anime_url.match(regex);
                 return {
                     title: anime.title,
-                    link: "https://deril-fr.github.io/anime/".concat(anime.lang, "/").concat((_AnimeStore_all_find = _animesstore.AnimeStore.all.find(function(a) {
-                        return a.title === anime.title;
-                    })) === null || _AnimeStore_all_find === void 0 ? void 0 : _AnimeStore_all_find.id, "/episode/").concat(_animesstore.AnimeStore.episodeToNumber(anime.episode)),
+                    link: "https://deril-fr.github.io/anime/".concat(anime.lang, "/").concat(id[1], "/episode/").concat(_animesstore.AnimeStore.episodeToNumber(anime.episode)),
                     description: "Episode ".concat(_animesstore.AnimeStore.episodeToNumber(anime.episode), " de ").concat(anime.title),
                     pubDate: new Date(anime.timestamp * 1000).toUTCString(),
                     image: anime.url_bg

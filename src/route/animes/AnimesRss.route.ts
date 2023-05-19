@@ -18,7 +18,7 @@ export class AnimesRssRoute extends Route {
     let animesFiltered: RSSItem[] = AnimeStore.latest.map((anime) => {
       let regex = /\/anime\/info\/(\d+)-[\w-]+/;
       let id = anime.anime_url.match(regex);
-pda      return {
+    return {
         title: anime.title,
         link: `https://deril-fr.github.io/anime/${anime.lang}/${id[1]}/episode/${AnimeStore.episodeToNumber(anime.episode)}`,
         description: `Episode ${AnimeStore.episodeToNumber(anime.episode)} de ${anime.title}`,
