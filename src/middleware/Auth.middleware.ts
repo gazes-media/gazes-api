@@ -15,6 +15,8 @@ interface FastifyRequestNew extends FastifyRequest {
 the authorization token and setting the user in the request object. */
 export class AuthMiddleware extends Middleware {
   public async handle(request: FastifyRequestNew, reply: FastifyReply) {
+    if (request.routerPath.includes("/rss")) return;
+
     const authToken = request.headers.authorization;
     if (!authToken || !authToken.startsWith("Bearer ")) {
       reply.status(401).send({ message: "Unauthorized" });
