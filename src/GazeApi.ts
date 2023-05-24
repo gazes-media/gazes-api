@@ -5,12 +5,16 @@ import * as admin from "firebase-admin";
 import { cert } from "firebase-admin/app";
 import fastifyMultipart from "@fastify/multipart";
 import { AnimeStore } from "./store/animes.store";
+import cors from "@fastify/cors";
 
 export class GazeApi {
   public fastify: FastifyInstance;
 
   constructor() {
     this.fastify = fastify();
+    this.fastify.register(cors, {
+      allowedHeaders: "*",
+    });
   }
 
   public handleRoutes(routes: (new () => Route)[]) {
