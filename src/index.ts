@@ -12,7 +12,7 @@ import { AuthMiddleware } from "./middleware/Auth.middleware";
 const gazeApi = new GazeApi();
 
 gazeApi.handleRoutes([IndexRoute, AnimesRssRoute, AnimesRoute, AnimesLangRoute, AnimesLangIdRoute, AnimesLangIdEpisodeRoute, AnimesLangIdEpisodeDownloadRoute]);
-gazeApi.handleMiddleware([AuthMiddleware]);
+// gazeApi.handleMiddleware([AuthMiddleware]);
 
 gazeApi.fastify.addHook("onReady", () => {
   console.log("⚡ ready to use");
