@@ -1,0 +1,1 @@
+{"version":3,"file":"Index.route.js","sourceRoot":"","sources":["../../src/route/Index.route.ts"],"names":[],"mappings":";;;AAAA,mCAAgC;AAGhC,kGAAkG;AAClG,MAAa,UAAW,SAAQ,aAAK;IAC5B,GAAG,GAAG,GAAG,CAAC;IACV,MAAM,GAAgB,KAAK,CAAC;IAE5B,OAAO,GAAuB,CAAC,OAAO,EAAE,KAAK,EAAE,EAAE;QACtD,KAAK,CAAC,IAAI,CAAC;YACT,OAAO,EAAE,SAAS;SACnB,CAAC,CAAC;IACL,CAAC,CAAC;CACH;AATD,gCASC"}

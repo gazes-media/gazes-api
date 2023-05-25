@@ -13,6 +13,7 @@ var _firebaseadmin = /*#__PURE__*/ _interop_require_wildcard(require("firebase-a
 var _app = require("firebase-admin/app");
 var _multipart = /*#__PURE__*/ _interop_require_default(require("@fastify/multipart"));
 var _animesstore = require("./store/animes.store");
+var _cors = /*#__PURE__*/ _interop_require_default(require("@fastify/cors"));
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
     try {
         var info = gen[key](arg);
@@ -219,6 +220,9 @@ var GazeApi = /*#__PURE__*/ function() {
         _class_call_check(this, GazeApi);
         _define_property(this, "fastify", void 0);
         this.fastify = (0, _fastify.default)();
+        this.fastify.register(_cors.default, {
+            allowedHeaders: "*"
+        });
     }
     _create_class(GazeApi, [
         {

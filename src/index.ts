@@ -8,6 +8,8 @@ import { AnimesLangIdEpisodeRoute } from "./route/animes/AnimesLangIdEpisode.rou
 import { AnimesLangIdEpisodeDownloadRoute } from "./route/animes/AnimesLangIdEpisodeDownload.route";
 import { AnimesRssRoute } from "./route/animes/AnimesRss.route";
 import { AuthMiddleware } from "./middleware/Auth.middleware";
+import 'reflect-metadata';
+import { AppDataSource } from "./data-source";
 
 const gazeApi = new GazeApi();
 
@@ -17,5 +19,15 @@ gazeApi.handleRoutes([IndexRoute, AnimesRssRoute, AnimesRoute, AnimesLangRoute, 
 gazeApi.fastify.addHook("onReady", () => {
   console.log("⚡ ready to use");
 });
+
+AppDataSource.initialize()
+    .then(() => {
+        console.log("🗃️  database initialized");
+    })
+    .catch((error) => {
+        console.log("🗃️  database initialization failed");
+        console.log(error);
+    });
+
 
 gazeApi.start(Config.port);

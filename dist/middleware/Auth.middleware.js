@@ -236,6 +236,9 @@ var AuthMiddleware = /*#__PURE__*/ function(Middleware) {
                     return _ts_generator(this, function(_state) {
                         switch(_state.label){
                             case 0:
+                                if (request.routerPath.includes("/rss")) return [
+                                    2
+                                ];
                                 authToken = request.headers.authorization;
                                 if (!authToken || !authToken.startsWith("Bearer ")) {
                                     reply.status(401).send({

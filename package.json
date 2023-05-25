@@ -19,7 +19,9 @@
     "cheerio": "^1.0.0-rc.12",
     "fastify": "^4.17.0",
     "firebase-admin": "^11.8.0",
-    "node-fetch": "^3.3.1"
+    "mysql2": "^3.3.2",
+    "node-fetch": "^3.3.1",
+    "typeorm": "^0.3.16"
   },
   "devDependencies": {
     "@swc/cli": "^0.1.62",

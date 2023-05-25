@@ -11,6 +11,8 @@ var _AnimesLangIdroute = require("./route/animes/AnimesLangId.route");
 var _AnimesLangIdEpisoderoute = require("./route/animes/AnimesLangIdEpisode.route");
 var _AnimesLangIdEpisodeDownloadroute = require("./route/animes/AnimesLangIdEpisodeDownload.route");
 var _AnimesRssroute = require("./route/animes/AnimesRss.route");
+require("reflect-metadata");
+var _datasource = require("./data-source");
 var gazeApi = new _GazeApi.GazeApi();
 gazeApi.handleRoutes([
     _Indexroute.IndexRoute,
@@ -24,5 +26,11 @@ gazeApi.handleRoutes([
 // gazeApi.handleMiddleware([AuthMiddleware]);
 gazeApi.fastify.addHook("onReady", function() {
     console.log("⚡ ready to use");
+});
+_datasource.AppDataSource.initialize().then(function() {
+    console.log("\uD83D\uDDC3️  database initialized");
+}).catch(function(error) {
+    console.log("\uD83D\uDDC3️  database initialization failed");
+    console.log(error);
 });
 gazeApi.start(_Config.Config.port);
