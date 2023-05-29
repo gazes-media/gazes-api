@@ -77,7 +77,7 @@ export class AnimeStore {
         if (m3u8UrlB64) {
           const b64 = JSON.parse(atob(m3u8UrlB64).slice(2));
           const pstream: PstreamData = b64;
-          m3u8Url = Object.values(pstream).find((data: any) => typeof data === "string" && data.startsWith("https://")) as string;
+          m3u8Url = Object.values(pstream).find((data: any) => typeof data === "string" && data.includes(".m3u8")) as string;
           subtitlesvtt = pstream.subtitlesvtt;
           break;
         } else {
@@ -85,7 +85,7 @@ export class AnimeStore {
           if (m3u8UrlB64) {
             const b64 = JSON.parse(atob(m3u8UrlB64).slice(2));
             const pstream: PstreamData = b64;
-            m3u8Url = Object.values(pstream).find((data: any) => typeof data === "string" && data.startsWith("https://")) as string;
+            m3u8Url = Object.values(pstream).find((data: any) => typeof data === "string" && data.includes(".m3u8")) as string;
             subtitlesvtt = pstream.subtitlesvtt;
             break;
           } else {
@@ -97,7 +97,7 @@ export class AnimeStore {
                   .slice(29)
               );
               const pstream: PstreamData = b64;
-              m3u8Url = Object.values(pstream).find((data: any) => typeof data === "string" && data.startsWith("https://")) as string;
+              m3u8Url = Object.values(pstream).find((data: any) => typeof data === "string" && data.includes(".m3u8")) as string;
               subtitlesvtt = pstream.subtitlesvtt;
               break;
             }
