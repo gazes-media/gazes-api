@@ -265,6 +265,8 @@ var AnimeHighlightedRoute = /*#__PURE__*/ function(Route) {
                             ];
                         case 1:
                             randomized = _state.sent();
+                            // replace the /0/ in the url with /1/ to get the cover image
+                            randomized.coverUrl = randomized.coverUrl.replace("/0/", "/1/");
                             reply.status(200).send(randomized);
                             return [
                                 2
