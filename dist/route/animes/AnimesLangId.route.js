@@ -249,6 +249,14 @@ var AnimesLangIdRoute = /*#__PURE__*/ function(Route) {
                             ];
                         case 1:
                             anime = _state.sent();
+                            if (!anime) {
+                                reply.status(404).send({
+                                    error: "Anime not found."
+                                });
+                                return [
+                                    2
+                                ];
+                            }
                             reply.status(200).send(anime);
                             return [
                                 2
