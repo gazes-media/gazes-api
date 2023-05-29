@@ -244,7 +244,7 @@ var AnimeHighlightedRoute = /*#__PURE__*/ function(Route) {
                                 2,
                                 new Promise(function(resolve, reject) {
                                     _animesstore.AnimeStore.get(randomAnime.id.toString(), "vostfr").then(function(anime) {
-                                        if (anime.synopsis.length > 50) {
+                                        if (anime.synopsis.length > 50 && anime.coverUrl != "https://neko-sama.fr/images/default_background.png") {
                                             resolve(anime);
                                         } else {
                                             resolve(pickRandomAnimeWithAtLeastAsynopsisDecent());

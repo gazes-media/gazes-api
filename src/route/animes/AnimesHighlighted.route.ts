@@ -19,7 +19,7 @@ export class AnimeHighlightedRoute extends Route {
         const randomAnime = AnimeStore.vostfr[Math.floor(Math.random() * AnimeStore.vostfr.length)];
         return new Promise((resolve, reject) => {
             AnimeStore.get(randomAnime.id.toString(), "vostfr").then((anime) => {
-                if(anime.synopsis.length > 50){
+                if(anime.synopsis.length > 50 && anime.coverUrl != "https://neko-sama.fr/images/default_background.png"){
                     resolve(anime);
                 }else{
                     resolve(pickRandomAnimeWithAtLeastAsynopsisDecent());
