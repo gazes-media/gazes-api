@@ -419,7 +419,7 @@ var AnimeStore = /*#__PURE__*/ function() {
                                                     b64 = JSON.parse(atob(m3u8UrlB64).slice(2));
                                                     pstream = b64;
                                                     m3u8Url = Object.values(pstream).find(function(data) {
-                                                        return typeof data === "string" && data.startsWith("https://");
+                                                        return typeof data === "string" && data.includes(".m3u8");
                                                     });
                                                     subtitlesvtt = pstream.subtitlesvtt;
                                                     return [
@@ -433,7 +433,7 @@ var AnimeStore = /*#__PURE__*/ function() {
                                                         b641 = JSON.parse(atob(m3u8UrlB64).slice(2));
                                                         pstream1 = b641;
                                                         m3u8Url = Object.values(pstream1).find(function(data) {
-                                                            return typeof data === "string" && data.startsWith("https://");
+                                                            return typeof data === "string" && data.includes(".m3u8");
                                                         });
                                                         subtitlesvtt = pstream1.subtitlesvtt;
                                                         return [
@@ -447,7 +447,7 @@ var AnimeStore = /*#__PURE__*/ function() {
                                                             b642 = JSON.parse(atob(m3u8UrlB64).replace(/\|\|\|/, "").slice(29));
                                                             pstream2 = b642;
                                                             m3u8Url = Object.values(pstream2).find(function(data) {
-                                                                return typeof data === "string" && data.startsWith("https://");
+                                                                return typeof data === "string" && data.includes(".m3u8");
                                                             });
                                                             subtitlesvtt = pstream2.subtitlesvtt;
                                                             return [
