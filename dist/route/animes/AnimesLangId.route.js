@@ -249,7 +249,7 @@ var AnimesLangIdRoute = /*#__PURE__*/ function(Route) {
                             ];
                         case 1:
                             anime = _state.sent();
-                            console.log(anime);
+                            reply.status(200).send(anime);
                             return [
                                 2
                             ];

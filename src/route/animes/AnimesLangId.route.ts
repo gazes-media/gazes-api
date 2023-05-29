@@ -21,6 +21,6 @@ export class AnimesLangIdRoute extends Route {
     }
 
     const anime = await AnimeStore.get(id, lang);
-    console.log(anime);
+    reply.status(200).send(anime);
   };
 }
