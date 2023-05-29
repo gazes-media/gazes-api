@@ -30,7 +30,7 @@ export class AnimeHighlightedRoute extends Route {
 
     const randomized = await pickRandomAnimeWithAtLeastAsynopsisDecent();
     // replace the /0/ in the url with /1/ to get the cover image
-    randomized.coverUrl = randomized.coverUrl.replace("/0/", "/1/");
+    randomized.url_image = randomized.coverUrl.replace("/2/", "/1/");
     reply.status(200).send(randomized);    
   };
 }
