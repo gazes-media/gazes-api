@@ -10,10 +10,11 @@ import { AnimesRssRoute } from "./route/animes/AnimesRss.route";
 import { AuthMiddleware } from "./middleware/Auth.middleware";
 import 'reflect-metadata';
 import { AppDataSource } from "./data-source";
+import { AnimeHighlightedRoute } from "./route/animes/AnimesHighlighted.route";
 
 const gazeApi = new GazeApi();
 
-gazeApi.handleRoutes([IndexRoute, AnimesRssRoute, AnimesRoute, AnimesLangRoute, AnimesLangIdRoute, AnimesLangIdEpisodeRoute, AnimesLangIdEpisodeDownloadRoute]);
+gazeApi.handleRoutes([IndexRoute, AnimesRssRoute, AnimesRoute, AnimeHighlightedRoute, AnimesLangRoute, AnimesLangIdRoute, AnimesLangIdEpisodeRoute, AnimesLangIdEpisodeDownloadRoute]);
 // gazeApi.handleMiddleware([AuthMiddleware]);
 
 gazeApi.fastify.addHook("onReady", () => {

@@ -8,7 +8,7 @@ interface Params {
 }
 
 /* Handle GET requests for anime data based on the language parameter. */
-export class AnimesLangRoute extends Route {
+export class AnimeHighlightedRoute extends Route {
   public url = "/animes/highlighted";
   public method: HTTPMethods = "GET";
 

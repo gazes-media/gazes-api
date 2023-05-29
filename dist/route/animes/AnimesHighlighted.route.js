@@ -2,10 +2,10 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-Object.defineProperty(exports, "AnimesLangRoute", {
+Object.defineProperty(exports, "AnimeHighlightedRoute", {
     enumerable: true,
     get: function() {
-        return AnimesLangRoute;
+        return AnimeHighlightedRoute;
     }
 });
 var _Route = require("../Route");
@@ -218,12 +218,12 @@ function _ts_generator(thisArg, body) {
         };
     }
 }
-var AnimesLangRoute = /*#__PURE__*/ function(Route) {
+var AnimeHighlightedRoute = /*#__PURE__*/ function(Route) {
     "use strict";
-    _inherits(AnimesLangRoute, Route);
-    var _super = _create_super(AnimesLangRoute);
-    function AnimesLangRoute() {
-        _class_call_check(this, AnimesLangRoute);
+    _inherits(AnimeHighlightedRoute, Route);
+    var _super = _create_super(AnimeHighlightedRoute);
+    function AnimeHighlightedRoute() {
+        _class_call_check(this, AnimeHighlightedRoute);
         var _this;
         _this = _super.apply(this, arguments);
         _define_property(_assert_this_initialized(_this), "url", "/animes/highlighted");
@@ -278,5 +278,5 @@ var AnimesLangRoute = /*#__PURE__*/ function(Route) {
         }());
         return _this;
     }
-    return AnimesLangRoute;
+    return AnimeHighlightedRoute;
 }(_Route.Route);

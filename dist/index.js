@@ -13,11 +13,13 @@ var _AnimesLangIdEpisodeDownloadroute = require("./route/animes/AnimesLangIdEpis
 var _AnimesRssroute = require("./route/animes/AnimesRss.route");
 require("reflect-metadata");
 var _datasource = require("./data-source");
+var _AnimesHighlightedroute = require("./route/animes/AnimesHighlighted.route");
 var gazeApi = new _GazeApi.GazeApi();
 gazeApi.handleRoutes([
     _Indexroute.IndexRoute,
     _AnimesRssroute.AnimesRssRoute,
     _Animesroute.AnimesRoute,
+    _AnimesHighlightedroute.AnimeHighlightedRoute,
     _AnimesLangroute.AnimesLangRoute,
     _AnimesLangIdroute.AnimesLangIdRoute,
     _AnimesLangIdEpisoderoute.AnimesLangIdEpisodeRoute,
