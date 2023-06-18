@@ -2,14 +2,16 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-Object.defineProperty(exports, "AnimesRoute", {
+Object.defineProperty(exports, "UserAnimesRoute", {
     enumerable: true,
     get: function() {
-        return AnimesRoute;
+        return UserAnimesRoute;
     }
 });
 var _Route = require("../Route");
-var _animesstore = require("../../store/animes.store");
+var _datasource = require("../../data-source");
+var _User = require("../../entity/User");
+var _Anime = require("../../entity/Anime");
 function _assert_this_initialized(self) {
     if (self === void 0) {
         throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -94,23 +96,75 @@ function _create_super(Derived) {
         return _possible_constructor_return(this, result);
     };
 }
-var AnimesRoute = /*#__PURE__*/ function(Route) {
+var UserAnimesRoute = /*#__PURE__*/ function(Route) {
     "use strict";
-    _inherits(AnimesRoute, Route);
-    var _super = _create_super(AnimesRoute);
-    function AnimesRoute() {
-        _class_call_check(this, AnimesRoute);
+    _inherits(UserAnimesRoute, Route);
+    var _super = _create_super(UserAnimesRoute);
+    function UserAnimesRoute() {
+        _class_call_check(this, UserAnimesRoute);
         var _this;
         _this = _super.apply(this, arguments);
-        _define_property(_assert_this_initialized(_this), "url", "/animes");
-        _define_property(_assert_this_initialized(_this), "method", "GET");
+        _define_property(_assert_this_initialized(_this), "url", "/users/animes");
+        _define_property(_assert_this_initialized(_this), "method", "POST");
         _define_property(_assert_this_initialized(_this), "handler", function(request, reply) {
-            reply.send({
-                vf: _animesstore.AnimeStore.vf,
-                vostfr: _animesstore.AnimeStore.vostfr
+            // get body from request
+            var _request_body = request.body, user = _request_body.user, Anime = _request_body.Anime;
+            if (!Anime.id) {
+                return reply.status(400).send({
+                    error: "Anime id is required."
+                });
+            }
+            if (!Anime.time) {
+                return reply.status(400).send({
+                    error: "Anime time is required."
+                });
+            }
+            if (!Anime.duration) {
+                return reply.status(400).send({
+                    error: "Anime duration is required."
+                });
+            }
+            if (!Anime.episode) {
+                return reply.status(400).send({
+                    error: "Anime episode is required."
+                });
+            }
+            if (!Anime.date) {
+                return reply.status(400).send({
+                    error: "Anime date is required."
+                });
+            }
+            _datasource.AppDataSource.getRepository(_User.User).save({
+                googleId: user.uid
+            }).then(function(u) {
+                _datasource.AppDataSource.getRepository(_Anime.Anime).findOne({
+                    where: {
+                        id: Anime.id,
+                        user: u
+                    }
+                }).then(function(a) {
+                    if (a) {
+                        a.time = Anime.time;
+                        a.date = Anime.date;
+                    } else {
+                        a = new _Anime.Anime();
+                        a.id = Anime.id;
+                        a.time = Anime.time;
+                        a.user = u;
+                        a.duration = Anime.duration;
+                        a.episode = Anime.episode;
+                        a.date = Anime.date;
+                    }
+                    _datasource.AppDataSource.getRepository(_Anime.Anime).save(a).then(function(aUpdated) {
+                        return reply.send({
+                            success: true,
+                            anime: aUpdated
+                        });
+                    });
+                });
             });
         });
         return _this;
     }
-    return AnimesRoute;
+    return UserAnimesRoute;
 }(_Route.Route);

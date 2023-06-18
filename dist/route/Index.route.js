@@ -2,13 +2,50 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-Object.defineProperty(exports, "IndexRoute", {
-    enumerable: true,
-    get: function() {
+function _export(target, all) {
+    for(var name in all)Object.defineProperty(target, name, {
+        enumerable: true,
+        get: all[name]
+    });
+}
+_export(exports, {
+    IndexRoute: function() {
         return IndexRoute;
+    },
+    AnimesRssRoute: function() {
+        return _AnimesRssroute.AnimesRssRoute;
+    },
+    AnimesRoute: function() {
+        return _Animesroute.AnimesRoute;
+    },
+    AnimeHighlightedRoute: function() {
+        return _AnimesHighlightedroute.AnimeHighlightedRoute;
+    },
+    AnimesIdRoute: function() {
+        return _AnimesIdroute.AnimesIdRoute;
+    },
+    AnimesIdEpisodeRoute: function() {
+        return _AnimesIdEpisoderoute.AnimesIdEpisodeRoute;
+    },
+    AnimesLangIdEpisodeDownloadRoute: function() {
+        return _AnimesLangIdEpisodeDownloadroute.AnimesLangIdEpisodeDownloadRoute;
+    },
+    UserHistoryRoute: function() {
+        return _Historyroute.UserHistoryRoute;
+    },
+    UserAnimesRoute: function() {
+        return _Animeroute.UserAnimesRoute;
     }
 });
 var _Route = require("./Route");
+var _AnimesRssroute = require("./animes/AnimesRss.route");
+var _Animesroute = require("./animes/Animes.route");
+var _AnimesHighlightedroute = require("./animes/AnimesHighlighted.route");
+var _AnimesIdroute = require("./animes/AnimesId.route");
+var _AnimesIdEpisoderoute = require("./animes/AnimesIdEpisode.route");
+var _AnimesLangIdEpisodeDownloadroute = require("./animes/AnimesLangIdEpisodeDownload.route");
+var _Historyroute = require("./users/History.route");
+var _Animeroute = require("./users/Anime.route");
 function _assert_this_initialized(self) {
     if (self === void 0) {
         throw new ReferenceError("this hasn't been initialised - super() hasn't been called");

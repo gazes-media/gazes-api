@@ -1,21 +1,15 @@
 import { GazeApi } from "./GazeApi";
 import { Config } from "./Config";
-import { IndexRoute } from "./route/Index.route";
-import { AnimesRoute } from "./route/animes/Animes.route";
-import { AnimesLangRoute } from "./route/animes/AnimesLang.route";
-import { AnimesLangIdRoute } from "./route/animes/AnimesLangId.route";
-import { AnimesLangIdEpisodeRoute } from "./route/animes/AnimesLangIdEpisode.route";
-import { AnimesLangIdEpisodeDownloadRoute } from "./route/animes/AnimesLangIdEpisodeDownload.route";
-import { AnimesRssRoute } from "./route/animes/AnimesRss.route";
+import * as Router from "./route/Index.route";
 import { AuthMiddleware } from "./middleware/Auth.middleware";
 import 'reflect-metadata';
 import { AppDataSource } from "./data-source";
-import { AnimeHighlightedRoute } from "./route/animes/AnimesHighlighted.route";
 
 const gazeApi = new GazeApi();
+const RouterIndex = Object.values(Router);
 
-gazeApi.handleRoutes([IndexRoute, AnimesRssRoute, AnimesRoute, AnimeHighlightedRoute, AnimesLangRoute, AnimesLangIdRoute, AnimesLangIdEpisodeRoute, AnimesLangIdEpisodeDownloadRoute]);
-// gazeApi.handleMiddleware([AuthMiddleware]);
+gazeApi.handleRoutes(RouterIndex);
+gazeApi.handleMiddleware([AuthMiddleware]);
 
 gazeApi.fastify.addHook("onReady", () => {
   console.log("⚡ ready to use");

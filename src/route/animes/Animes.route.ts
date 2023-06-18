@@ -7,6 +7,11 @@ export class AnimesRoute extends Route {
   public method: HTTPMethods = "GET";
 
   public handler: RouteHandlerMethod = (request, reply) => {
-    reply.send(AnimeStore.all);
+    reply.send({
+      vf: AnimeStore.vf,
+      vostfr: AnimeStore.vostfr,
+    });
   };
 }
+
+

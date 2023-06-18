@@ -72,6 +72,7 @@ export class AnimeStore {
       let m3u8Url: string = "",
         subtitlesvtt: Subtitlesvtt[] = [];
       for (const scriptSrc of scriptsSrc) {
+        if(scriptSrc.includes("cloudflare-static")) continue;
         const { data: pstreamScript } = await axios.get<string>(`https://proxy.ketsuna.com/?url=${encodeURIComponent(scriptSrc)}`);
         let m3u8UrlB64 = /e.parseJSON\(atob\(t\).slice\(2\)\)\}\(\"([^;]*)"\),/gm.exec(pstreamScript)?.[1] as string;
         if (m3u8UrlB64) {

@@ -8,23 +8,25 @@ interface Params {
 }
 
 /* Handle GET requests for anime data based on language and ID parameters. */
-export class AnimesLangIdRoute extends Route {
-  public url: string = "/animes/:lang/:id";
+export class AnimesIdRoute extends Route {
+  public url: string = "/animes/:id";
   public method: HTTPMethods = "GET";
 
   public handler: RouteHandlerMethod = async (request, reply) => {
-    const { lang, id } = request.params as Params;
+    const { id } = request.params as Params;
 
-    if (lang !== "vf" && lang !== "vostfr") {
-      reply.status(400).send({ error: "Invalid language parameter." });
-      return;
-    }
-
-    const anime = await AnimeStore.get(id, lang);
-    if(!anime){
+    const animeVostfr = await AnimeStore.get(id, "vostfr");
+    const animeVf = await AnimeStore.get(id, "vf");
+    if(!animeVostfr){
       reply.status(404).send({ error: "Anime not found." });
       return;
     }
-    reply.status(200).send(anime);
+    let response = {
+      vostfr: animeVostfr,
+    };
+    if(animeVf){
+      response["vf"] = animeVf;
+    }
+    reply.status(200).send(response);
   };
 }

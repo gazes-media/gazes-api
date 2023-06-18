@@ -2,15 +2,15 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-Object.defineProperty(exports, "User", {
+Object.defineProperty(exports, "Anime", {
     enumerable: true,
     get: function() {
-        return User;
+        return Anime;
     }
 });
 require("reflect-metadata");
 var _typeorm = require("typeorm");
-var _Anime = require("./Anime");
+var _User = require("./User");
 function _class_call_check(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
         throw new TypeError("Cannot call a class as a function");
@@ -38,29 +38,49 @@ function _ts_decorate(decorators, target, key, desc) {
 function _ts_metadata(k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 }
-var User = function User() {
+var Anime = function Anime() {
     "use strict";
-    _class_call_check(this, User);
+    _class_call_check(this, Anime);
+    _define_property(this, "generatedId", void 0);
     _define_property(this, "id", void 0);
-    _define_property(this, "googleId", void 0);
-    _define_property(this, "history", void 0);
+    _define_property(this, "user", void 0);
+    _define_property(this, "episode", void 0);
+    _define_property(this, "duration", void 0);
+    _define_property(this, "time", void 0);
+    _define_property(this, "date", void 0);
 };
 _ts_decorate([
     (0, _typeorm.PrimaryGeneratedColumn)(),
     _ts_metadata("design:type", Number)
-], User.prototype, "id", void 0);
+], Anime.prototype, "generatedId", void 0);
 _ts_decorate([
     (0, _typeorm.Column)(),
-    _ts_metadata("design:type", String)
-], User.prototype, "googleId", void 0);
+    _ts_metadata("design:type", Number)
+], Anime.prototype, "id", void 0);
 _ts_decorate([
-    (0, _typeorm.OneToMany)(function() {
-        return _Anime.Anime;
-    }, function(anime) {
-        return anime.id;
+    (0, _typeorm.OneToOne)(function() {
+        return _User.User;
+    }, function(user) {
+        return user.id;
     }),
-    _ts_metadata("design:type", Array)
-], User.prototype, "history", void 0);
-User = _ts_decorate([
+    _ts_metadata("design:type", typeof _User.User === "undefined" ? Object : _User.User)
+], Anime.prototype, "user", void 0);
+_ts_decorate([
+    (0, _typeorm.Column)(),
+    _ts_metadata("design:type", Number)
+], Anime.prototype, "episode", void 0);
+_ts_decorate([
+    (0, _typeorm.Column)(),
+    _ts_metadata("design:type", Number)
+], Anime.prototype, "duration", void 0);
+_ts_decorate([
+    (0, _typeorm.Column)(),
+    _ts_metadata("design:type", Number)
+], Anime.prototype, "time", void 0);
+_ts_decorate([
+    (0, _typeorm.Column)(),
+    _ts_metadata("design:type", typeof Date === "undefined" ? Object : Date)
+], Anime.prototype, "date", void 0);
+Anime = _ts_decorate([
     (0, _typeorm.Entity)()
-], User);
+], Anime);

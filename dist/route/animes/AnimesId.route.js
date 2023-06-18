@@ -2,14 +2,14 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-Object.defineProperty(exports, "AuthMiddleware", {
+Object.defineProperty(exports, "AnimesIdRoute", {
     enumerable: true,
     get: function() {
-        return AuthMiddleware;
+        return AnimesIdRoute;
     }
 });
-var _Middleware = require("./Middleware");
-var _firebaseadmin = require("firebase-admin");
+var _Route = require("../Route");
+var _animesstore = require("../../store/animes.store");
 function _assert_this_initialized(self) {
     if (self === void 0) {
         throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -50,20 +50,6 @@ function _class_call_check(instance, Constructor) {
         throw new TypeError("Cannot call a class as a function");
     }
 }
-function _defineProperties(target, props) {
-    for(var i = 0; i < props.length; i++){
-        var descriptor = props[i];
-        descriptor.enumerable = descriptor.enumerable || false;
-        descriptor.configurable = true;
-        if ("value" in descriptor) descriptor.writable = true;
-        Object.defineProperty(target, descriptor.key, descriptor);
-    }
-}
-function _create_class(Constructor, protoProps, staticProps) {
-    if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-    if (staticProps) _defineProperties(Constructor, staticProps);
-    return Constructor;
-}
 function _define_property(obj, key, value) {
     if (key in obj) {
         Object.defineProperty(obj, key, {
@@ -95,45 +81,6 @@ function _inherits(subClass, superClass) {
         }
     });
     if (superClass) _set_prototype_of(subClass, superClass);
-}
-function _object_spread(target) {
-    for(var i = 1; i < arguments.length; i++){
-        var source = arguments[i] != null ? arguments[i] : {};
-        var ownKeys = Object.keys(source);
-        if (typeof Object.getOwnPropertySymbols === "function") {
-            ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function(sym) {
-                return Object.getOwnPropertyDescriptor(source, sym).enumerable;
-            }));
-        }
-        ownKeys.forEach(function(key) {
-            _define_property(target, key, source[key]);
-        });
-    }
-    return target;
-}
-function ownKeys(object, enumerableOnly) {
-    var keys = Object.keys(object);
-    if (Object.getOwnPropertySymbols) {
-        var symbols = Object.getOwnPropertySymbols(object);
-        if (enumerableOnly) {
-            symbols = symbols.filter(function(sym) {
-                return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-            });
-        }
-        keys.push.apply(keys, symbols);
-    }
-    return keys;
-}
-function _object_spread_props(target, source) {
-    source = source != null ? source : {};
-    if (Object.getOwnPropertyDescriptors) {
-        Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-    } else {
-        ownKeys(Object(source)).forEach(function(key) {
-            Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-        });
-    }
-    return target;
 }
 function _possible_constructor_return(self, call) {
     if (call && (_type_of(call) === "object" || typeof call === "function")) {
@@ -186,13 +133,13 @@ function _ts_generator(thisArg, body) {
         trys: [],
         ops: []
     };
-    return g = {
+    return(g = {
         next: verb(0),
         "throw": verb(1),
         "return": verb(2)
     }, typeof Symbol === "function" && (g[Symbol.iterator] = function() {
         return this;
-    }), g;
+    }), g);
     function verb(n) {
         return function(v) {
             return step([
@@ -271,81 +218,61 @@ function _ts_generator(thisArg, body) {
         };
     }
 }
-/* The AuthMiddleware class is a TypeScript class that handles authentication for requests by verifying
-the authorization token and setting the user in the request object. */ var noNeedAuth = [
-    "/animes",
-    "/animes/:id",
-    "/animes/rss"
-];
-var AuthMiddleware = /*#__PURE__*/ function(Middleware) {
+var AnimesIdRoute = /*#__PURE__*/ function(Route) {
     "use strict";
-    _inherits(AuthMiddleware, Middleware);
-    var _super = _create_super(AuthMiddleware);
-    function AuthMiddleware() {
-        _class_call_check(this, AuthMiddleware);
-        return _super.apply(this, arguments);
+    _inherits(AnimesIdRoute, Route);
+    var _super = _create_super(AnimesIdRoute);
+    function AnimesIdRoute() {
+        _class_call_check(this, AnimesIdRoute);
+        var _this;
+        _this = _super.apply(this, arguments);
+        _define_property(_assert_this_initialized(_this), "url", "/animes/:id");
+        _define_property(_assert_this_initialized(_this), "method", "GET");
+        _define_property(_assert_this_initialized(_this), "handler", function() {
+            var _ref = _async_to_generator(function(request, reply) {
+                var id, animeVostfr, animeVf, response;
+                return _ts_generator(this, function(_state) {
+                    switch(_state.label){
+                        case 0:
+                            id = request.params.id;
+                            return [
+                                4,
+                                _animesstore.AnimeStore.get(id, "vostfr")
+                            ];
+                        case 1:
+                            animeVostfr = _state.sent();
+                            return [
+                                4,
+                                _animesstore.AnimeStore.get(id, "vf")
+                            ];
+                        case 2:
+                            animeVf = _state.sent();
+                            if (!animeVostfr) {
+                                reply.status(404).send({
+                                    error: "Anime not found."
+                                });
+                                return [
+                                    2
+                                ];
+                            }
+                            response = {
+                                vostfr: animeVostfr
+                            };
+                            if (animeVf) {
+                                response["vf"] = animeVf;
+                            }
+                            reply.status(200).send(response);
+                            return [
+                                2
+                            ];
+                    }
+                });
+            });
+            return function(request, reply) {
+                return _ref.apply(this, arguments);
+            };
+        }());
+        return _this;
     }
-    _create_class(AuthMiddleware, [
-        {
-            key: "handle",
-            value: function handle(request, reply) {
-                return _async_to_generator(function() {
-                    var authToken, idToken, decodedToken, err;
-                    return _ts_generator(this, function(_state) {
-                        switch(_state.label){
-                            case 0:
-                                if (noNeedAuth.includes(request.url)) {
-                                    return [
-                                        2
-                                    ];
-                                }
-                                authToken = request.headers.authorization;
-                                if (!authToken || !authToken.startsWith("Bearer ")) {
-                                    reply.status(401).send({
-                                        message: "Unauthorized"
-                                    });
-                                    return [
-                                        2
-                                    ];
-                                }
-                                _state.label = 1;
-                            case 1:
-                                _state.trys.push([
-                                    1,
-                                    3,
-                                    ,
-                                    4
-                                ]);
-                                idToken = authToken.split("Bearer ")[1];
-                                return [
-                                    4,
-                                    (0, _firebaseadmin.auth)().verifyIdToken(idToken)
-                                ];
-                            case 2:
-                                decodedToken = _state.sent();
-                                request.body = _object_spread_props(_object_spread({}, request.body), {
-                                    user: decodedToken
-                                });
-                                return [
-                                    2
-                                ];
-                            case 3:
-                                err = _state.sent();
-                                reply.status(401).send({
-                                    message: "Unauthorized"
-                                });
-                                return [
-                                    2
-                                ];
-                            case 4:
-                                return [
-                                    2
-                                ];
-                        }
-                    });
-                })();
-            }
-        }
-    ]);
-    return AuthMiddleware;
-}(_Middleware.Middleware);
+    return AnimesIdRoute;
+}(_Route.Route);

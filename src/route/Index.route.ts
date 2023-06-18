@@ -12,3 +12,11 @@ export class IndexRoute extends Route {
     });
   };
 }
+export { AnimesRssRoute } from "./animes/AnimesRss.route";
+export { AnimesRoute } from "./animes/Animes.route";
+export { AnimeHighlightedRoute } from "./animes/AnimesHighlighted.route";
+export { AnimesIdRoute } from "./animes/AnimesId.route";
+export { AnimesIdEpisodeRoute } from "./animes/AnimesIdEpisode.route";
+export { AnimesLangIdEpisodeDownloadRoute } from "./animes/AnimesLangIdEpisodeDownload.route";
+export { UserHistoryRoute } from "./users/History.route";
+export { UserAnimesRoute } from "./users/Anime.route";

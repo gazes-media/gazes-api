@@ -1,7 +1,9 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
-import { User } from "./entity/User"
+import * as Entity from "./entity/Entity";
 
+
+let entities = Object.values(Entity);
 export const AppDataSource = new DataSource({
     type: "mariadb",
     host: "149.91.80.94",
@@ -11,7 +13,7 @@ export const AppDataSource = new DataSource({
     database: "gaze",
     synchronize: true,
     logging: false,
-    entities: [User],
+    entities: entities,
     migrations: [],
     subscribers: [],
 })

@@ -408,6 +408,10 @@ var AnimeStore = /*#__PURE__*/ function() {
                                                     7
                                                 ];
                                                 scriptSrc = _step.value;
+                                                if (scriptSrc.includes("cloudflare-static")) return [
+                                                    3,
+                                                    6
+                                                ];
                                                 return [
                                                     4,
                                                     _axios.default.get("https://proxy.ketsuna.com/?url=".concat(encodeURIComponent(scriptSrc)))

@@ -1,5 +1,6 @@
 import "reflect-metadata"
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm"
+import { Anime } from "./Anime"
 
 @Entity()
 export class User {
@@ -8,12 +9,8 @@ export class User {
     id: number
 
     @Column()
-    firstName: string
-
-    @Column()
-    lastName: string
-
-    @Column()
-    age: number
-
+    googleId: string
+    
+    @OneToMany(() => Anime, anime => anime.id)
+    history: Anime[]
 }

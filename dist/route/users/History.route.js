@@ -2,14 +2,15 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-Object.defineProperty(exports, "AnimesRoute", {
+Object.defineProperty(exports, "UserHistoryRoute", {
     enumerable: true,
     get: function() {
-        return AnimesRoute;
+        return UserHistoryRoute;
     }
 });
 var _Route = require("../Route");
-var _animesstore = require("../../store/animes.store");
+var _datasource = require("../../data-source");
+var _User = require("../../entity/User");
 function _assert_this_initialized(self) {
     if (self === void 0) {
         throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -94,23 +95,51 @@ function _create_super(Derived) {
         return _possible_constructor_return(this, result);
     };
 }
-var AnimesRoute = /*#__PURE__*/ function(Route) {
+var UserHistoryRoute = /*#__PURE__*/ function(Route) {
     "use strict";
-    _inherits(AnimesRoute, Route);
-    var _super = _create_super(AnimesRoute);
-    function AnimesRoute() {
-        _class_call_check(this, AnimesRoute);
+    _inherits(UserHistoryRoute, Route);
+    var _super = _create_super(UserHistoryRoute);
+    function UserHistoryRoute() {
+        _class_call_check(this, UserHistoryRoute);
         var _this;
         _this = _super.apply(this, arguments);
-        _define_property(_assert_this_initialized(_this), "url", "/animes");
+        _define_property(_assert_this_initialized(_this), "url", "/users/history");
         _define_property(_assert_this_initialized(_this), "method", "GET");
         _define_property(_assert_this_initialized(_this), "handler", function(request, reply) {
-            reply.send({
-                vf: _animesstore.AnimeStore.vf,
-                vostfr: _animesstore.AnimeStore.vostfr
+            // get body from request
+            var user = request.body.user;
+            _datasource.AppDataSource.getRepository(_User.User).findOne({
+                loadRelationIds: true,
+                where: {
+                    googleId: user.uid
+                }
+            }).then(function(u) {
+                // Trie des épisodes par "animé" puis par "date de visionnage"
+                var animes = [];
+                u.history.forEach(function(a) {
+                    if (animes[a.id]) {
+                        animes[a.id].episodes.push(a);
+                    } else {
+                        animes[a.id] = {
+                            id: a.id,
+                            episodes: [
+                                a
+                            ]
+                        };
+                    }
+                });
+                animes.forEach(function(a) {
+                    a.episodes.sort(function(a, b) {
+                        return b.date.getTime() - a.date.getTime();
+                    });
+                });
+                return reply.send({
+                    success: true,
+                    animes: animes
+                });
             });
         });
         return _this;
     }
-    return AnimesRoute;
+    return UserHistoryRoute;
 }(_Route.Route);

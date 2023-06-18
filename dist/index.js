@@ -4,28 +4,55 @@ Object.defineProperty(exports, "__esModule", {
 });
 var _GazeApi = require("./GazeApi");
 var _Config = require("./Config");
-var _Indexroute = require("./route/Index.route");
-var _Animesroute = require("./route/animes/Animes.route");
-var _AnimesLangroute = require("./route/animes/AnimesLang.route");
-var _AnimesLangIdroute = require("./route/animes/AnimesLangId.route");
-var _AnimesLangIdEpisoderoute = require("./route/animes/AnimesLangIdEpisode.route");
-var _AnimesLangIdEpisodeDownloadroute = require("./route/animes/AnimesLangIdEpisodeDownload.route");
-var _AnimesRssroute = require("./route/animes/AnimesRss.route");
+var _Indexroute = /*#__PURE__*/ _interop_require_wildcard(require("./route/Index.route"));
+var _Authmiddleware = require("./middleware/Auth.middleware");
 require("reflect-metadata");
 var _datasource = require("./data-source");
-var _AnimesHighlightedroute = require("./route/animes/AnimesHighlighted.route");
+function _getRequireWildcardCache(nodeInterop) {
+    if (typeof WeakMap !== "function") return null;
+    var cacheBabelInterop = new WeakMap();
+    var cacheNodeInterop = new WeakMap();
+    return (_getRequireWildcardCache = function(nodeInterop) {
+        return nodeInterop ? cacheNodeInterop : cacheBabelInterop;
+    })(nodeInterop);
+}
+function _interop_require_wildcard(obj, nodeInterop) {
+    if (!nodeInterop && obj && obj.__esModule) {
+        return obj;
+    }
+    if (obj === null || typeof obj !== "object" && typeof obj !== "function") {
+        return {
+            default: obj
+        };
+    }
+    var cache = _getRequireWildcardCache(nodeInterop);
+    if (cache && cache.has(obj)) {
+        return cache.get(obj);
+    }
+    var newObj = {};
+    var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;
+    for(var key in obj){
+        if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) {
+            var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;
+            if (desc && (desc.get || desc.set)) {
+                Object.defineProperty(newObj, key, desc);
+            } else {
+                newObj[key] = obj[key];
+            }
+        }
+    }
+    newObj.default = obj;
+    if (cache) {
+        cache.set(obj, newObj);
+    }
+    return newObj;
+}
 var gazeApi = new _GazeApi.GazeApi();
-gazeApi.handleRoutes([
-    _Indexroute.IndexRoute,
-    _AnimesRssroute.AnimesRssRoute,
-    _Animesroute.AnimesRoute,
-    _AnimesHighlightedroute.AnimeHighlightedRoute,
-    _AnimesLangroute.AnimesLangRoute,
-    _AnimesLangIdroute.AnimesLangIdRoute,
-    _AnimesLangIdEpisoderoute.AnimesLangIdEpisodeRoute,
-    _AnimesLangIdEpisodeDownloadroute.AnimesLangIdEpisodeDownloadRoute
+var RouterIndex = Object.values(_Indexroute);
+gazeApi.handleRoutes(RouterIndex);
+gazeApi.handleMiddleware([
+    _Authmiddleware.AuthMiddleware
 ]);
-// gazeApi.handleMiddleware([AuthMiddleware]);
 gazeApi.fastify.addHook("onReady", function() {
     console.log("⚡ ready to use");
 });
