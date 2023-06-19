@@ -108,7 +108,7 @@ var UserAnimesRoute = /*#__PURE__*/ function(Route) {
         _define_property(_assert_this_initialized(_this), "method", "POST");
         _define_property(_assert_this_initialized(_this), "handler", function(request, reply) {
             // get body from request
-            var _request_body = request.body, user = _request_body.user, Anime = _request_body.Anime;
+            var _request_body = request.body, Anime = _request_body.Anime, user = _request_body.user;
             if (!Anime.id) {
                 return reply.status(400).send({
                     error: "Anime id is required."
@@ -129,23 +129,20 @@ var UserAnimesRoute = /*#__PURE__*/ function(Route) {
                     error: "Anime episode is required."
                 });
             }
-            if (!Anime.date) {
-                return reply.status(400).send({
-                    error: "Anime date is required."
-                });
-            }
             _datasource.AppDataSource.getRepository(_User.User).save({
                 googleId: user.uid
             }).then(function(u) {
                 _datasource.AppDataSource.getRepository(_Anime.Anime).findOne({
                     where: {
                         id: Anime.id,
-                        user: u
+                        user: {
+                            googleId: user.uid
+                        }
                     }
                 }).then(function(a) {
                     if (a) {
                         a.time = Anime.time;
-                        a.date = Anime.date;
+                        a.date = new Date();
                     } else {
                         a = new _Anime.Anime();
                         a.id = Anime.id;
@@ -153,7 +150,7 @@ var UserAnimesRoute = /*#__PURE__*/ function(Route) {
                         a.user = u;
                         a.duration = Anime.duration;
                         a.episode = Anime.episode;
-                        a.date = Anime.date;
+                        a.date = new Date();
                     }
                     _datasource.AppDataSource.getRepository(_Anime.Anime).save(a).then(function(aUpdated) {
                         return reply.send({
