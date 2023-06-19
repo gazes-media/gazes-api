@@ -57,7 +57,7 @@ _ts_decorate([
     (0, _typeorm.OneToMany)(function() {
         return _Anime.Anime;
     }, function(anime) {
-        return anime.id;
+        return anime.generatedId;
     }),
     _ts_metadata("design:type", Array)
 ], User.prototype, "history", void 0);
