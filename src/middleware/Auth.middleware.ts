@@ -15,11 +15,11 @@ interface FastifyRequestNew extends FastifyRequest {
 the authorization token and setting the user in the request object. */
 export class AuthMiddleware extends Middleware {
   // special regex for routes in withing /animes/* 
-  public static noNeedAuthRegex = new RegExp("^/animes/.*$");
+  public static noNeedAuthRegex = [new RegExp("^/animes/.*$"), new RegExp("^/api/animes/.*$")];
 
   public async handle(request: FastifyRequestNew, reply: FastifyReply) {
     const noNeedAuthRegex = AuthMiddleware.noNeedAuthRegex;
-    if (noNeedAuthRegex.test(request.url)) {
+    if (noNeedAuthRegex.some((regex) => regex.test(request.url))) {
       return;
     }
 
