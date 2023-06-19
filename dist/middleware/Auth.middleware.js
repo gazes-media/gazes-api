@@ -289,7 +289,9 @@ var AuthMiddleware = /*#__PURE__*/ function(Middleware) {
                         switch(_state.label){
                             case 0:
                                 noNeedAuthRegex = AuthMiddleware.noNeedAuthRegex;
-                                if (noNeedAuthRegex.test(request.url)) {
+                                if (noNeedAuthRegex.some(function(regex) {
+                                    return regex.test(request.url);
+                                })) {
                                     return [
                                         2
                                     ];
@@ -346,4 +348,7 @@ var AuthMiddleware = /*#__PURE__*/ function(Middleware) {
     return AuthMiddleware;
 }(_Middleware.Middleware);
 // special regex for routes in withing /animes/* 
-_define_property(AuthMiddleware, "noNeedAuthRegex", new RegExp("^/animes/.*$"));
+_define_property(AuthMiddleware, "noNeedAuthRegex", [
+    new RegExp("^/animes/.*$"),
+    new RegExp("^/api/animes/.*$")
+]);
