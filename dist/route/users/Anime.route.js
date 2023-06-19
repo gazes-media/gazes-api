@@ -135,6 +135,7 @@ var UserAnimesRoute = /*#__PURE__*/ function(Route) {
                 _datasource.AppDataSource.getRepository(_Anime.Anime).findOne({
                     where: {
                         id: Anime.id,
+                        episode: Anime.episode,
                         user: {
                             googleId: user.uid
                         }
