@@ -28,10 +28,12 @@ export class AuthMiddleware extends Middleware {
     try {
       const idToken = authToken.split("Bearer ")[1];
       const decodedToken = await auth().verifyIdToken(idToken);
+      console.log(decodedToken);
       request.body = { ...(request.body as any), user: decodedToken };
 
       return;
     } catch (err) {
+      console.log(err);
       reply.status(401).send({ message: "Unauthorized" });
       return;
     }
