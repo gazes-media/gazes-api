@@ -13,14 +13,10 @@ interface FastifyRequestNew extends FastifyRequest {
 
 /* The AuthMiddleware class is a TypeScript class that handles authentication for requests by verifying
 the authorization token and setting the user in the request object. */
-let noNeedAuth = [
-  "/animes",
-  "/animes/:id",
-  "/animes/rss",
-];
+let noNeedAuth = ["/animes", "/animes/:id", "/animes/rss", "/api/animes", "/api/animes/:id", "/api/animes/rss"];
 export class AuthMiddleware extends Middleware {
   public async handle(request: FastifyRequestNew, reply: FastifyReply) {
-    if(noNeedAuth.includes(request.url)){
+    if (noNeedAuth.includes(request.url)) {
       return;
     }
     const authToken = request.headers.authorization;
@@ -32,7 +28,7 @@ export class AuthMiddleware extends Middleware {
     try {
       const idToken = authToken.split("Bearer ")[1];
       const decodedToken = await auth().verifyIdToken(idToken);
-      request.body = { ...request.body as any, user: decodedToken };
+      request.body = { ...(request.body as any), user: decodedToken };
 
       return;
     } catch (err) {
