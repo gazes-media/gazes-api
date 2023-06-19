@@ -109,12 +109,16 @@ var UserHistoryRoute = /*#__PURE__*/ function(Route) {
             // get body from request
             var user = request.body.user;
             _datasource.AppDataSource.getRepository(_User.User).findOne({
-                loadRelationIds: true,
                 where: {
                     googleId: user.uid
                 }
             }).then(function(u) {
                 // Trie des épisodes par "animé" puis par "date de visionnage"
+                if (!u) return reply.send({
+                    success: true,
+                    animes: []
+                });
+                if (!u.history) u.history = [];
                 var animes = [];
                 u.history.forEach(function(a) {
                     if (animes[a.id]) {

@@ -271,15 +271,6 @@ function _ts_generator(thisArg, body) {
         };
     }
 }
-/* The AuthMiddleware class is a TypeScript class that handles authentication for requests by verifying
-the authorization token and setting the user in the request object. */ var noNeedAuth = [
-    "/animes",
-    "/animes/:id",
-    "/animes/rss",
-    "/api/animes",
-    "/api/animes/:id",
-    "/api/animes/rss"
-];
 var AuthMiddleware = /*#__PURE__*/ function(Middleware) {
     "use strict";
     _inherits(AuthMiddleware, Middleware);
@@ -293,11 +284,12 @@ var AuthMiddleware = /*#__PURE__*/ function(Middleware) {
             key: "handle",
             value: function handle(request, reply) {
                 return _async_to_generator(function() {
-                    var authToken, idToken, decodedToken, err;
+                    var noNeedAuthRegex, authToken, idToken, decodedToken, err;
                     return _ts_generator(this, function(_state) {
                         switch(_state.label){
                             case 0:
-                                if (noNeedAuth.includes(request.url)) {
+                                noNeedAuthRegex = AuthMiddleware.noNeedAuthRegex;
+                                if (noNeedAuthRegex.test(request.url)) {
                                     return [
                                         2
                                     ];
@@ -326,7 +318,6 @@ var AuthMiddleware = /*#__PURE__*/ function(Middleware) {
                                 ];
                             case 2:
                                 decodedToken = _state.sent();
-                                console.log(decodedToken);
                                 request.body = _object_spread_props(_object_spread({}, request.body), {
                                     user: decodedToken
                                 });
@@ -354,3 +345,5 @@ var AuthMiddleware = /*#__PURE__*/ function(Middleware) {
     ]);
     return AuthMiddleware;
 }(_Middleware.Middleware);
+// special regex for routes in withing /animes/* 
+_define_property(AuthMiddleware, "noNeedAuthRegex", new RegExp("^/animes/.*$"));
