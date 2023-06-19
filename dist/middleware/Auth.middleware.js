@@ -326,6 +326,7 @@ var AuthMiddleware = /*#__PURE__*/ function(Middleware) {
                                 ];
                             case 2:
                                 decodedToken = _state.sent();
+                                console.log(decodedToken);
                                 request.body = _object_spread_props(_object_spread({}, request.body), {
                                     user: decodedToken
                                 });
@@ -334,6 +335,7 @@ var AuthMiddleware = /*#__PURE__*/ function(Middleware) {
                                 ];
                             case 3:
                                 err = _state.sent();
+                                console.log(err);
                                 reply.status(401).send({
                                     message: "Unauthorized"
                                 });
