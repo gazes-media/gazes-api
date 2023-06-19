@@ -26,7 +26,7 @@ export class UserAnimesRoute extends Route {
             return reply.status(400).send({ error: "Anime episode is required." });
         }
         AppDataSource.getRepository(User).save({ googleId: user.uid }).then((u) => {
-            AppDataSource.getRepository(AnimeEntity).findOne({ where: { id: Anime.id, user: {
+            AppDataSource.getRepository(AnimeEntity).findOne({ where: { id: Anime.id, episode: Anime.episode, user: {
                 googleId: user.uid
             }} }).then((a) => {
                 if (a) {
