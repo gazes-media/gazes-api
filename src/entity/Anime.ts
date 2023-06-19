@@ -1,5 +1,5 @@
 import "reflect-metadata"
-import { Entity, Column, OneToOne, PrimaryGeneratedColumn } from "typeorm"
+import { Entity, Column, OneToOne, PrimaryGeneratedColumn, ManyToOne } from "typeorm"
 import { User } from "./User"
 
 @Entity()
@@ -11,7 +11,7 @@ export class Anime {
     @Column()
     id: number
 
-    @OneToOne(() => User, user => user.id)
+    @ManyToOne(() => User, user => user.googleId)
     user: User
 
     @Column()

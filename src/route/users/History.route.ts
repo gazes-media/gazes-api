@@ -12,8 +12,14 @@ export class UserHistoryRoute extends Route {
     public handler: RouteHandlerMethod = (request, reply) => {
         // get body from request
         const { user } = request.body as { user: DecodedIdToken };
-        AppDataSource.getRepository(User).findOne({ loadRelationIds: true, where: { googleId: user.uid } }).then((u) => {
+        AppDataSource.getRepository(User).findOne({ where: { googleId: user.uid } }).then((u) => {
             // Trie des épisodes par "animé" puis par "date de visionnage"
+            if(!u) return reply.send({
+                success: true,
+                animes: []
+            });
+
+            if(!u.history) u.history = [];
             let animes: AnimeSorted[] = [];
             u.history.forEach((a) => {
                 if(animes[a.id]){
