@@ -275,7 +275,10 @@ function _ts_generator(thisArg, body) {
 the authorization token and setting the user in the request object. */ var noNeedAuth = [
     "/animes",
     "/animes/:id",
-    "/animes/rss"
+    "/animes/rss",
+    "/api/animes",
+    "/api/animes/:id",
+    "/api/animes/rss"
 ];
 var AuthMiddleware = /*#__PURE__*/ function(Middleware) {
     "use strict";
