@@ -349,6 +349,6 @@ var AuthMiddleware = /*#__PURE__*/ function(Middleware) {
 }(_Middleware.Middleware);
 // special regex for routes in withing /animes/* 
 _define_property(AuthMiddleware, "noNeedAuthRegex", [
-    new RegExp("^/animes/.*$"),
-    new RegExp("^/api/animes/.*$")
+    new RegExp("^/animes.*$"),
+    new RegExp("^/api/animes.*$")
 ]);
