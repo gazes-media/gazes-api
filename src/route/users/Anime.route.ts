@@ -24,14 +24,11 @@ export class UserAnimesRoute extends Route {
         if(!Anime.episode){
             return reply.status(400).send({ error: "Anime episode is required." });
         }
-        if(!Anime.date){
-            return reply.status(400).send({ error: "Anime date is required." });
-        }
         AppDataSource.getRepository(User).save({ googleId: user.uid }).then((u) => {
             AppDataSource.getRepository(AnimeEntity).findOne({ where: { id: Anime.id, user: u } }).then((a) => {
                 if (a) {
                     a.time = Anime.time;
-                    a.date = Anime.date;
+                    a.date = new Date();
                 } else {
                     a = new AnimeEntity();
                     a.id = Anime.id;
@@ -39,7 +36,7 @@ export class UserAnimesRoute extends Route {
                     a.user = u;
                     a.duration = Anime.duration;
                     a.episode = Anime.episode;
-                    a.date = Anime.date;
+                    a.date = new Date();
                 }
                 AppDataSource.getRepository(AnimeEntity).save(a).then((aUpdated) => {
                    return reply.send({
