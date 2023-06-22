@@ -105,10 +105,106 @@ var AnimesRoute = /*#__PURE__*/ function(Route) {
         _define_property(_assert_this_initialized(_this), "url", "/animes");
         _define_property(_assert_this_initialized(_this), "method", "GET");
         _define_property(_assert_this_initialized(_this), "handler", function(request, reply) {
-            reply.send({
-                vf: _animesstore.AnimeStore.vf,
-                vostfr: _animesstore.AnimeStore.vostfr
-            });
+            var _request_query = request.query, type = _request_query.type, lang = _request_query.lang, status = _request_query.status, genres = _request_query.genres, year = _request_query.year;
+            var typeSeparated = [], genresSeparated = [], AnimeList = [], yearSeparated = [];
+            if (type) {
+                // type are separated by a comma in the url
+                typeSeparated = type.split(",");
+                // do a loop on the type to get the animes of each type
+                typeSeparated.forEach(function(type) {
+                    AnimeList = AnimeList.concat(_animesstore.AnimeStore.all.filter(function(anime) {
+                        return anime.type === type;
+                    }));
+                });
+            }
+            if (genres) {
+                // genres are separated by a comma in the url
+                genresSeparated = genres.split(",");
+                // verify if the animelist is empty or not
+                if (AnimeList.length === 0) {
+                    // be sure ALL genres are present in the anime
+                    AnimeList = _animesstore.AnimeStore.all.filter(function(anime) {
+                        var found = false;
+                        genresSeparated.forEach(function(genre) {
+                            anime.genres.includes(genre) ? found = true : found = false;
+                        });
+                        return found;
+                    });
+                } else {
+                    AnimeList = AnimeList.filter(function(anime) {
+                        var found = false;
+                        genresSeparated.forEach(function(genre) {
+                            anime.genres.includes(genre) ? found = true : found = false;
+                        });
+                        return found;
+                    });
+                }
+            }
+            // verify if other types are specified
+            if (year) {
+                yearSeparated = year.split(",");
+                if (AnimeList.length === 0) {
+                    AnimeList = _animesstore.AnimeStore.all.filter(function(anime) {
+                        var found = false;
+                        yearSeparated.forEach(function(year) {
+                            anime.start_date_year == year ? found = true : found = false;
+                        });
+                        return found;
+                    });
+                } else {
+                    AnimeList = AnimeList.filter(function(anime) {
+                        var found = false;
+                        yearSeparated.forEach(function(year) {
+                            anime.start_date_year == year ? found = true : found = false;
+                        });
+                        return found;
+                    });
+                }
+            }
+            if (lang) {
+                // verify if the animelist is empty or not
+                if (AnimeList.length === 0) {
+                    // if empty we do a regular filter on the AnimeStore.all
+                    if (lang == "vf") {
+                        reply.send({
+                            vf: _animesstore.AnimeStore.vf
+                        });
+                    } else {
+                        reply.send({
+                            vostfr: _animesstore.AnimeStore.vostfr
+                        });
+                    }
+                } else {
+                    if (lang == "vf") {
+                        reply.send({
+                            vf: AnimeList.filter(function(anime) {
+                                return anime.lang === "vf";
+                            })
+                        });
+                    } else {
+                        reply.send({
+                            vostfr: AnimeList.filter(function(anime) {
+                                return anime.lang === "vostfr";
+                            })
+                        });
+                    }
+                }
+            }
+            if (AnimeList.length === 0) {
+                reply.send({
+                    vf: _animesstore.AnimeStore.vf,
+                    vostfr: _animesstore.AnimeStore.vostfr
+                });
+            } else {
+                reply.send({
+                    vf: AnimeList.filter(function(anime) {
+                        return anime.lang === "vf";
+                    }),
+                    vostfr: AnimeList.filter(function(anime) {
+                        return anime.lang === "vostfr";
+                    })
+                });
+            }
         });
         return _this;
     }

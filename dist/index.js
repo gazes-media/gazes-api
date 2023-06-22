@@ -5,7 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 var _GazeApi = require("./GazeApi");
 var _Config = require("./Config");
 var _Indexroute = /*#__PURE__*/ _interop_require_wildcard(require("./route/Index.route"));
-var _Authmiddleware = require("./middleware/Auth.middleware");
 require("reflect-metadata");
 var _datasource = require("./data-source");
 var _firebaseadmin = /*#__PURE__*/ _interop_require_default(require("firebase-admin"));
@@ -56,9 +55,7 @@ function _interop_require_wildcard(obj, nodeInterop) {
 var gazeApi = new _GazeApi.GazeApi();
 var RouterIndex = Object.values(_Indexroute);
 gazeApi.handleRoutes(RouterIndex);
-gazeApi.handleMiddleware([
-    _Authmiddleware.AuthMiddleware
-]);
+// gazeApi.handleMiddleware([AuthMiddleware]);
 gazeApi.fastify.addHook("onReady", function() {
     console.log("⚡ ready to use");
 });
