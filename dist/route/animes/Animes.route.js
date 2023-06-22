@@ -122,21 +122,54 @@ var AnimesRoute = /*#__PURE__*/ function(Route) {
                 genresSeparated = genres.split(",");
                 // verify if the animelist is empty or not
                 if (AnimeList.length === 0) {
-                    // be sure ALL genres are present in the anime
-                    genresSeparated.forEach(function(genre) {
-                        AnimeList = AnimeList.concat(_animesstore.AnimeStore.all.filter(function(anime) {
-                            return anime.genres.includes(genre);
-                        }));
-                    });
+                    var _iteratorNormalCompletion = true, _didIteratorError = false, _iteratorError = undefined;
+                    try {
+                        // be sure ALL genres are present in the anime
+                        for(var _iterator = genresSeparated[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true){
+                            genres = _step.value;
+                            AnimeList = _animesstore.AnimeStore.all.filter(function(anime) {
+                                return anime.genres.includes(genres);
+                            });
+                        }
+                    } catch (err) {
+                        _didIteratorError = true;
+                        _iteratorError = err;
+                    } finally{
+                        try {
+                            if (!_iteratorNormalCompletion && _iterator.return != null) {
+                                _iterator.return();
+                            }
+                        } finally{
+                            if (_didIteratorError) {
+                                throw _iteratorError;
+                            }
+                        }
+                    }
+                } else {
+                    var _iteratorNormalCompletion1 = true, _didIteratorError1 = false, _iteratorError1 = undefined;
+                    try {
+                        // be sure ALL genres are present in the anime
+                        for(var _iterator1 = genresSeparated[Symbol.iterator](), _step1; !(_iteratorNormalCompletion1 = (_step1 = _iterator1.next()).done); _iteratorNormalCompletion1 = true){
+                            genres = _step1.value;
+                            AnimeList = AnimeList.filter(function(anime) {
+                                return anime.genres.includes(genres);
+                            });
+                        }
+                    } catch (err) {
+                        _didIteratorError1 = true;
+                        _iteratorError1 = err;
+                    } finally{
+                        try {
+                            if (!_iteratorNormalCompletion1 && _iterator1.return != null) {
+                                _iterator1.return();
+                            }
+                        } finally{
+                            if (_didIteratorError1) {
+                                throw _iteratorError1;
+                            }
+                        }
+                    }
                 }
-                // if an anime doesn't have all the genres, we remove it from the list
-                AnimeList = AnimeList.filter(function(anime) {
-                    var found = false;
-                    genresSeparated.forEach(function(genre) {
-                        anime.genres.includes(genre) ? found = true : found = false;
-                    });
-                    return found;
-                });
             }
             // verify if other types are specified
             if (year) {
