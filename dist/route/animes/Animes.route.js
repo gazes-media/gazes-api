@@ -123,41 +123,35 @@ var AnimesRoute = /*#__PURE__*/ function(Route) {
                 // verify if the animelist is empty or not
                 if (AnimeList.length === 0) {
                     // be sure ALL genres are present in the anime
-                    AnimeList = _animesstore.AnimeStore.all.filter(function(anime) {
-                        var found = false;
-                        genresSeparated.forEach(function(genre) {
-                            anime.genres.includes(genre) ? found = true : found = false;
-                        });
-                        return found;
-                    });
-                } else {
-                    AnimeList = AnimeList.filter(function(anime) {
-                        var found = false;
-                        genresSeparated.forEach(function(genre) {
-                            anime.genres.includes(genre) ? found = true : found = false;
-                        });
-                        return found;
+                    genresSeparated.forEach(function(genre) {
+                        AnimeList = AnimeList.concat(_animesstore.AnimeStore.all.filter(function(anime) {
+                            return anime.genres.includes(genre);
+                        }));
                     });
                 }
+                // if an anime doesn't have all the genres, we remove it from the list
+                AnimeList = AnimeList.filter(function(anime) {
+                    var found = false;
+                    genresSeparated.forEach(function(genre) {
+                        anime.genres.includes(genre) ? found = true : found = false;
+                    });
+                    return found;
+                });
             }
             // verify if other types are specified
             if (year) {
                 yearSeparated = year.split(",");
                 if (AnimeList.length === 0) {
-                    AnimeList = _animesstore.AnimeStore.all.filter(function(anime) {
-                        var found = false;
-                        yearSeparated.forEach(function(year) {
-                            anime.start_date_year == year ? found = true : found = false;
-                        });
-                        return found;
+                    yearSeparated.forEach(function(year) {
+                        AnimeList = AnimeList.concat(_animesstore.AnimeStore.all.filter(function(anime) {
+                            return anime.start_date_year == year;
+                        }));
                     });
                 } else {
-                    AnimeList = AnimeList.filter(function(anime) {
-                        var found = false;
-                        yearSeparated.forEach(function(year) {
-                            anime.start_date_year == year ? found = true : found = false;
+                    yearSeparated.forEach(function(year) {
+                        AnimeList = AnimeList.filter(function(anime) {
+                            return anime.start_date_year == year;
                         });
-                        return found;
                     });
                 }
             }
