@@ -105,7 +105,7 @@ var AnimesRoute = /*#__PURE__*/ function(Route) {
         _define_property(_assert_this_initialized(_this), "url", "/animes");
         _define_property(_assert_this_initialized(_this), "method", "GET");
         _define_property(_assert_this_initialized(_this), "handler", function(request, reply) {
-            var _request_query = request.query, type = _request_query.type, lang = _request_query.lang, status = _request_query.status, genres = _request_query.genres, year = _request_query.year;
+            var _request_query = request.query, type = _request_query.type, lang = _request_query.lang, status = _request_query.status, genres = _request_query.genres, year = _request_query.year, title = _request_query.title;
             var typeSeparated = [], genresSeparated = [], AnimeList = [], yearSeparated = [];
             if (type) {
                 // type are separated by a comma in the url
@@ -193,6 +193,14 @@ var AnimesRoute = /*#__PURE__*/ function(Route) {
                         });
                     }
                 }
+            }
+            if (title) {
+                if (AnimeList.length === 0) {
+                    AnimeList = _animesstore.AnimeStore.all;
+                }
+                AnimeList = AnimeList.filter(function(anime) {
+                    return anime.title.toLowerCase().includes(title.toLowerCase()) || anime.title_english.toLowerCase().includes(title.toLowerCase()) || anime.title_romanji.toLowerCase().includes(title.toLowerCase()) || anime.others.toLowerCase().includes(title.toLowerCase());
+                });
             }
             if (AnimeList.length === 0) {
                 reply.send({
