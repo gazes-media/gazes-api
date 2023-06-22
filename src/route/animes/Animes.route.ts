@@ -32,17 +32,13 @@ export class AnimesRoute extends Route {
 
       // verify if the animelist is empty or not
       if (AnimeList.length === 0) {
-        // be sure ALL genres are present in the anime
-        for(genres of genresSeparated){
-          AnimeList = AnimeStore.all.filter((anime) => anime.genres.includes(genres));
-        }
+        AnimeList = AnimeStore.all;
       }
-      else {
         // be sure ALL genres are present in the anime
         for(genres of genresSeparated){
           AnimeList = AnimeList.filter((anime) => anime.genres.includes(genres));
         }
-      }
+      
 
     }
 
