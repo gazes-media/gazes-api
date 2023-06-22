@@ -70,12 +70,15 @@ export class AnimesRoute extends Route {
           found = anime.title.toLowerCase().includes(title.toLowerCase());
         }
         if(anime.title_english){
+          if(found) return found;
           found = anime.title_english.toLowerCase().includes(title.toLowerCase());
         }
         if(anime.title_romanji){
+          if(found) return found;
           found = anime.title_romanji.toLowerCase().includes(title.toLowerCase());
         }
         if(anime.others){
+          if(found) return found;
           found = anime.others.toLowerCase().includes(title.toLowerCase());
         }
         return found;
