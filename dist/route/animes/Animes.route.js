@@ -187,8 +187,16 @@ var AnimesRoute = /*#__PURE__*/ function(Route) {
                         if (found) return found;
                         found = anime.others.toLowerCase().includes(title.toLowerCase());
                     }
+                    // if not found return false
                     return found;
                 });
+                // if no anime was found return an empty array
+                if (AnimeList.length === 0) {
+                    return reply.send({
+                        vf: [],
+                        vostfr: []
+                    });
+                }
             }
             if (status) {
                 // status are separated by a comma in the url
