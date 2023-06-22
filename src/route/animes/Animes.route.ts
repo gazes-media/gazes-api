@@ -33,22 +33,18 @@ export class AnimesRoute extends Route {
       // verify if the animelist is empty or not
       if (AnimeList.length === 0) {
         // be sure ALL genres are present in the anime
-        AnimeList = AnimeStore.all.filter((anime) => {
-          let found = false;
-          genresSeparated.forEach((genre) => {
-            anime.genres.includes(genre) ? found = true : found = false;
-          });
-          return found;
-        }); 
-      }else{
-        AnimeList = AnimeList.filter((anime) => {
-          let found = false;
-          genresSeparated.forEach((genre) => {
-            anime.genres.includes(genre) ? found = true : found = false;
-          });
-          return found;
-        }); 
+        genresSeparated.forEach((genre) => {
+          AnimeList = AnimeList.concat(AnimeStore.all.filter((anime) => anime.genres.includes(genre)));
+        });
       }
+          // if an anime doesn't have all the genres, we remove it from the list
+          AnimeList = AnimeList.filter((anime) => {
+            let found = false;
+            genresSeparated.forEach((genre) => {
+              anime.genres.includes(genre) ? found = true : found = false;
+            });
+            return found;
+          });
 
     }
 
@@ -56,20 +52,12 @@ export class AnimesRoute extends Route {
     if (year) {
       yearSeparated = year.split(",");
       if (AnimeList.length === 0) {
-        AnimeList = AnimeStore.all.filter((anime) => {
-          let found = false;
-          yearSeparated.forEach((year) => {
-            anime.start_date_year == year ? found = true : found = false;
-          });
-          return found;
+        yearSeparated.forEach((year) => {
+          AnimeList = AnimeList.concat(AnimeStore.all.filter((anime) => anime.start_date_year == year));
         });
       } else {
-        AnimeList = AnimeList.filter((anime) => {
-          let found = false;
-          yearSeparated.forEach((year) => {
-            anime.start_date_year == year ? found = true : found = false;
-          });
-          return found;
+        yearSeparated.forEach((year) => {
+          AnimeList = AnimeList.filter((anime) => anime.start_date_year == year);
         });
       }
     }
