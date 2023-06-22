@@ -148,6 +148,11 @@ var UserHistoryRoute = /*#__PURE__*/ function(Route) {
                     success: true,
                     animes: animes
                 });
+            }).catch(function(error) {
+                return reply.send({
+                    success: false,
+                    error: error
+                });
             });
         });
         return _this;
