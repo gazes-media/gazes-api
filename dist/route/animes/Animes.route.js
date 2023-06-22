@@ -165,6 +165,37 @@ var AnimesRoute = /*#__PURE__*/ function(Route) {
                     });
                 }
             }
+            if (title) {
+                if (AnimeList.length === 0) {
+                    AnimeList = _animesstore.AnimeStore.all;
+                }
+                // lookup for the title in the animeList
+                AnimeList = AnimeList.filter(function(anime) {
+                    var found = false;
+                    if (anime.title) {
+                        found = anime.title.toLowerCase().includes(title.toLowerCase());
+                    }
+                    if (anime.title_english) {
+                        found = anime.title_english.toLowerCase().includes(title.toLowerCase());
+                    }
+                    if (anime.title_romanji) {
+                        found = anime.title_romanji.toLowerCase().includes(title.toLowerCase());
+                    }
+                    if (anime.others) {
+                        found = anime.others.toLowerCase().includes(title.toLowerCase());
+                    }
+                    return found;
+                });
+            }
+            if (status) {
+                // status are separated by a comma in the url
+                if (AnimeList.length === 0) {
+                    AnimeList = _animesstore.AnimeStore.all;
+                }
+                AnimeList = AnimeList.filter(function(anime) {
+                    return anime.status === status;
+                });
+            }
             if (lang) {
                 // verify if the animelist is empty or not
                 if (AnimeList.length === 0) {
@@ -193,14 +224,6 @@ var AnimesRoute = /*#__PURE__*/ function(Route) {
                         });
                     }
                 }
-            }
-            if (title) {
-                if (AnimeList.length === 0) {
-                    AnimeList = _animesstore.AnimeStore.all;
-                }
-                AnimeList = AnimeList.filter(function(anime) {
-                    return anime.title.toLowerCase().includes(title.toLowerCase()) || anime.title_english.toLowerCase().includes(title.toLowerCase()) || anime.title_romanji.toLowerCase().includes(title.toLowerCase()) || anime.others.toLowerCase().includes(title.toLowerCase());
-                });
             }
             if (AnimeList.length === 0) {
                 reply.send({
