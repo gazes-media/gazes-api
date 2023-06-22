@@ -10,7 +10,7 @@ Object.defineProperty(exports, "UserHistoryRoute", {
 });
 var _Route = require("../Route");
 var _datasource = require("../../data-source");
-var _User = require("../../entity/User");
+var _Anime = require("../../entity/Anime");
 function _assert_this_initialized(self) {
     if (self === void 0) {
         throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -108,24 +108,35 @@ var UserHistoryRoute = /*#__PURE__*/ function(Route) {
         _define_property(_assert_this_initialized(_this), "handler", function(request, reply) {
             // get body from request
             var user = request.body.user;
-            _datasource.AppDataSource.getRepository(_User.User).findOne({
-                loadRelationIds: true,
+            _datasource.AppDataSource.getRepository(_Anime.Anime).find({
                 where: {
-                    googleId: user.uid
+                    user: {
+                        googleId: user.uid
+                    }
+                },
+                order: {
+                    date: "DESC"
                 }
             }).then(function(u) {
                 // Trie des épisodes par "animé" puis par "date de visionnage"
+                if (!u) return reply.send({
+                    success: true,
+                    animes: []
+                });
                 var animes = [];
-                u.history.forEach(function(a) {
-                    if (animes[a.id]) {
-                        animes[a.id].episodes.push(a);
+                u.forEach(function(a) {
+                    var anime = animes.find(function(anime) {
+                        return anime.id === a.id;
+                    });
+                    if (anime) {
+                        anime.episodes.push(a);
                     } else {
-                        animes[a.id] = {
+                        animes.push({
                             id: a.id,
                             episodes: [
                                 a
                             ]
-                        };
+                        });
                     }
                 });
                 animes.forEach(function(a) {

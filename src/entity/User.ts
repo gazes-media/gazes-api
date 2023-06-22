@@ -11,6 +11,6 @@ export class User {
     @Column()
     googleId: string
     
-    @OneToMany(() => Anime, anime => anime.id)
+    @OneToMany(() => Anime, anime => anime.generatedId)
     history: Anime[]
 }

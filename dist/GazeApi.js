@@ -258,7 +258,7 @@ var GazeApi = /*#__PURE__*/ function() {
                 try {
                     for(var _iterator = middlewares[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true){
                         var middleware = _step.value;
-                        this.fastify.addHook("onRequest", new middleware().handle);
+                        this.fastify.addHook("preValidation", new middleware().handle);
                     }
                 } catch (err) {
                     _didIteratorError = true;

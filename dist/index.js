@@ -8,6 +8,12 @@ var _Indexroute = /*#__PURE__*/ _interop_require_wildcard(require("./route/Index
 var _Authmiddleware = require("./middleware/Auth.middleware");
 require("reflect-metadata");
 var _datasource = require("./data-source");
+var _firebaseadmin = /*#__PURE__*/ _interop_require_default(require("firebase-admin"));
+function _interop_require_default(obj) {
+    return obj && obj.__esModule ? obj : {
+        default: obj
+    };
+}
 function _getRequireWildcardCache(nodeInterop) {
     if (typeof WeakMap !== "function") return null;
     var cacheBabelInterop = new WeakMap();
@@ -61,5 +67,9 @@ _datasource.AppDataSource.initialize().then(function() {
 }).catch(function(error) {
     console.log("\uD83D\uDDC3️  database initialization failed");
     console.log(error);
+});
+_firebaseadmin.default.initializeApp({
+    credential: _firebaseadmin.default.credential.cert("./animaflix-53e15-firebase-adminsdk-xvjq7-2c13172613.json"),
+    databaseURL: "https://animaflix-53e15-default-rtdb.europe-west1.firebasedatabase.app"
 });
 gazeApi.start(_Config.Config.port);

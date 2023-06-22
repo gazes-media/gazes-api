@@ -27,7 +27,7 @@ export class GazeApi {
   /* This function adds middleware hooks to a Fastify server instance. */
   public handleMiddleware(middlewares: (new () => Middleware)[]) {
     for (const middleware of middlewares) {
-      this.fastify.addHook("onRequest", new middleware().handle);
+      this.fastify.addHook("preValidation", new middleware().handle);
     }
   }
 

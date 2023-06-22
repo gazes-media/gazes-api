@@ -5,13 +5,14 @@ import { AppDataSource } from "../../data-source";
 import { User } from "../../entity/User";
 import { Anime } from "../../interfaces/animeDatabase.interface";
 import { Anime as AnimeEntity } from "../../entity/Anime";
+import { FastifyRequestNew } from "../../interfaces/requestNew.interface";
 export class UserAnimesRoute extends Route {
     public url = "/users/animes";
     public method: HTTPMethods = "POST";
 
-    public handler: RouteHandlerMethod = (request, reply) => {
+    public handler: RouteHandlerMethod = (request: FastifyRequestNew, reply) => {
         // get body from request
-        const { user, Anime } = request.body as { user: DecodedIdToken, Anime: Anime };
+        const { Anime, user } = request.body as { user: DecodedIdToken, Anime: Anime };
         if(!Anime.id){
             return reply.status(400).send({ error: "Anime id is required." });
         }
@@ -25,7 +26,9 @@ export class UserAnimesRoute extends Route {
             return reply.status(400).send({ error: "Anime episode is required." });
         }
         AppDataSource.getRepository(User).save({ googleId: user.uid }).then((u) => {
-            AppDataSource.getRepository(AnimeEntity).findOne({ where: { id: Anime.id, user: u } }).then((a) => {
+            AppDataSource.getRepository(AnimeEntity).findOne({ where: { id: Anime.id, episode: Anime.episode, user: {
+                googleId: user.uid
+            }} }).then((a) => {
                 if (a) {
                     a.time = Anime.time;
                     a.date = new Date();

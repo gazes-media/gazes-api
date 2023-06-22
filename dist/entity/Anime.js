@@ -58,10 +58,10 @@ _ts_decorate([
     _ts_metadata("design:type", Number)
 ], Anime.prototype, "id", void 0);
 _ts_decorate([
-    (0, _typeorm.OneToOne)(function() {
+    (0, _typeorm.ManyToOne)(function() {
         return _User.User;
     }, function(user) {
-        return user.id;
+        return user.googleId;
     }),
     _ts_metadata("design:type", typeof _User.User === "undefined" ? Object : _User.User)
 ], Anime.prototype, "user", void 0);
