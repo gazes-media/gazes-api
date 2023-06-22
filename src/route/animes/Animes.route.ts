@@ -9,12 +9,13 @@ export class AnimesRoute extends Route {
   public method: HTTPMethods = "GET";
 
   public handler: RouteHandlerMethod = (request, reply) => {
-    let { type, lang, status, genres, year } = request.query as {
+    let { type, lang, status, genres, year, title } = request.query as {
       type?: string;
       lang?: "vf" | "vostfr";
       status?: string;
       genres?: string;
       year?: string;
+      title?: string;
     };
     let typeSeparated: animeType[] = [], genresSeparated: string[] = [], AnimeList: Anime[] = [], yearSeparated: string[] = [];
     if (type) {
@@ -82,6 +83,13 @@ export class AnimesRoute extends Route {
         }
       }
 
+    }
+
+    if(title){
+      if(AnimeList.length === 0){
+        AnimeList = AnimeStore.all;
+      }
+      AnimeList = AnimeList.filter((anime) => anime.title.toLowerCase().includes(title.toLowerCase()) || anime.title_english.toLowerCase().includes(title.toLowerCase()) || anime.title_romanji.toLowerCase().includes(title.toLowerCase()) || anime.others.toLowerCase().includes(title.toLowerCase()));
     }
 
     if (AnimeList.length === 0) {
