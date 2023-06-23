@@ -14,6 +14,9 @@ _export(exports, {
     },
     User: function() {
         return _User.User;
+    },
+    Favoris: function() {
+        return _User.Favoris;
     }
 });
 var _Anime = require("./Anime");

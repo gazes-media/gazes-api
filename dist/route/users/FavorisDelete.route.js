@@ -2,16 +2,15 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-Object.defineProperty(exports, "UserAnimesRoute", {
+Object.defineProperty(exports, "UserFavorisDeleteRoute", {
     enumerable: true,
     get: function() {
-        return UserAnimesRoute;
+        return UserFavorisDeleteRoute;
     }
 });
 var _Route = require("../Route");
 var _datasource = require("../../data-source");
 var _User = require("../../entity/User");
-var _Anime = require("../../entity/Anime");
 function _assert_this_initialized(self) {
     if (self === void 0) {
         throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -96,73 +95,57 @@ function _create_super(Derived) {
         return _possible_constructor_return(this, result);
     };
 }
-var UserAnimesRoute = /*#__PURE__*/ function(Route) {
+var UserFavorisDeleteRoute = /*#__PURE__*/ function(Route) {
     "use strict";
-    _inherits(UserAnimesRoute, Route);
-    var _super = _create_super(UserAnimesRoute);
-    function UserAnimesRoute() {
-        _class_call_check(this, UserAnimesRoute);
+    _inherits(UserFavorisDeleteRoute, Route);
+    var _super = _create_super(UserFavorisDeleteRoute);
+    function UserFavorisDeleteRoute() {
+        _class_call_check(this, UserFavorisDeleteRoute);
         var _this;
         _this = _super.apply(this, arguments);
-        _define_property(_assert_this_initialized(_this), "url", "/users/animes");
-        _define_property(_assert_this_initialized(_this), "method", "POST");
+        _define_property(_assert_this_initialized(_this), "url", "/users/favoris");
+        _define_property(_assert_this_initialized(_this), "method", "DELETE");
         _define_property(_assert_this_initialized(_this), "handler", function(request, reply) {
             // get body from request
-            var _request_body = request.body, id = _request_body.id, time = _request_body.time, duration = _request_body.duration, episode = _request_body.episode, user = _request_body.user;
+            var _request_body = request.body, id = _request_body.id, user = _request_body.user;
             if (!id) {
                 return reply.status(400).send({
                     error: "Anime id is required."
                 });
             }
-            if (!time) {
-                return reply.status(400).send({
-                    error: "Anime time is required."
-                });
-            }
-            if (!duration) {
-                return reply.status(400).send({
-                    error: "Anime duration is required."
-                });
-            }
-            if (!episode) {
-                return reply.status(400).send({
-                    error: "Anime episode is required."
-                });
-            }
             _datasource.AppDataSource.getRepository(_User.User).save({
                 googleId: user.uid
             }).then(function(u) {
-                _datasource.AppDataSource.getRepository(_Anime.Anime).findOne({
+                _datasource.AppDataSource.getRepository(_User.Favoris).findOne({
                     where: {
-                        id: id,
-                        episode: episode,
                         user: {
                             googleId: user.uid
-                        }
-                    }
-                }).then(function(a) {
-                    if (a) {
-                        a.time = time;
-                        a.date = new Date();
-                    } else {
-                        a = new _Anime.Anime();
-                        a.id = id;
-                        a.time = time;
-                        a.user = u;
-                        a.duration = duration;
-                        a.episode = episode;
-                        a.date = new Date();
-                    }
-                    _datasource.AppDataSource.getRepository(_Anime.Anime).save(a).then(function(aUpdated) {
-                        return reply.send({
-                            success: true,
-                            anime: aUpdated
+                        },
+                        animeId: id
+                    },
+                    loadRelationIds: true
+                }).then(function(f) {
+                    if (f) {
+                        _datasource.AppDataSource.getRepository(_User.Favoris).delete(f).then(function(deleted) {
+                            if (deleted.affected === 0) return reply.status(404).send({
+                                success: false,
+                                error: "Anime not found in favoris"
+                            });
+                            return reply.send({
+                                success: true,
+                                deleted: true
+                            });
                         });
-                    });
+                    } else {
+                        return reply.status(404).send({
+                            success: false,
+                            error: "Anime not found in favoris"
+                        });
+                    }
                 });
             });
         });
         return _this;
     }
-    return UserAnimesRoute;
+    return UserFavorisDeleteRoute;
 }(_Route.Route);

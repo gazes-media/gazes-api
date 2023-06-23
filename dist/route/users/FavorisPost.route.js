@@ -2,16 +2,16 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-Object.defineProperty(exports, "UserAnimesRoute", {
+Object.defineProperty(exports, "UserFavorisPostRoute", {
     enumerable: true,
     get: function() {
-        return UserAnimesRoute;
+        return UserFavorisPostRoute;
     }
 });
 var _Route = require("../Route");
 var _datasource = require("../../data-source");
 var _User = require("../../entity/User");
-var _Anime = require("../../entity/Anime");
+var _animesstore = require("../../store/animes.store");
 function _assert_this_initialized(self) {
     if (self === void 0) {
         throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -96,73 +96,50 @@ function _create_super(Derived) {
         return _possible_constructor_return(this, result);
     };
 }
-var UserAnimesRoute = /*#__PURE__*/ function(Route) {
+var UserFavorisPostRoute = /*#__PURE__*/ function(Route) {
     "use strict";
-    _inherits(UserAnimesRoute, Route);
-    var _super = _create_super(UserAnimesRoute);
-    function UserAnimesRoute() {
-        _class_call_check(this, UserAnimesRoute);
+    _inherits(UserFavorisPostRoute, Route);
+    var _super = _create_super(UserFavorisPostRoute);
+    function UserFavorisPostRoute() {
+        _class_call_check(this, UserFavorisPostRoute);
         var _this;
         _this = _super.apply(this, arguments);
-        _define_property(_assert_this_initialized(_this), "url", "/users/animes");
+        _define_property(_assert_this_initialized(_this), "url", "/users/favoris");
         _define_property(_assert_this_initialized(_this), "method", "POST");
         _define_property(_assert_this_initialized(_this), "handler", function(request, reply) {
             // get body from request
-            var _request_body = request.body, id = _request_body.id, time = _request_body.time, duration = _request_body.duration, episode = _request_body.episode, user = _request_body.user;
+            var _request_body = request.body, id = _request_body.id, user = _request_body.user;
             if (!id) {
                 return reply.status(400).send({
                     error: "Anime id is required."
                 });
             }
-            if (!time) {
-                return reply.status(400).send({
-                    error: "Anime time is required."
-                });
-            }
-            if (!duration) {
-                return reply.status(400).send({
-                    error: "Anime duration is required."
-                });
-            }
-            if (!episode) {
-                return reply.status(400).send({
-                    error: "Anime episode is required."
+            // check if anime exist
+            var anime = _animesstore.AnimeStore.vostfr.find(function(anime) {
+                return anime.id === id;
+            });
+            if (!anime) {
+                return reply.status(404).send({
+                    error: "Anime not found."
                 });
             }
             _datasource.AppDataSource.getRepository(_User.User).save({
                 googleId: user.uid
             }).then(function(u) {
-                _datasource.AppDataSource.getRepository(_Anime.Anime).findOne({
-                    where: {
-                        id: id,
-                        episode: episode,
-                        user: {
-                            googleId: user.uid
-                        }
-                    }
-                }).then(function(a) {
-                    if (a) {
-                        a.time = time;
-                        a.date = new Date();
-                    } else {
-                        a = new _Anime.Anime();
-                        a.id = id;
-                        a.time = time;
-                        a.user = u;
-                        a.duration = duration;
-                        a.episode = episode;
-                        a.date = new Date();
-                    }
-                    _datasource.AppDataSource.getRepository(_Anime.Anime).save(a).then(function(aUpdated) {
-                        return reply.send({
-                            success: true,
-                            anime: aUpdated
-                        });
+                _datasource.AppDataSource.getRepository(_User.Favoris).save({
+                    user: u,
+                    animeId: id
+                }).then(function(f) {
+                    return reply.send({
+                        success: true,
+                        favoris: [
+                            f
+                        ]
                     });
                 });
             });
         });
         return _this;
     }
-    return UserAnimesRoute;
+    return UserFavorisPostRoute;
 }(_Route.Route);

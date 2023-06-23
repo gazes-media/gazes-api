@@ -35,6 +35,18 @@ _export(exports, {
     },
     UserAnimesRoute: function() {
         return _Animeroute.UserAnimesRoute;
+    },
+    UserFavorisRoute: function() {
+        return _Favorisroute.UserFavorisRoute;
+    },
+    UserFavorisPostRoute: function() {
+        return _FavorisPostroute.UserFavorisPostRoute;
+    },
+    UserFavorisDeleteRoute: function() {
+        return _FavorisDeleteroute.UserFavorisDeleteRoute;
+    },
+    UserAnimesDeleteRoute: function() {
+        return _AnimeDeleteroute.UserAnimesDeleteRoute;
     }
 });
 var _Route = require("./Route");
@@ -46,6 +58,10 @@ var _AnimesIdEpisoderoute = require("./animes/AnimesIdEpisode.route");
 var _AnimesLangIdEpisodeDownloadroute = require("./animes/AnimesLangIdEpisodeDownload.route");
 var _Historyroute = require("./users/History.route");
 var _Animeroute = require("./users/Anime.route");
+var _Favorisroute = require("./users/Favoris.route");
+var _FavorisPostroute = require("./users/FavorisPost.route");
+var _FavorisDeleteroute = require("./users/FavorisDelete.route");
+var _AnimeDeleteroute = require("./users/AnimeDelete.route");
 function _assert_this_initialized(self) {
     if (self === void 0) {
         throw new ReferenceError("this hasn't been initialised - super() hasn't been called");

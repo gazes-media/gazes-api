@@ -378,6 +378,10 @@ var AnimeStore = /*#__PURE__*/ function() {
                                             case 1:
                                                 _ref = _state.sent(), nekoData = _ref.data;
                                                 pstreamUrl = (_exec = /(\n(.*)video\[0] = ')(.*)(';)/gm.exec(nekoData)) === null || _exec === void 0 ? void 0 : _exec[3];
+                                                if (!pstreamUrl) return [
+                                                    2,
+                                                    resolve(undefined)
+                                                ];
                                                 return [
                                                     4,
                                                     _axios.default.get("https://proxy.ketsuna.com/?url=".concat(encodeURIComponent(pstreamUrl)))

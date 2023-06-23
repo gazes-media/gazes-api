@@ -2,10 +2,10 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-Object.defineProperty(exports, "UserAnimesRoute", {
+Object.defineProperty(exports, "UserAnimesDeleteRoute", {
     enumerable: true,
     get: function() {
-        return UserAnimesRoute;
+        return UserAnimesDeleteRoute;
     }
 });
 var _Route = require("../Route");
@@ -96,32 +96,22 @@ function _create_super(Derived) {
         return _possible_constructor_return(this, result);
     };
 }
-var UserAnimesRoute = /*#__PURE__*/ function(Route) {
+var UserAnimesDeleteRoute = /*#__PURE__*/ function(Route) {
     "use strict";
-    _inherits(UserAnimesRoute, Route);
-    var _super = _create_super(UserAnimesRoute);
-    function UserAnimesRoute() {
-        _class_call_check(this, UserAnimesRoute);
+    _inherits(UserAnimesDeleteRoute, Route);
+    var _super = _create_super(UserAnimesDeleteRoute);
+    function UserAnimesDeleteRoute() {
+        _class_call_check(this, UserAnimesDeleteRoute);
         var _this;
         _this = _super.apply(this, arguments);
         _define_property(_assert_this_initialized(_this), "url", "/users/animes");
-        _define_property(_assert_this_initialized(_this), "method", "POST");
+        _define_property(_assert_this_initialized(_this), "method", "DELETE");
         _define_property(_assert_this_initialized(_this), "handler", function(request, reply) {
             // get body from request
-            var _request_body = request.body, id = _request_body.id, time = _request_body.time, duration = _request_body.duration, episode = _request_body.episode, user = _request_body.user;
+            var _request_body = request.body, id = _request_body.id, episode = _request_body.episode, user = _request_body.user;
             if (!id) {
                 return reply.status(400).send({
                     error: "Anime id is required."
-                });
-            }
-            if (!time) {
-                return reply.status(400).send({
-                    error: "Anime time is required."
-                });
-            }
-            if (!duration) {
-                return reply.status(400).send({
-                    error: "Anime duration is required."
                 });
             }
             if (!episode) {
@@ -139,30 +129,31 @@ var UserAnimesRoute = /*#__PURE__*/ function(Route) {
                         user: {
                             googleId: user.uid
                         }
-                    }
+                    },
+                    loadRelationIds: true
                 }).then(function(a) {
                     if (a) {
-                        a.time = time;
-                        a.date = new Date();
-                    } else {
-                        a = new _Anime.Anime();
-                        a.id = id;
-                        a.time = time;
-                        a.user = u;
-                        a.duration = duration;
-                        a.episode = episode;
-                        a.date = new Date();
-                    }
-                    _datasource.AppDataSource.getRepository(_Anime.Anime).save(a).then(function(aUpdated) {
-                        return reply.send({
-                            success: true,
-                            anime: aUpdated
+                        console.log(a);
+                        _datasource.AppDataSource.getRepository(_Anime.Anime).delete(a).then(function(deleted) {
+                            if (deleted.affected === 0) return reply.status(404).send({
+                                succes: false,
+                                error: "Anime not found"
+                            });
+                            return reply.send({
+                                anime: a,
+                                deleted: true
+                            });
                         });
-                    });
+                    } else {
+                        return reply.status(404).send({
+                            succes: false,
+                            error: "Anime not found"
+                        });
+                    }
                 });
             });
         });
         return _this;
     }
-    return UserAnimesRoute;
+    return UserAnimesDeleteRoute;
 }(_Route.Route);

@@ -284,14 +284,11 @@ var AuthMiddleware = /*#__PURE__*/ function(Middleware) {
             key: "handle",
             value: function handle(request, reply) {
                 return _async_to_generator(function() {
-                    var noNeedAuthRegex, authToken, idToken, decodedToken, err;
+                    var authToken, idToken, decodedToken, err;
                     return _ts_generator(this, function(_state) {
                         switch(_state.label){
                             case 0:
-                                noNeedAuthRegex = AuthMiddleware.noNeedAuthRegex;
-                                if (noNeedAuthRegex.some(function(regex) {
-                                    return regex.test(request.url);
-                                })) {
+                                if (!request.url.includes("users")) {
                                     return [
                                         2
                                     ];
@@ -347,9 +344,3 @@ var AuthMiddleware = /*#__PURE__*/ function(Middleware) {
     ]);
     return AuthMiddleware;
 }(_Middleware.Middleware);
-// special regex for routes in withing /animes/* 
-_define_property(AuthMiddleware, "noNeedAuthRegex", [
-    new RegExp("^/animes.*$"),
-    new RegExp("^/api/animes.*$"),
-    new RegExp("^/anime/animes.*$")
-]);
