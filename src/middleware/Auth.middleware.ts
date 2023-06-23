@@ -14,12 +14,9 @@ interface FastifyRequestNew extends FastifyRequest {
 /* The AuthMiddleware class is a TypeScript class that handles authentication for requests by verifying
 the authorization token and setting the user in the request object. */
 export class AuthMiddleware extends Middleware {
-  // special regex for routes in withing /animes/* 
-  public static noNeedAuthRegex = [new RegExp("^/animes.*$"),new RegExp("^/api/animes.*$"), new RegExp("^/anime/animes.*$")];
 
   public async handle(request: FastifyRequestNew, reply: FastifyReply) {
-    const noNeedAuthRegex = AuthMiddleware.noNeedAuthRegex;
-    if (noNeedAuthRegex.some((regex) => regex.test(request.url))) {
+    if (!request.url.includes("users")) {
       return;
     }
 

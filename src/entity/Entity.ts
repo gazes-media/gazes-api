@@ -1,2 +1,3 @@
 export { Anime } from "./Anime"
-export { User } from "./User";
+export { User, Favoris} from "./User";
+

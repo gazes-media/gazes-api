@@ -64,6 +64,7 @@ export class AnimeStore {
       const episodeUrl = "https://neko.ketsuna.com" + episode.url;
       const { data: nekoData } = await axios.get<string>(episodeUrl);
       const pstreamUrl = /(\n(.*)video\[0] = ')(.*)(';)/gm.exec(nekoData)?.[3] as string;
+      if(!pstreamUrl) return resolve(undefined);
       const { data: pstreamData } = await axios.get<string>(`https://proxy.ketsuna.com/?url=${encodeURIComponent(pstreamUrl)}`);
       const baseurl = pstreamUrl.split("/").slice(0, 3).join("/");
       const loadedHTML = load(pstreamData);

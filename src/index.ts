@@ -9,7 +9,7 @@ const gazeApi = new GazeApi();
 const RouterIndex = Object.values(Router);
 
 gazeApi.handleRoutes(RouterIndex);
-// gazeApi.handleMiddleware([AuthMiddleware]);
+gazeApi.handleMiddleware([AuthMiddleware]);
 
 gazeApi.fastify.addHook("onReady", () => {
   console.log("⚡ ready to use");

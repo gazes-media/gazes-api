@@ -20,3 +20,7 @@ export { AnimesIdEpisodeRoute } from "./animes/AnimesIdEpisode.route";
 export { AnimesLangIdEpisodeDownloadRoute } from "./animes/AnimesLangIdEpisodeDownload.route";
 export { UserHistoryRoute } from "./users/History.route";
 export { UserAnimesRoute } from "./users/Anime.route";
+export { UserFavorisRoute } from "./users/Favoris.route";
+export { UserFavorisPostRoute } from "./users/FavorisPost.route";
+export { UserFavorisDeleteRoute } from "./users/FavorisDelete.route";
+export { UserAnimesDeleteRoute } from "./users/AnimeDelete.route";
