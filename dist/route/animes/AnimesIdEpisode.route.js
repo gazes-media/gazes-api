@@ -307,7 +307,7 @@ var AnimesIdEpisodeRoute = /*#__PURE__*/ function(Route) {
                                             ];
                                             reponse = {
                                                 vostfr: _object_spread({
-                                                    videoUri: EpisodeURIExist.uri,
+                                                    videoUri: "https://proxy.ketsuna.com?url=" + encodeURIComponent(EpisodeURIExist.uri),
                                                     videoVtt: EpisodeURIExist.subtitlesVtt,
                                                     videoBaseUrl: EpisodeURIExist.baseUrl
                                                 }, episode)
@@ -338,7 +338,7 @@ var AnimesIdEpisodeRoute = /*#__PURE__*/ function(Route) {
                                             datas = _state.sent();
                                             if (datas) {
                                                 reponse["vf"] = _object_spread({
-                                                    videoUri: datas.uri,
+                                                    videoUri: "https://proxy.ketsuna.com?url=" + encodeURIComponent(datas.uri),
                                                     videoVtt: datas.subtitlesVtt,
                                                     videoBaseUrl: datas.baseUrl
                                                 }, episodeVf);
