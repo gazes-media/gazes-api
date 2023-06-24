@@ -33,7 +33,7 @@ export class AnimesIdEpisodeRoute extends Route {
       if(!EpisodeURIExist) return resolve(reply.status(400).send({ error: `Anime with id ${id} has no episode ${episodeNumber}.` }));
       let reponse = {
         vostfr: {
-          videoUri: EpisodeURIExist.uri,
+          videoUri: "https://proxy.ketsuna.com?url=" + encodeURIComponent(EpisodeURIExist.uri),
           videoVtt: EpisodeURIExist.subtitlesVtt,
           videoBaseUrl: EpisodeURIExist.baseUrl,
           ...episode
@@ -49,7 +49,7 @@ export class AnimesIdEpisodeRoute extends Route {
           const datas = await AnimeStore.getEpisodeVideo(episodeVf);
           if(datas){
           reponse["vf"] = {
-              videoUri: datas.uri,
+              videoUri: "https://proxy.ketsuna.com?url=" + encodeURIComponent(datas.uri),
               videoVtt: datas.subtitlesVtt,
               videoBaseUrl: datas.baseUrl,
               ...episodeVf
