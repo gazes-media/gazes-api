@@ -16,17 +16,10 @@ export class AnimesIdRoute extends Route {
     const { id } = request.params as Params;
 
     const animeVostfr = await AnimeStore.get(id, "vostfr");
-    const animeVf = await AnimeStore.get(id, "vf");
     if(!animeVostfr){
       reply.status(404).send({ error: "Anime not found." });
       return;
     }
-    let response = {
-      vostfr: animeVostfr,
-    };
-    if(animeVf){
-      response["vf"] = animeVf;
-    }
-    reply.status(200).send(response);
+    reply.status(200).send(animeVostfr);
   };
 }
