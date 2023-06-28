@@ -121,22 +121,13 @@ var UserFavorisRoute = /*#__PURE__*/ function(Route) {
                     success: true,
                     animes: []
                 });
-                var animes = {
-                    vf: [],
-                    vostfr: []
-                };
+                var animes = [];
                 u.forEach(function(a) {
                     var anime = _animesstore.AnimeStore.vostfr.find(function(anime) {
                         return anime.id === a.animeId;
                     });
                     if (anime) {
-                        animes.vostfr.push(anime);
-                        var animeVf = _animesstore.AnimeStore.vf.find(function(animeVf) {
-                            return animeVf.id === a.animeId;
-                        });
-                        if (animeVf) {
-                            animes.vf.push(animeVf);
-                        }
+                        animes.push(anime);
                     }
                 });
                 return reply.send({
