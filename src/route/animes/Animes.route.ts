@@ -24,7 +24,7 @@ export class AnimesRoute extends Route {
       typeSeparated = type.split(",") as unknown as animeType[];
       // do a loop on the type to get the animes of each type
       typeSeparated.forEach((type) => {
-        AnimeList = AnimeList.concat(AnimeStore.all.filter((anime) => anime.type === type));
+        AnimeList = AnimeList.concat(AnimeStore.vostfr.filter((anime) => anime.type === type));
       });
     }
 
@@ -35,7 +35,7 @@ export class AnimesRoute extends Route {
 
       // verify if the animelist is empty or not
       if (AnimeList.length === 0) {
-        AnimeList = AnimeStore.all;
+        AnimeList = AnimeStore.vostfr;
       }
       // be sure ALL genres are present in the anime
       for (genres of genresSeparated) {
@@ -51,7 +51,7 @@ export class AnimesRoute extends Route {
       yearSeparated = year.split(",");
       if (AnimeList.length === 0) {
         yearSeparated.forEach((year) => {
-          AnimeList = AnimeList.concat(AnimeStore.all.filter((anime) => anime.start_date_year == year));
+          AnimeList = AnimeList.concat(AnimeStore.vostfr.filter((anime) => anime.start_date_year == year));
         });
       } else {
         yearSeparated.forEach((year) => {
@@ -64,7 +64,7 @@ export class AnimesRoute extends Route {
     if (title) {
       filterUsed = true;
       if (AnimeList.length === 0) {
-        AnimeList = AnimeStore.all;
+        AnimeList = AnimeStore.vostfr;
       }
 
       // lookup for the title in the animeList
@@ -95,58 +95,21 @@ export class AnimesRoute extends Route {
       filterUsed = true;
       // status are separated by a comma in the url
       if (AnimeList.length === 0) {
-        AnimeList = AnimeStore.all;
+        AnimeList = AnimeStore.vostfr;
       }
       AnimeList = AnimeList.filter((anime) => anime.status === status);
     }
 
 
-    if (lang) {
-      filterUsed = true;
-      // verify if the animelist is empty or not
-      if (AnimeList.length === 0) {
-        // if empty we do a regular filter on the AnimeStore.all
-        if (lang == "vf") {
-          reply.send({
-            vf: AnimeStore.vf,
-          });
-        } else {
-          reply.send({
-            vostfr: AnimeStore.vostfr,
-          });
-        }
-
-      } else {
-        if (lang == "vf") {
-          reply.send({
-            vf: AnimeList.filter((anime) => anime.lang === "vf"),
-          });
-        } else {
-          reply.send({
-            vostfr: AnimeList.filter((anime) => anime.lang === "vostfr"),
-          });
-        }
-      }
-
-    }
 
     if (filterUsed) {
       if (AnimeList.length === 0) {
-        reply.send({
-          vf: [],
-          vostfr: [],
-        });
+        reply.send([]);
       } else {
-        reply.send({
-          vf: AnimeList.filter((anime) => anime.lang === "vf"),
-          vostfr: AnimeList.filter((anime) => anime.lang === "vostfr"),
-        });
+        reply.send(AnimeList);
       }
     } else {
-      reply.send({
-        vf: AnimeStore.vf,
-        vostfr: AnimeStore.vostfr,
-      });
+      reply.send(AnimeStore.vostfr);
     }
 
   };
