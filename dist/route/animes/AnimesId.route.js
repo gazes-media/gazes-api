@@ -230,7 +230,7 @@ var AnimesIdRoute = /*#__PURE__*/ function(Route) {
         _define_property(_assert_this_initialized(_this), "method", "GET");
         _define_property(_assert_this_initialized(_this), "handler", function() {
             var _ref = _async_to_generator(function(request, reply) {
-                var id, animeVostfr, animeVf, response;
+                var id, animeVostfr;
                 return _ts_generator(this, function(_state) {
                     switch(_state.label){
                         case 0:
@@ -241,12 +241,6 @@ var AnimesIdRoute = /*#__PURE__*/ function(Route) {
                             ];
                         case 1:
                             animeVostfr = _state.sent();
-                            return [
-                                4,
-                                _animesstore.AnimeStore.get(id, "vf")
-                            ];
-                        case 2:
-                            animeVf = _state.sent();
                             if (!animeVostfr) {
                                 reply.status(404).send({
                                     error: "Anime not found."
@@ -255,13 +249,7 @@ var AnimesIdRoute = /*#__PURE__*/ function(Route) {
                                     2
                                 ];
                             }
-                            response = {
-                                vostfr: animeVostfr
-                            };
-                            if (animeVf) {
-                                response["vf"] = animeVf;
-                            }
-                            reply.status(200).send(response);
+                            reply.status(200).send(animeVostfr);
                             return [
                                 2
                             ];
