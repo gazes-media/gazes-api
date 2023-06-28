@@ -23,21 +23,11 @@ export class UserFavorisRoute extends Route {
                 animes: []
             });
 
-            const animes: {
-                vf: Anime[],
-                vostfr: Anime[]
-            } = {
-                vf: [],
-                vostfr: []
-            };
+            const animes: Anime[] = [];
             u.forEach((a) => {
                 const anime = AnimeStore.vostfr.find((anime) => anime.id === a.animeId);
                 if(anime){
-                    animes.vostfr.push(anime);
-                    let animeVf = AnimeStore.vf.find((animeVf) => animeVf.id === a.animeId);
-                    if(animeVf){
-                        animes.vf.push(animeVf);
-                    }
+                    animes.push(anime);
                 }
             });
         
