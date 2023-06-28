@@ -113,7 +113,7 @@ var AnimesRoute = /*#__PURE__*/ function(Route) {
                 typeSeparated = type.split(",");
                 // do a loop on the type to get the animes of each type
                 typeSeparated.forEach(function(type) {
-                    AnimeList = AnimeList.concat(_animesstore.AnimeStore.all.filter(function(anime) {
+                    AnimeList = AnimeList.concat(_animesstore.AnimeStore.vostfr.filter(function(anime) {
                         return anime.type === type;
                     }));
                 });
@@ -124,7 +124,7 @@ var AnimesRoute = /*#__PURE__*/ function(Route) {
                 genresSeparated = genres.split(",");
                 // verify if the animelist is empty or not
                 if (AnimeList.length === 0) {
-                    AnimeList = _animesstore.AnimeStore.all;
+                    AnimeList = _animesstore.AnimeStore.vostfr;
                 }
                 var _iteratorNormalCompletion = true, _didIteratorError = false, _iteratorError = undefined;
                 try {
@@ -156,7 +156,7 @@ var AnimesRoute = /*#__PURE__*/ function(Route) {
                 yearSeparated = year.split(",");
                 if (AnimeList.length === 0) {
                     yearSeparated.forEach(function(year) {
-                        AnimeList = AnimeList.concat(_animesstore.AnimeStore.all.filter(function(anime) {
+                        AnimeList = AnimeList.concat(_animesstore.AnimeStore.vostfr.filter(function(anime) {
                             return anime.start_date_year == year;
                         }));
                     });
@@ -171,7 +171,7 @@ var AnimesRoute = /*#__PURE__*/ function(Route) {
             if (title) {
                 filterUsed = true;
                 if (AnimeList.length === 0) {
-                    AnimeList = _animesstore.AnimeStore.all;
+                    AnimeList = _animesstore.AnimeStore.vostfr;
                 }
                 // lookup for the title in the animeList
                 AnimeList = AnimeList.filter(function(anime) {
@@ -199,63 +199,20 @@ var AnimesRoute = /*#__PURE__*/ function(Route) {
                 filterUsed = true;
                 // status are separated by a comma in the url
                 if (AnimeList.length === 0) {
-                    AnimeList = _animesstore.AnimeStore.all;
+                    AnimeList = _animesstore.AnimeStore.vostfr;
                 }
                 AnimeList = AnimeList.filter(function(anime) {
                     return anime.status === status;
                 });
             }
-            if (lang) {
-                filterUsed = true;
-                // verify if the animelist is empty or not
-                if (AnimeList.length === 0) {
-                    // if empty we do a regular filter on the AnimeStore.all
-                    if (lang == "vf") {
-                        reply.send({
-                            vf: _animesstore.AnimeStore.vf
-                        });
-                    } else {
-                        reply.send({
-                            vostfr: _animesstore.AnimeStore.vostfr
-                        });
-                    }
-                } else {
-                    if (lang == "vf") {
-                        reply.send({
-                            vf: AnimeList.filter(function(anime) {
-                                return anime.lang === "vf";
-                            })
-                        });
-                    } else {
-                        reply.send({
-                            vostfr: AnimeList.filter(function(anime) {
-                                return anime.lang === "vostfr";
-                            })
-                        });
-                    }
-                }
-            }
             if (filterUsed) {
                 if (AnimeList.length === 0) {
-                    reply.send({
-                        vf: [],
-                        vostfr: []
-                    });
+                    reply.send([]);
                 } else {
-                    reply.send({
-                        vf: AnimeList.filter(function(anime) {
-                            return anime.lang === "vf";
-                        }),
-                        vostfr: AnimeList.filter(function(anime) {
-                            return anime.lang === "vostfr";
-                        })
-                    });
+                    reply.send(AnimeList);
                 }
             } else {
-                reply.send({
-                    vf: _animesstore.AnimeStore.vf,
-                    vostfr: _animesstore.AnimeStore.vostfr
-                });
+                reply.send(_animesstore.AnimeStore.vostfr);
             }
         });
         return _this;
