@@ -230,7 +230,7 @@ var AnimesIdRoute = /*#__PURE__*/ function(Route) {
         _define_property(_assert_this_initialized(_this), "method", "GET");
         _define_property(_assert_this_initialized(_this), "handler", function() {
             var _ref = _async_to_generator(function(request, reply) {
-                var id, animeVostfr;
+                var id, anime;
                 return _ts_generator(this, function(_state) {
                     switch(_state.label){
                         case 0:
@@ -240,16 +240,20 @@ var AnimesIdRoute = /*#__PURE__*/ function(Route) {
                                 _animesstore.AnimeStore.get(id, "vostfr")
                             ];
                         case 1:
-                            animeVostfr = _state.sent();
-                            if (!animeVostfr) {
-                                reply.status(404).send({
-                                    error: "Anime not found."
-                                });
+                            anime = _state.sent();
+                            if (!anime) {
                                 return [
-                                    2
+                                    2,
+                                    reply.status(204).send({
+                                        success: false,
+                                        message: "La requ\xeate a \xe9t\xe9 trait\xe9e avec succ\xe8s, mais aucun contenu n'est disponible pour la r\xe9ponse demand\xe9e."
+                                    })
                                 ];
                             }
-                            reply.status(200).send(animeVostfr);
+                            reply.status(200).send({
+                                success: true,
+                                data: anime
+                            });
                             return [
                                 2
                             ];
