@@ -7,31 +7,25 @@ import { User, Favoris } from "../../entity/User";
 import { AnimeStore } from "../../store/animes.store";
 
 export class UserFavorisPostRoute extends Route {
-    public url = "/users/favoris";
-    public method: HTTPMethods = "POST";
+  public url = "/users/favoris";
+  public method: HTTPMethods = "POST";
 
-    public handler: RouteHandlerMethod = (request, reply) => {
-        // get body from request
+  public handler: RouteHandlerMethod = async (request, reply) => {
+    // get body from request
 
-        const { id, user } = request.body as { user: DecodedIdToken, id: number };
-        if (!id) {
-            return reply.status(400).send({ error: "Anime id is required." });
-        }
-        // check if anime exist
-        const anime = AnimeStore.vostfr.find((anime) => anime.id === id);
-        if (!anime) {
-            return reply.status(404).send({ error: "Anime not found." });
-        }
-        AppDataSource.getRepository(User).save({ googleId: user.uid }).then((u) => {
-            AppDataSource.getRepository(Favoris).save({ user: u, animeId: id }).then((f) => {
-                return reply.send({
-                    success: true,
-                    favoris: [f]
-                });
-            });
-        });
+    const body = request.body as { user: DecodedIdToken; id: number };
+    if (!body.id) return reply.status(400).send({ error: "Anime id is required." });
 
-        }
+    // check if anime exist
+    const anime = AnimeStore.vostfr.find((anime) => anime.id === body.id);
+    if (!anime) return reply.status(404).send({ error: "Anime not found." });
+
+    const user = await AppDataSource.getRepository(User).save({ googleId: body.user.uid });
+    const favorite = await AppDataSource.getRepository(Favoris).save({ user: user, animeId: body.id });
+
+    return reply.send({
+      success: true,
+      data: favorite,
+    });
+  };
 }
-
-

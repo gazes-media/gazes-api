@@ -4,8 +4,8 @@ import { AnimeStore } from "../../store/animes.store";
 
 interface Params {
   lang: string;
-  id: string;
-  episodeNumber: string;
+  id: any;
+  episodeNumber: any;
 }
 
 export class AnimesIdEpisodeRoute extends Route {
@@ -13,52 +13,86 @@ export class AnimesIdEpisodeRoute extends Route {
   public method: HTTPMethods = "GET";
 
   public handler: RouteHandlerMethod = async (request, reply) => {
-    return new Promise(async (resolve, reject) => {
-      const { id, episodeNumber } = request.params as Params;
+    let { id, episodeNumber } = request.params as Params;
+    episodeNumber = parseInt(episodeNumber);
+    id = parseInt(id);
 
-      /* These are validation checks being performed on the `lang`, `id`, and `episode` parameters
+    /* These are validation checks being performed on the `lang`, `id`, and `episode` parameters
       received in the request. */
-      if (isNaN(Number(id))) return resolve(reply.status(400).send({ error: "Anime id must be a number." }));
-      if (isNaN(Number(episodeNumber))) return resolve(reply.status(400).send({ error: "Anime episode must be a number." }));
+    if (isNaN(id)) {
+      return reply.status(400).send({
+        success: false,
+        message: "Specified ID is NaN",
+      });
+    }
 
-      let animeVostfr = AnimeStore.vostfr.find((anime) => anime.id === Number(id));
-      let animeVf = AnimeStore.vf.find((anime) => anime.id === Number(id));
+    if (isNaN(episodeNumber)) {
+      return reply.status(400).send({
+        success: false,
+        message: "Specified episode is NaN",
+      });
+    }
 
-      /* These are error checks being performed on the `anime` object retrieved from the `AnimeStore`. */
-      if (!animeVostfr) return resolve(reply.status(400).send({ error: `Anime with id ${id} not found.` }));
-      animeVostfr = await AnimeStore.get(id, "vostfr");
-      if (animeVostfr.episodes.length < Number(episodeNumber)) return resolve(reply.status(400).send({ error: `Anime with id ${id} has no episode ${episodeNumber}.` }));
-      const episode = animeVostfr.episodes[Number(episodeNumber) - 1];
-      const EpisodeURIExist = await AnimeStore.getEpisodeVideo(episode);
-      if(!EpisodeURIExist) return resolve(reply.status(400).send({ error: `Anime with id ${id} has no episode ${episodeNumber}.` }));
-      let reponse = {
-        vostfr: {
-          videoUri: "https://proxy.ketsuna.com?url=" + encodeURIComponent(EpisodeURIExist.uri),
-          videoVtt: EpisodeURIExist.subtitlesVtt,
-          videoBaseUrl: EpisodeURIExist.baseUrl,
-          ...episode
-        }
-      };
-      if(animeVf){
-        animeVf = await AnimeStore.get(id, "vf");
-        let episodeVfExist = false;
-        if (animeVf.episodes.length < Number(episodeNumber)) episodeVfExist = false;
-        else episodeVfExist = true;
-        if(episodeVfExist){
-          const episodeVf = animeVf.episodes[Number(episodeNumber) - 1];
-          const datas = await AnimeStore.getEpisodeVideo(episodeVf);
-          if(datas){
-          reponse["vf"] = {
-              videoUri: "https://proxy.ketsuna.com?url=" + encodeURIComponent(datas.uri),
-              videoVtt: datas.subtitlesVtt,
-              videoBaseUrl: datas.baseUrl,
-              ...episodeVf
-            };
-          }
+    let animeVostfr = AnimeStore.vostfr.find((anime) => anime.id === id);
+    let animeVf = AnimeStore.vf.find((anime) => anime.id === id);
+
+    /* These are error checks being performed on the `anime` object retrieved from the `AnimeStore`. */
+    if (!animeVostfr) {
+      return reply.status(204).send({
+        success: false,
+        message: `Anime with id ${id} not found`,
+      });
+    }
+
+    animeVostfr = await AnimeStore.get(id, "vostfr");
+
+    if (animeVostfr.episodes.length < episodeNumber) {
+      return reply.status(204).send({
+        success: false,
+        message: `Anime with id ${id} has no episode ${episodeNumber}.`,
+      });
+    }
+
+    const episode = animeVostfr.episodes[episodeNumber - 1];
+    const EpisodeURIExist = await AnimeStore.getEpisodeVideo(episode);
+
+    if (!EpisodeURIExist) {
+      return reply.status(204).send({
+        success: false,
+        message: `Anime with id ${id} has no episode ${episodeNumber}.`,
+      });
+    }
+
+    let response = {
+      vostfr: {
+        videoUri: "https://proxy.ketsuna.com?url=" + encodeURIComponent(EpisodeURIExist.uri),
+        videoVtt: EpisodeURIExist.subtitlesVtt,
+        videoBaseUrl: EpisodeURIExist.baseUrl,
+        ...episode,
+      },
+    };
+
+    if (animeVf) {
+      animeVf = await AnimeStore.get(id, "vf");
+
+      if (animeVf.episodes.length > parseInt(episodeNumber)) {
+        const episodeVf = animeVf.episodes[episodeNumber - 1];
+        const datas = await AnimeStore.getEpisodeVideo(episodeVf);
+
+        if (datas) {
+          response["vf"] = {
+            videoUri: "https://proxy.ketsuna.com?url=" + encodeURIComponent(datas.uri),
+            videoVtt: datas.subtitlesVtt,
+            videoBaseUrl: datas.baseUrl,
+            ...episodeVf,
+          };
         }
       }
+    }
 
-      return resolve(reply.status(200).send(reponse));
+    return reply.status(200).send({
+      success: true,
+      data: response,
     });
   };
 }

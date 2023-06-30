@@ -14,12 +14,18 @@ export class AnimesIdRoute extends Route {
 
   public handler: RouteHandlerMethod = async (request, reply) => {
     const { id } = request.params as Params;
+    const anime = await AnimeStore.get(id, "vostfr");
 
-    const animeVostfr = await AnimeStore.get(id, "vostfr");
-    if(!animeVostfr){
-      reply.status(404).send({ error: "Anime not found." });
-      return;
+    if (!anime) {
+      return reply.status(204).send({
+        success: false,
+        message: "La requête a été traitée avec succès, mais aucun contenu n'est disponible pour la réponse demandée.",
+      });
     }
-    reply.status(200).send(animeVostfr);
+
+    reply.status(200).send({
+      success: true,
+      data: anime,
+    });
   };
 }
