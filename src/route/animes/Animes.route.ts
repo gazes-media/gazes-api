@@ -8,10 +8,10 @@ export class AnimesRoute extends Route {
   public method: HTTPMethods = "GET";
 
   public handler: RouteHandlerMethod = (request, reply) => {
-    let animes = AnimeStore.vostfr;
-
     // récupérer les possible queries
-    let { types, lang, status, genres, years, title } = request.query as { types?: string; lang?: "vf" | "vostfr"; status?: string; genres?: string; years?: string; title?: string };
+    let { types, lang, status, genres, year, title } = request.query as { types?: string; lang?: "vf" | "vostfr"; status?: string; genres?: string; years?: string; title?: string };
+
+    let animes = lang == "vf" ? AnimeStore.vostfr : AnimeStore.vf;
 
     /**
      * The function filters an array of anime objects based on various criteria such as type, language,
@@ -21,7 +21,6 @@ export class AnimesRoute extends Route {
       let bool = true;
 
       if (types && !types.split(",").includes(a.type.toString())) bool = false;
-      if (lang && a.lang !== lang) bool = false;
       if (status && a.status !== status) bool = false;
 
       if (genres) {
@@ -30,7 +29,7 @@ export class AnimesRoute extends Route {
         });
       }
 
-      if (years && !years.split(",").includes(a.start_date_year)) bool = false;
+      if (year && !year.includes(a.start_date_year)) bool = false;
 
       return bool;
     }
