@@ -32,7 +32,7 @@ export class UserAnimesDeleteRoute extends Route {
     });
 
     if (!anime) {
-      return reply.status(204).send({
+      return reply.status(404).send({
         success: false,
         message: "Anime not found",
       });
@@ -41,7 +41,7 @@ export class UserAnimesDeleteRoute extends Route {
     const deleted = await animeRepository.delete(anime);
 
     if (deleted.affected === 0) {
-      return reply.status(204).send({
+      return reply.status(404).send({
         succes: false,
         error: "Anime not found",
       });

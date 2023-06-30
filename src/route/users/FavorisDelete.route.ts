@@ -68,7 +68,7 @@ export class UserFavorisDeleteRoute extends Route {
     });
 
     if (!favorite) {
-      return reply.status(204).send({
+      return reply.status(404).send({
         success: false,
         error: "Anime not found in favorites.",
       });
@@ -77,7 +77,7 @@ export class UserFavorisDeleteRoute extends Route {
     const deleted = await favoriteRepository.delete(favorite);
 
     if (deleted.affected === 0) {
-      return reply.status(204).send({
+      return reply.status(404).send({
         success: false,
         error: "Anime not found in favorites.",
       });

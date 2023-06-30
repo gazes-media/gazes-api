@@ -38,7 +38,7 @@ export class AnimesIdEpisodeRoute extends Route {
 
     /* These are error checks being performed on the `anime` object retrieved from the `AnimeStore`. */
     if (!animeVostfr) {
-      return reply.status(204).send({
+      return reply.status(404).send({
         success: false,
         message: `Anime with id ${id} not found`,
       });
@@ -47,7 +47,7 @@ export class AnimesIdEpisodeRoute extends Route {
     animeVostfr = await AnimeStore.get(id, "vostfr");
 
     if (animeVostfr.episodes.length < episodeNumber) {
-      return reply.status(204).send({
+      return reply.status(404).send({
         success: false,
         message: `Anime with id ${id} has no episode ${episodeNumber}.`,
       });
@@ -57,7 +57,7 @@ export class AnimesIdEpisodeRoute extends Route {
     const EpisodeURIExist = await AnimeStore.getEpisodeVideo(episode);
 
     if (!EpisodeURIExist) {
-      return reply.status(204).send({
+      return reply.status(404).send({
         success: false,
         message: `Anime with id ${id} has no episode ${episodeNumber}.`,
       });

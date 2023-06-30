@@ -17,7 +17,7 @@ export class AnimesIdRoute extends Route {
     const anime = await AnimeStore.get(id, "vostfr");
 
     if (!anime) {
-      return reply.status(204).send({
+      return reply.status(404).send({
         success: false,
         message: "La requête a été traitée avec succès, mais aucun contenu n'est disponible pour la réponse demandée.",
       });

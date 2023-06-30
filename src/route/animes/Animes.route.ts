@@ -18,21 +18,28 @@ export class AnimesRoute extends Route {
      * status, genres, and years.
      */
     function animesFilter(a: Anime) {
-      let bool = true;
+      let toreturn = true;
 
-      if (types && !types.split(",").includes(a.type.toString())) bool = false;
-      if (status && a.status !== status) bool = false;
+      if (types && !types.split(",").includes(a.type.toString())) toreturn = false;
+      if (status && a.status !== status) toreturn = false;
 
-      if (genres) {
-        genres.split(",").forEach((genre) => {
-          if (genre.startsWith("!") && a.genres.includes(genre.slice(1))) bool = false;
-          if (!a.genres.includes(genre)) bool = false;
+      genres
+        .split(",")
+        .filter((a) => a.startsWith("!"))
+        .map((a) => a.replace("!", ""))
+        .forEach((negativeGenre) => {
+          if (a.genres.includes(negativeGenre)) toreturn = false;
         });
-      }
 
-      if (year && !year.includes(a.start_date_year)) bool = false;
+      genres
+        .split(",")
+        .filter((a) => !a.startsWith("!"))
+        .forEach((positiveGenre) => {
+          if (!a.genres.includes(positiveGenre)) toreturn = false;
+        });
 
-      return bool;
+      if (year && !year.includes(a.start_date_year)) toreturn = false;
+      return toreturn;
     }
 
     animes = animes.filter(animesFilter);
@@ -58,7 +65,8 @@ export class AnimesRoute extends Route {
     if (title) animes = animes.filter(titleFilter);
 
     if (animes.length <= 0) {
-      return reply.status(204).send({
+      console.log(animes);
+      return reply.status(404).send({
         success: false,
         message: "La requête a été traitée avec succès, mais aucun contenu n'est disponible pour la réponse demandée.",
       });
