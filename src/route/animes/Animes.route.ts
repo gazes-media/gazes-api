@@ -2,6 +2,7 @@ import { HTTPMethods, RouteHandlerMethod } from "fastify";
 import { Route } from "../Route";
 import { AnimeStore } from "../../store/animes.store";
 import { Anime } from "../../interfaces/anime.interface";
+import Fuse from "fuse.js";
 
 export class AnimesRoute extends Route {
   public url = "/animes";
@@ -51,20 +52,14 @@ export class AnimesRoute extends Route {
      * `true` if any of the titles in the `Anime` object (including English, French, Romanji, and
      * others) contain the `title` string (case-insensitive), otherwise it returns `false`.
      */
-    function titleFilter(a: Anime) {
-      let bool = false;
-      title = title.toLowerCase().replace(" ", "");
+    if (title) {
+      const fuse = new Fuse(animes, {
+        keys: ["title", "title_english", "title_romanji", "title_french"],
+        includeScore: false,
+      });
 
-      if (a.title.toLowerCase().includes(title)) bool = true;
-      if (a.title_english && a.title_english.toLowerCase().replace(" ", "").includes(title)) bool = true;
-      if (a.title_french && a.title_french.toLowerCase().replace(" ", "").includes(title)) bool = true;
-      if (a.title_romanji && a.title_romanji.toLowerCase().replace(" ", "").includes(title)) bool = true;
-      if (a.others && a.others.toLowerCase().replace(" ", "").includes(title)) bool = true;
-
-      return bool;
+      animes = fuse.search(title).map((a) => a.item);
     }
-
-    if (title) animes = animes.filter(titleFilter);
 
     if (animes.length <= 0) {
       console.log(animes);
