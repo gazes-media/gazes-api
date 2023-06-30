@@ -278,7 +278,7 @@ var UserAnimesDeleteRoute = /*#__PURE__*/ function(Route) {
                             if (!anime) {
                                 return [
                                     2,
-                                    reply.status(204).send({
+                                    reply.status(404).send({
                                         success: false,
                                         message: "Anime not found"
                                     })
@@ -293,7 +293,7 @@ var UserAnimesDeleteRoute = /*#__PURE__*/ function(Route) {
                             if (deleted.affected === 0) {
                                 return [
                                     2,
-                                    reply.status(204).send({
+                                    reply.status(404).send({
                                         succes: false,
                                         error: "Anime not found"
                                     })

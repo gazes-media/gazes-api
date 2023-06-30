@@ -269,7 +269,7 @@ var UserFavorisDeleteRoute = /*#__PURE__*/ function(Route) {
                             if (!favorite) {
                                 return [
                                     2,
-                                    reply.status(204).send({
+                                    reply.status(404).send({
                                         success: false,
                                         error: "Anime not found in favorites."
                                     })
@@ -284,7 +284,7 @@ var UserFavorisDeleteRoute = /*#__PURE__*/ function(Route) {
                             if (deleted.affected === 0) {
                                 return [
                                     2,
-                                    reply.status(204).send({
+                                    reply.status(404).send({
                                         success: false,
                                         error: "Anime not found in favorites."
                                     })

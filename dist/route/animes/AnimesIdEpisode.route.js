@@ -280,7 +280,7 @@ var AnimesIdEpisodeRoute = /*#__PURE__*/ function(Route) {
                             /* These are error checks being performed on the `anime` object retrieved from the `AnimeStore`. */ if (!animeVostfr) {
                                 return [
                                     2,
-                                    reply.status(204).send({
+                                    reply.status(404).send({
                                         success: false,
                                         message: "Anime with id ".concat(id, " not found")
                                     })
@@ -295,7 +295,7 @@ var AnimesIdEpisodeRoute = /*#__PURE__*/ function(Route) {
                             if (animeVostfr.episodes.length < episodeNumber) {
                                 return [
                                     2,
-                                    reply.status(204).send({
+                                    reply.status(404).send({
                                         success: false,
                                         message: "Anime with id ".concat(id, " has no episode ").concat(episodeNumber, ".")
                                     })
@@ -311,7 +311,7 @@ var AnimesIdEpisodeRoute = /*#__PURE__*/ function(Route) {
                             if (!EpisodeURIExist) {
                                 return [
                                     2,
-                                    reply.status(204).send({
+                                    reply.status(404).send({
                                         success: false,
                                         message: "Anime with id ".concat(id, " has no episode ").concat(episodeNumber, ".")
                                     })

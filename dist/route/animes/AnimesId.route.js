@@ -244,7 +244,7 @@ var AnimesIdRoute = /*#__PURE__*/ function(Route) {
                             if (!anime) {
                                 return [
                                     2,
-                                    reply.status(204).send({
+                                    reply.status(404).send({
                                         success: false,
                                         message: "La requ\xeate a \xe9t\xe9 trait\xe9e avec succ\xe8s, mais aucun contenu n'est disponible pour la r\xe9ponse demand\xe9e."
                                     })

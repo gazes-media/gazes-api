@@ -112,17 +112,23 @@ var AnimesRoute = /*#__PURE__*/ function(Route) {
      * The function filters an array of anime objects based on various criteria such as type, language,
      * status, genres, and years.
      */ function animesFilter(a) {
-                var bool = true;
-                if (types && !types.split(",").includes(a.type.toString())) bool = false;
-                if (status && a.status !== status) bool = false;
-                if (genres) {
-                    genres.split(",").forEach(function(genre) {
-                        if (genre.startsWith("!") && a.genres.includes(genre.slice(1))) bool = false;
-                        if (!a.genres.includes(genre)) bool = false;
-                    });
-                }
-                if (year && !year.includes(a.start_date_year)) bool = false;
-                return bool;
+                var toreturn = true;
+                if (types && !types.split(",").includes(a.type.toString())) toreturn = false;
+                if (status && a.status !== status) toreturn = false;
+                genres.split(",").filter(function(a) {
+                    return a.startsWith("!");
+                }).map(function(a) {
+                    return a.replace("!", "");
+                }).forEach(function(negativeGenre) {
+                    if (a.genres.includes(negativeGenre)) toreturn = false;
+                });
+                genres.split(",").filter(function(a) {
+                    return !a.startsWith("!");
+                }).forEach(function(positiveGenre) {
+                    if (!a.genres.includes(positiveGenre)) toreturn = false;
+                });
+                if (year && !year.includes(a.start_date_year)) toreturn = false;
+                return toreturn;
             }
             animes = animes.filter(animesFilter);
             /**
@@ -141,7 +147,8 @@ var AnimesRoute = /*#__PURE__*/ function(Route) {
             }
             if (title) animes = animes.filter(titleFilter);
             if (animes.length <= 0) {
-                return reply.status(204).send({
+                console.log(animes);
+                return reply.status(404).send({
                     success: false,
                     message: "La requ\xeate a \xe9t\xe9 trait\xe9e avec succ\xe8s, mais aucun contenu n'est disponible pour la r\xe9ponse demand\xe9e."
                 });
