@@ -117,7 +117,7 @@ var AnimesRoute = /*#__PURE__*/ function(Route) {
                 if (status && a.status !== status) bool = false;
                 if (genres) {
                     genres.split(",").forEach(function(genre) {
-                        if (genre.startsWith("!") && a.genres.includes(genre)) bool = false;
+                        if (genre.startsWith("!") && a.genres.includes(genre.slice(1))) bool = false;
                         if (!a.genres.includes(genre)) bool = false;
                     });
                 }
