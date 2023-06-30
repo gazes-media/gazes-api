@@ -116,6 +116,11 @@ var AnimesRoute = /*#__PURE__*/ function(Route) {
                 if (types && !types.split(",").includes(a.type.toString())) bool = false;
                 if (lang && a.lang !== lang) bool = false;
                 if (status && a.status !== status) bool = false;
+                if (years) {
+                    years.split(",").forEach(function(year) {
+                        if (a.start_date_year !== year) bool = false;
+                    });
+                }
                 if (genres) {
                     genres.split(",").forEach(function(genre) {
                         if (!a.genres.includes(genre)) bool = false;
