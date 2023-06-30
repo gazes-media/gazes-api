@@ -27,9 +27,6 @@ _export(exports, {
     AnimesIdEpisodeRoute: function() {
         return _AnimesIdEpisoderoute.AnimesIdEpisodeRoute;
     },
-    AnimesLangIdEpisodeDownloadRoute: function() {
-        return _AnimesLangIdEpisodeDownloadroute.AnimesLangIdEpisodeDownloadRoute;
-    },
     UserHistoryRoute: function() {
         return _Historyroute.UserHistoryRoute;
     },
@@ -55,7 +52,6 @@ var _Animesroute = require("./animes/Animes.route");
 var _AnimesHighlightedroute = require("./animes/AnimesHighlighted.route");
 var _AnimesIdroute = require("./animes/AnimesId.route");
 var _AnimesIdEpisoderoute = require("./animes/AnimesIdEpisode.route");
-var _AnimesLangIdEpisodeDownloadroute = require("./animes/AnimesLangIdEpisodeDownload.route");
 var _Historyroute = require("./users/History.route");
 var _Animeroute = require("./users/Anime.route");
 var _Favorisroute = require("./users/Favoris.route");

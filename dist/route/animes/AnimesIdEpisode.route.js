@@ -245,118 +245,123 @@ var AnimesIdEpisodeRoute = /*#__PURE__*/ function(Route) {
         _define_property(_assert_this_initialized(_this), "method", "GET");
         _define_property(_assert_this_initialized(_this), "handler", function() {
             var _ref = _async_to_generator(function(request, reply) {
+                var _request_params, id, episodeNumber, animeVostfr, animeVf, episode, EpisodeURIExist, response, episodeVf, datas;
                 return _ts_generator(this, function(_state) {
-                    return [
-                        2,
-                        new Promise(function() {
-                            var _ref = _async_to_generator(function(resolve, reject) {
-                                var _request_params, id, episodeNumber, animeVostfr, animeVf, episode, EpisodeURIExist, reponse, episodeVfExist, episodeVf, datas;
-                                return _ts_generator(this, function(_state) {
-                                    switch(_state.label){
-                                        case 0:
-                                            _request_params = request.params, id = _request_params.id, episodeNumber = _request_params.episodeNumber;
-                                            /* These are validation checks being performed on the `lang`, `id`, and `episode` parameters
-      received in the request. */ if (isNaN(Number(id))) return [
-                                                2,
-                                                resolve(reply.status(400).send({
-                                                    error: "Anime id must be a number."
-                                                }))
-                                            ];
-                                            if (isNaN(Number(episodeNumber))) return [
-                                                2,
-                                                resolve(reply.status(400).send({
-                                                    error: "Anime episode must be a number."
-                                                }))
-                                            ];
-                                            animeVostfr = _animesstore.AnimeStore.vostfr.find(function(anime) {
-                                                return anime.id === Number(id);
-                                            });
-                                            animeVf = _animesstore.AnimeStore.vf.find(function(anime) {
-                                                return anime.id === Number(id);
-                                            });
-                                            /* These are error checks being performed on the `anime` object retrieved from the `AnimeStore`. */ if (!animeVostfr) return [
-                                                2,
-                                                resolve(reply.status(400).send({
-                                                    error: "Anime with id ".concat(id, " not found.")
-                                                }))
-                                            ];
-                                            return [
-                                                4,
-                                                _animesstore.AnimeStore.get(id, "vostfr")
-                                            ];
-                                        case 1:
-                                            animeVostfr = _state.sent();
-                                            if (animeVostfr.episodes.length < Number(episodeNumber)) return [
-                                                2,
-                                                resolve(reply.status(400).send({
-                                                    error: "Anime with id ".concat(id, " has no episode ").concat(episodeNumber, ".")
-                                                }))
-                                            ];
-                                            episode = animeVostfr.episodes[Number(episodeNumber) - 1];
-                                            return [
-                                                4,
-                                                _animesstore.AnimeStore.getEpisodeVideo(episode)
-                                            ];
-                                        case 2:
-                                            EpisodeURIExist = _state.sent();
-                                            if (!EpisodeURIExist) return [
-                                                2,
-                                                resolve(reply.status(400).send({
-                                                    error: "Anime with id ".concat(id, " has no episode ").concat(episodeNumber, ".")
-                                                }))
-                                            ];
-                                            reponse = {
-                                                vostfr: _object_spread({
-                                                    videoUri: "https://proxy.ketsuna.com?url=" + encodeURIComponent(EpisodeURIExist.uri),
-                                                    videoVtt: EpisodeURIExist.subtitlesVtt,
-                                                    videoBaseUrl: EpisodeURIExist.baseUrl
-                                                }, episode)
-                                            };
-                                            if (!animeVf) return [
-                                                3,
-                                                5
-                                            ];
-                                            return [
-                                                4,
-                                                _animesstore.AnimeStore.get(id, "vf")
-                                            ];
-                                        case 3:
-                                            animeVf = _state.sent();
-                                            episodeVfExist = false;
-                                            if (animeVf.episodes.length < Number(episodeNumber)) episodeVfExist = false;
-                                            else episodeVfExist = true;
-                                            if (!episodeVfExist) return [
-                                                3,
-                                                5
-                                            ];
-                                            episodeVf = animeVf.episodes[Number(episodeNumber) - 1];
-                                            return [
-                                                4,
-                                                _animesstore.AnimeStore.getEpisodeVideo(episodeVf)
-                                            ];
-                                        case 4:
-                                            datas = _state.sent();
-                                            if (datas) {
-                                                reponse["vf"] = _object_spread({
-                                                    videoUri: "https://proxy.ketsuna.com?url=" + encodeURIComponent(datas.uri),
-                                                    videoVtt: datas.subtitlesVtt,
-                                                    videoBaseUrl: datas.baseUrl
-                                                }, episodeVf);
-                                            }
-                                            _state.label = 5;
-                                        case 5:
-                                            return [
-                                                2,
-                                                resolve(reply.status(200).send(reponse))
-                                            ];
-                                    }
-                                });
+                    switch(_state.label){
+                        case 0:
+                            _request_params = request.params, id = _request_params.id, episodeNumber = _request_params.episodeNumber;
+                            episodeNumber = parseInt(episodeNumber);
+                            id = parseInt(id);
+                            /* These are validation checks being performed on the `lang`, `id`, and `episode` parameters
+      received in the request. */ if (isNaN(id)) {
+                                return [
+                                    2,
+                                    reply.status(400).send({
+                                        success: false,
+                                        message: "Specified ID is NaN"
+                                    })
+                                ];
+                            }
+                            if (isNaN(episodeNumber)) {
+                                return [
+                                    2,
+                                    reply.status(400).send({
+                                        success: false,
+                                        message: "Specified episode is NaN"
+                                    })
+                                ];
+                            }
+                            animeVostfr = _animesstore.AnimeStore.vostfr.find(function(anime) {
+                                return anime.id === id;
                             });
-                            return function(resolve, reject) {
-                                return _ref.apply(this, arguments);
+                            animeVf = _animesstore.AnimeStore.vf.find(function(anime) {
+                                return anime.id === id;
+                            });
+                            /* These are error checks being performed on the `anime` object retrieved from the `AnimeStore`. */ if (!animeVostfr) {
+                                return [
+                                    2,
+                                    reply.status(204).send({
+                                        success: false,
+                                        message: "Anime with id ".concat(id, " not found")
+                                    })
+                                ];
+                            }
+                            return [
+                                4,
+                                _animesstore.AnimeStore.get(id, "vostfr")
+                            ];
+                        case 1:
+                            animeVostfr = _state.sent();
+                            if (animeVostfr.episodes.length < episodeNumber) {
+                                return [
+                                    2,
+                                    reply.status(204).send({
+                                        success: false,
+                                        message: "Anime with id ".concat(id, " has no episode ").concat(episodeNumber, ".")
+                                    })
+                                ];
+                            }
+                            episode = animeVostfr.episodes[episodeNumber - 1];
+                            return [
+                                4,
+                                _animesstore.AnimeStore.getEpisodeVideo(episode)
+                            ];
+                        case 2:
+                            EpisodeURIExist = _state.sent();
+                            if (!EpisodeURIExist) {
+                                return [
+                                    2,
+                                    reply.status(204).send({
+                                        success: false,
+                                        message: "Anime with id ".concat(id, " has no episode ").concat(episodeNumber, ".")
+                                    })
+                                ];
+                            }
+                            response = {
+                                vostfr: _object_spread({
+                                    videoUri: "https://proxy.ketsuna.com?url=" + encodeURIComponent(EpisodeURIExist.uri),
+                                    videoVtt: EpisodeURIExist.subtitlesVtt,
+                                    videoBaseUrl: EpisodeURIExist.baseUrl
+                                }, episode)
                             };
-                        }())
-                    ];
+                            if (!animeVf) return [
+                                3,
+                                5
+                            ];
+                            return [
+                                4,
+                                _animesstore.AnimeStore.get(id, "vf")
+                            ];
+                        case 3:
+                            animeVf = _state.sent();
+                            if (!(animeVf.episodes.length > parseInt(episodeNumber))) return [
+                                3,
+                                5
+                            ];
+                            episodeVf = animeVf.episodes[episodeNumber - 1];
+                            return [
+                                4,
+                                _animesstore.AnimeStore.getEpisodeVideo(episodeVf)
+                            ];
+                        case 4:
+                            datas = _state.sent();
+                            if (datas) {
+                                response["vf"] = _object_spread({
+                                    videoUri: "https://proxy.ketsuna.com?url=" + encodeURIComponent(datas.uri),
+                                    videoVtt: datas.subtitlesVtt,
+                                    videoBaseUrl: datas.baseUrl
+                                }, episodeVf);
+                            }
+                            _state.label = 5;
+                        case 5:
+                            return [
+                                2,
+                                reply.status(200).send({
+                                    success: true,
+                                    data: response
+                                })
+                            ];
+                    }
                 });
             });
             return function(request, reply) {

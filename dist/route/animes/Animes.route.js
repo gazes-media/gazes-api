@@ -105,139 +105,51 @@ var AnimesRoute = /*#__PURE__*/ function(Route) {
         _define_property(_assert_this_initialized(_this), "url", "/animes");
         _define_property(_assert_this_initialized(_this), "method", "GET");
         _define_property(_assert_this_initialized(_this), "handler", function(request, reply) {
-            var _request_query = request.query, type = _request_query.type, lang = _request_query.lang, status = _request_query.status, genres = _request_query.genres, year = _request_query.year, title = _request_query.title;
-            var typeSeparated = [], genresSeparated = [], AnimeList = [], yearSeparated = [], filterUsed = false;
-            if (type) {
-                filterUsed = true;
-                // type are separated by a comma in the url
-                typeSeparated = type.split(",");
-                // do a loop on the type to get the animes of each type
-                typeSeparated.forEach(function(type) {
-                    AnimeList = AnimeList.concat(_animesstore.AnimeStore.all.filter(function(anime) {
-                        return anime.type === type;
-                    }));
-                });
-            }
-            if (genres) {
-                filterUsed = true;
-                // genres are separated by a comma in the url
-                genresSeparated = genres.split(",");
-                // verify if the animelist is empty or not
-                if (AnimeList.length === 0) {
-                    AnimeList = _animesstore.AnimeStore.all;
-                }
-                var _iteratorNormalCompletion = true, _didIteratorError = false, _iteratorError = undefined;
-                try {
-                    // be sure ALL genres are present in the anime
-                    for(var _iterator = genresSeparated[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true){
-                        genres = _step.value;
-                        AnimeList = AnimeList.filter(function(anime) {
-                            return anime.genres.includes(genres);
-                        });
-                    }
-                } catch (err) {
-                    _didIteratorError = true;
-                    _iteratorError = err;
-                } finally{
-                    try {
-                        if (!_iteratorNormalCompletion && _iterator.return != null) {
-                            _iterator.return();
-                        }
-                    } finally{
-                        if (_didIteratorError) {
-                            throw _iteratorError;
-                        }
-                    }
-                }
-            }
-            // verify if other types are specified
-            if (year) {
-                filterUsed = true;
-                yearSeparated = year.split(",");
-                if (AnimeList.length === 0) {
-                    yearSeparated.forEach(function(year) {
-                        AnimeList = AnimeList.concat(_animesstore.AnimeStore.all.filter(function(anime) {
-                            return anime.start_date_year == year;
-                        }));
-                    });
-                } else {
-                    yearSeparated.forEach(function(year) {
-                        AnimeList = AnimeList.filter(function(anime) {
-                            return anime.start_date_year == year;
-                        });
+            var animes = _animesstore.AnimeStore.vostfr;
+            // récupérer les possible queries
+            var _request_query = request.query, types = _request_query.types, lang = _request_query.lang, status = _request_query.status, genres = _request_query.genres, years = _request_query.years, title = _request_query.title;
+            /**
+     * The function filters an array of anime objects based on various criteria such as type, language,
+     * status, genres, and years.
+     */ function animesFilter(a) {
+                var bool = true;
+                if (types && !types.split(",").includes(a.type.toString())) bool = false;
+                if (lang && a.lang !== lang) bool = false;
+                if (status && a.status !== status) bool = false;
+                if (genres) {
+                    genres.split(",").forEach(function(genre) {
+                        if (!a.genres.includes(genre)) bool = false;
                     });
                 }
+                if (years && !years.split(",").includes(a.start_date_year)) bool = true;
+                return bool;
             }
-            if (title) {
-                filterUsed = true;
-                if (AnimeList.length === 0) {
-                    AnimeList = _animesstore.AnimeStore.all;
-                }
-                // lookup for the title in the animeList
-                AnimeList = AnimeList.filter(function(anime) {
-                    var found = false;
-                    if (anime.title) {
-                        found = anime.title.toLowerCase().includes(title.toLowerCase());
-                    }
-                    if (anime.title_english) {
-                        if (found) return found;
-                        found = anime.title_english.toLowerCase().includes(title.toLowerCase());
-                    }
-                    if (anime.title_romanji) {
-                        if (found) return found;
-                        found = anime.title_romanji.toLowerCase().includes(title.toLowerCase());
-                    }
-                    if (anime.others) {
-                        if (found) return found;
-                        found = anime.others.toLowerCase().includes(title.toLowerCase());
-                    }
-                    // if not found return false
-                    return found;
+            animes = animes.filter(animesFilter);
+            /**
+     * The function `titleFilter` takes an `Anime` object and a `title` string as input, and returns
+     * `true` if any of the titles in the `Anime` object (including English, French, Romanji, and
+     * others) contain the `title` string (case-insensitive), otherwise it returns `false`.
+     */ function titleFilter(a) {
+                var bool = false;
+                title = title.toLowerCase().replace(" ", "");
+                if (a.title.toLowerCase().includes(title)) bool = true;
+                if (a.title_english && a.title_english.toLowerCase().replace(" ", "").includes(title)) bool = true;
+                if (a.title_french && a.title_french.toLowerCase().replace(" ", "").includes(title)) bool = true;
+                if (a.title_romanji && a.title_romanji.toLowerCase().replace(" ", "").includes(title)) bool = true;
+                if (a.others && a.others.toLowerCase().replace(" ", "").includes(title)) bool = true;
+                return bool;
+            }
+            if (title) animes = animes.filter(titleFilter);
+            if (animes.length <= 0) {
+                return reply.status(204).send({
+                    success: false,
+                    message: "La requ\xeate a \xe9t\xe9 trait\xe9e avec succ\xe8s, mais aucun contenu n'est disponible pour la r\xe9ponse demand\xe9e."
                 });
             }
-            if (status) {
-                filterUsed = true;
-                // status are separated by a comma in the url
-                if (AnimeList.length === 0) {
-                    AnimeList = _animesstore.AnimeStore.all;
-                }
-                AnimeList = AnimeList.filter(function(anime) {
-                    return anime.status === status;
-                });
-            }
-            if (lang) {
-                filterUsed = true;
-                // verify if the animelist is empty or not
-                if (AnimeList.length === 0) {
-                    // if empty we do a regular filter on the AnimeStore.all
-                    if (lang == "vf") {
-                        reply.send(_animesstore.AnimeStore.vf);
-                    } else {
-                        reply.send(_animesstore.AnimeStore.vostfr);
-                    }
-                } else {
-                    if (lang == "vf") {
-                        reply.send(AnimeList.filter(function(anime) {
-                            return anime.lang === "vf";
-                        }));
-                    } else {
-                        reply.send(AnimeList.filter(function(anime) {
-                            return anime.lang === "vostfr";
-                        }));
-                    }
-                }
-            }
-            if (filterUsed) {
-                if (AnimeList.length === 0) {
-                    reply.send([]);
-                } else {
-                    reply.send(AnimeList.filter(function(anime) {
-                        return anime.lang === "vostfr";
-                    }));
-                }
-            } else {
-                reply.send(_animesstore.AnimeStore.vostfr);
-            }
+            return reply.send({
+                success: true,
+                data: animes
+            });
         });
         return _this;
     }

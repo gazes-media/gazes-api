@@ -235,8 +235,11 @@ var AnimeHighlightedRoute = /*#__PURE__*/ function(Route) {
                     return _pickRandomAnimeWithAtLeastAsynopsisDecent.apply(this, arguments);
                 }
                 function _pickRandomAnimeWithAtLeastAsynopsisDecent() {
-                    _pickRandomAnimeWithAtLeastAsynopsisDecent = // get a random anime from the list of vostfr animes
-                    _async_to_generator(function() {
+                    _pickRandomAnimeWithAtLeastAsynopsisDecent = /**
+     * The function `pickRandomAnimeWithAtLeastAsynopsisDecent` picks a random anime from a store and
+     * checks if it has a synopsis with at least 32 words and a non-default cover image, and if not,
+     * recursively calls itself until a suitable anime is found.
+     */ _async_to_generator(function() {
                         var randomAnime;
                         return _ts_generator(this, function(_state) {
                             randomAnime = _animesstore.AnimeStore.vostfr[Math.floor(Math.random() * _animesstore.AnimeStore.vostfr.length)];
@@ -266,9 +269,11 @@ var AnimeHighlightedRoute = /*#__PURE__*/ function(Route) {
                             ];
                         case 1:
                             randomized = _state.sent();
-                            // replace the /0/ in the url with /1/ to get the cover image
                             randomized.url_image = randomized.url_image.replace("/2/", "/1/");
-                            reply.status(200).send(randomized);
+                            reply.status(200).send({
+                                success: true,
+                                data: randomized
+                            });
                             return [
                                 2
                             ];
