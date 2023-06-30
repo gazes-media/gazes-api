@@ -9,7 +9,7 @@ export class AnimesRoute extends Route {
 
   public handler: RouteHandlerMethod = (request, reply) => {
     // récupérer les possible queries
-    let { types, lang, status, genres, year, title } = request.query as { types?: string; lang?: "vf" | "vostfr"; status?: string; genres?: string; years?: string; title?: string };
+    let { types, lang, status, genres, year, title } = request.query as { types?: string; lang?: "vf" | "vostfr"; status?: string; genres?: string; year?: string; title?: string };
 
     let animes = lang == "vf" ? AnimeStore.vostfr : AnimeStore.vf;
 
