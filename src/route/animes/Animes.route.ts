@@ -23,20 +23,22 @@ export class AnimesRoute extends Route {
       if (types && !types.split(",").includes(a.type.toString())) toreturn = false;
       if (status && a.status !== status) toreturn = false;
 
-      genres
-        .split(",")
-        .filter((a) => a.startsWith("!"))
-        .map((a) => a.replace("!", ""))
-        .forEach((negativeGenre) => {
-          if (a.genres.includes(negativeGenre)) toreturn = false;
-        });
+      if (genres) {
+        genres
+          .split(",")
+          .filter((a) => a.startsWith("!"))
+          .map((a) => a.replace("!", ""))
+          .forEach((negativeGenre) => {
+            if (a.genres.includes(negativeGenre)) toreturn = false;
+          });
 
-      genres
-        .split(",")
-        .filter((a) => !a.startsWith("!"))
-        .forEach((positiveGenre) => {
-          if (!a.genres.includes(positiveGenre)) toreturn = false;
-        });
+        genres
+          .split(",")
+          .filter((a) => !a.startsWith("!"))
+          .forEach((positiveGenre) => {
+            if (!a.genres.includes(positiveGenre)) toreturn = false;
+          });
+      }
 
       if (year && !year.includes(a.start_date_year)) toreturn = false;
       return toreturn;
