@@ -10,6 +10,7 @@ Object.defineProperty(exports, "AnimesRoute", {
 });
 var _Route = require("../Route");
 var _animesstore = require("../../store/animes.store");
+var _fuse = /*#__PURE__*/ _interop_require_default(require("fuse.js"));
 function _assert_this_initialized(self) {
     if (self === void 0) {
         throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -52,6 +53,11 @@ function _inherits(subClass, superClass) {
         }
     });
     if (superClass) _set_prototype_of(subClass, superClass);
+}
+function _interop_require_default(obj) {
+    return obj && obj.__esModule ? obj : {
+        default: obj
+    };
 }
 function _possible_constructor_return(self, call) {
     if (call && (_type_of(call) === "object" || typeof call === "function")) {
@@ -137,17 +143,20 @@ var AnimesRoute = /*#__PURE__*/ function(Route) {
      * The function `titleFilter` takes an `Anime` object and a `title` string as input, and returns
      * `true` if any of the titles in the `Anime` object (including English, French, Romanji, and
      * others) contain the `title` string (case-insensitive), otherwise it returns `false`.
-     */ function titleFilter(a) {
-                var bool = false;
-                title = title.toLowerCase().replace(" ", "");
-                if (a.title.toLowerCase().includes(title)) bool = true;
-                if (a.title_english && a.title_english.toLowerCase().replace(" ", "").includes(title)) bool = true;
-                if (a.title_french && a.title_french.toLowerCase().replace(" ", "").includes(title)) bool = true;
-                if (a.title_romanji && a.title_romanji.toLowerCase().replace(" ", "").includes(title)) bool = true;
-                if (a.others && a.others.toLowerCase().replace(" ", "").includes(title)) bool = true;
-                return bool;
+     */ if (title) {
+                var fuse = new _fuse.default(animes, {
+                    keys: [
+                        "title",
+                        "title_english",
+                        "title_romanji",
+                        "title_french"
+                    ],
+                    includeScore: false
+                });
+                animes = fuse.search(title).map(function(a) {
+                    return a.item;
+                });
             }
-            if (title) animes = animes.filter(titleFilter);
             if (animes.length <= 0) {
                 console.log(animes);
                 return reply.status(404).send({
