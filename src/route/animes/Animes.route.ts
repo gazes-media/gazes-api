@@ -25,6 +25,7 @@ export class AnimesRoute extends Route {
 
       if (genres) {
         genres.split(",").forEach((genre) => {
+          if (genre.startsWith("!") && a.genres.includes(genre)) bool = false;
           if (!a.genres.includes(genre)) bool = false;
         });
       }
