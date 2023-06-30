@@ -115,18 +115,20 @@ var AnimesRoute = /*#__PURE__*/ function(Route) {
                 var toreturn = true;
                 if (types && !types.split(",").includes(a.type.toString())) toreturn = false;
                 if (status && a.status !== status) toreturn = false;
-                genres.split(",").filter(function(a) {
-                    return a.startsWith("!");
-                }).map(function(a) {
-                    return a.replace("!", "");
-                }).forEach(function(negativeGenre) {
-                    if (a.genres.includes(negativeGenre)) toreturn = false;
-                });
-                genres.split(",").filter(function(a) {
-                    return !a.startsWith("!");
-                }).forEach(function(positiveGenre) {
-                    if (!a.genres.includes(positiveGenre)) toreturn = false;
-                });
+                if (genres) {
+                    genres.split(",").filter(function(a) {
+                        return a.startsWith("!");
+                    }).map(function(a) {
+                        return a.replace("!", "");
+                    }).forEach(function(negativeGenre) {
+                        if (a.genres.includes(negativeGenre)) toreturn = false;
+                    });
+                    genres.split(",").filter(function(a) {
+                        return !a.startsWith("!");
+                    }).forEach(function(positiveGenre) {
+                        if (!a.genres.includes(positiveGenre)) toreturn = false;
+                    });
+                }
                 if (year && !year.includes(a.start_date_year)) toreturn = false;
                 return toreturn;
             }
