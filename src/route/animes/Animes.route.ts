@@ -24,6 +24,12 @@ export class AnimesRoute extends Route {
       if (lang && a.lang !== lang) bool = false;
       if (status && a.status !== status) bool = false;
 
+      if (years) {
+        years.split(",").forEach((year) => {
+          if (a.start_date_year !== year) bool = false;
+        });
+      }
+
       if (genres) {
         genres.split(",").forEach((genre) => {
           if (!a.genres.includes(genre)) bool = false;
