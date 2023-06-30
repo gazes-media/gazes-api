@@ -105,23 +105,22 @@ var AnimesRoute = /*#__PURE__*/ function(Route) {
         _define_property(_assert_this_initialized(_this), "url", "/animes");
         _define_property(_assert_this_initialized(_this), "method", "GET");
         _define_property(_assert_this_initialized(_this), "handler", function(request, reply) {
-            var animes = _animesstore.AnimeStore.vostfr;
             // récupérer les possible queries
-            var _request_query = request.query, types = _request_query.types, lang = _request_query.lang, status = _request_query.status, genres = _request_query.genres, years = _request_query.years, title = _request_query.title;
+            var _request_query = request.query, types = _request_query.types, lang = _request_query.lang, status = _request_query.status, genres = _request_query.genres, year = _request_query.year, title = _request_query.title;
+            var animes = lang == "vf" ? _animesstore.AnimeStore.vostfr : _animesstore.AnimeStore.vf;
             /**
      * The function filters an array of anime objects based on various criteria such as type, language,
      * status, genres, and years.
      */ function animesFilter(a) {
                 var bool = true;
                 if (types && !types.split(",").includes(a.type.toString())) bool = false;
-                if (lang && a.lang !== lang) bool = false;
                 if (status && a.status !== status) bool = false;
                 if (genres) {
                     genres.split(",").forEach(function(genre) {
                         if (!a.genres.includes(genre)) bool = false;
                     });
                 }
-                if (years && !years.split(",").includes(a.start_date_year)) bool = false;
+                if (year && !year.includes(a.start_date_year)) bool = false;
                 return bool;
             }
             animes = animes.filter(animesFilter);
