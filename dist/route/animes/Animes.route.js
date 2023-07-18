@@ -112,7 +112,7 @@ var AnimesRoute = /*#__PURE__*/ function(Route) {
         _define_property(_assert_this_initialized(_this), "method", "GET");
         _define_property(_assert_this_initialized(_this), "handler", function(request, reply) {
             // récupérer les possible queries
-            var _request_query = request.query, types = _request_query.types, lang = _request_query.lang, status = _request_query.status, genres = _request_query.genres, year = _request_query.year, title = _request_query.title;
+            var _request_query = request.query, types = _request_query.types, status = _request_query.status, genres = _request_query.genres, year = _request_query.year, title = _request_query.title;
             var animes = _animesstore.AnimeStore.vostfr;
             /**
      * The function filters an array of anime objects based on various criteria such as type, language,
