@@ -12,7 +12,7 @@ export class AnimesRoute extends Route {
     // récupérer les possible queries
     let { types, lang, status, genres, year, title } = request.query as { types?: string; lang?: "vf" | "vostfr"; status?: string; genres?: string; year?: string; title?: string };
 
-    let animes = lang == "vf" ? AnimeStore.vostfr : AnimeStore.vf;
+    let animes = AnimeStore.vostfr;
 
     /**
      * The function filters an array of anime objects based on various criteria such as type, language,

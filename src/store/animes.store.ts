@@ -7,11 +7,9 @@ import Subtitlesvtt from "../interfaces/subtitlesvtt.interface";
 import { PstreamData } from "../interfaces/pstreamdata.interface";
 
 const vostfrUrl = "https://neko.ketsuna.com/animes-search-vostfr.json";
-const vfUrl = "https://neko.ketsuna.com/animes-search-vf.json";
 
 export class AnimeStore {
   static all: Anime[] = [];
-  static vf: Anime[] = [];
   static vostfr: Anime[] = [];
   static latest: LatestEpisode[] = [];
 
@@ -20,8 +18,6 @@ export class AnimeStore {
   each object.*/
   static async fetchAll(): Promise<void> {
     this.vostfr = (await axios.get(vostfrUrl)).data;
-    this.vf = (await axios.get(vfUrl)).data;
-    this.all = [...this.vostfr.map((anime) => ({ ...anime, lang: "vostfr" as "vostfr" })), ...this.vf.map((anime) => ({ ...anime, lang: "vf" as "vf" }))];
   }
 
   /* This function fetches the latest episodes from a website 
@@ -64,7 +60,7 @@ export class AnimeStore {
       const episodeUrl = "https://neko.ketsuna.com" + episode.url;
       const { data: nekoData } = await axios.get<string>(episodeUrl);
       const pstreamUrl = /(\n(.*)video\[0] = ')(.*)(';)/gm.exec(nekoData)?.[3] as string;
-      if(!pstreamUrl) return resolve(undefined);
+      if (!pstreamUrl) return resolve(undefined);
       const { data: pstreamData } = await axios.get<string>(`https://proxy.ketsuna.com/?url=${encodeURIComponent(pstreamUrl)}`);
       const baseurl = pstreamUrl.split("/").slice(0, 3).join("/");
       const loadedHTML = load(pstreamData);
@@ -73,7 +69,7 @@ export class AnimeStore {
       let m3u8Url: string = "",
         subtitlesvtt: Subtitlesvtt[] = [];
       for (const scriptSrc of scriptsSrc) {
-        if(scriptSrc.includes("cloudflare-static")) continue;
+        if (scriptSrc.includes("cloudflare-static")) continue;
         const { data: pstreamScript } = await axios.get<string>(`https://proxy.ketsuna.com/?url=${encodeURIComponent(scriptSrc)}`);
         let m3u8UrlB64 = /e.parseJSON\(atob\(t\).slice\(2\)\)\}\(\"([^;]*)"\),/gm.exec(pstreamScript)?.[1] as string;
         if (m3u8UrlB64) {
