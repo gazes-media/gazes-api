@@ -33,6 +33,13 @@ export class AnimesIdEpisodeRoute extends Route {
       });
     }
 
+    if (episodeNumber < 1) {
+      return reply.status(400).send({
+        success: false,
+        message: "Specified episode is less than 1",
+      });
+    }
+
     let animeVostfr = AnimeStore.vostfr.find((anime) => anime.id === id);
     let animeVf = AnimeStore.vf.find((anime) => anime.id === id);
 
