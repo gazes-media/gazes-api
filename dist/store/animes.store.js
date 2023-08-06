@@ -211,6 +211,7 @@ function _ts_generator(thisArg, body) {
     }
 }
 var vostfrUrl = "https://neko.ketsuna.com/animes-search-vostfr.json";
+var vfUrl = "https://neko.ketsuna.com/animes-search-vf.json";
 var AnimeStore = /*#__PURE__*/ function() {
     "use strict";
     function AnimeStore() {
@@ -233,6 +234,12 @@ var AnimeStore = /*#__PURE__*/ function() {
                                 ];
                             case 1:
                                 _this.vostfr = _state.sent().data;
+                                return [
+                                    4,
+                                    _axios.default.get(vfUrl)
+                                ];
+                            case 2:
+                                _this.vf = _state.sent().data;
                                 return [
                                     2
                                 ];
@@ -487,4 +494,5 @@ var AnimeStore = /*#__PURE__*/ function() {
 }();
 _define_property(AnimeStore, "all", []);
 _define_property(AnimeStore, "vostfr", []);
+_define_property(AnimeStore, "vf", []);
 _define_property(AnimeStore, "latest", []);
