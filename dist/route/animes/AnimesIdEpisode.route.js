@@ -271,6 +271,15 @@ var AnimesIdEpisodeRoute = /*#__PURE__*/ function(Route) {
                                     })
                                 ];
                             }
+                            if (episodeNumber < 1) {
+                                return [
+                                    2,
+                                    reply.status(400).send({
+                                        success: false,
+                                        message: "Specified episode is less than 1"
+                                    })
+                                ];
+                            }
                             animeVostfr = _animesstore.AnimeStore.vostfr.find(function(anime) {
                                 return anime.id === id;
                             });
