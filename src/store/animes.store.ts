@@ -7,10 +7,14 @@ import Subtitlesvtt from "../interfaces/subtitlesvtt.interface";
 import { PstreamData } from "../interfaces/pstreamdata.interface";
 
 const vostfrUrl = "https://neko.ketsuna.com/animes-search-vostfr.json";
+const vfUrl = "https://neko.ketsuna.com/animes-search-vf.json";
 
 export class AnimeStore {
   static all: Anime[] = [];
+
   static vostfr: Anime[] = [];
+  static vf: Anime[] = [];
+
   static latest: LatestEpisode[] = [];
 
   /* The function fetches data from two different URLs and 
@@ -18,6 +22,7 @@ export class AnimeStore {
   each object.*/
   static async fetchAll(): Promise<void> {
     this.vostfr = (await axios.get(vostfrUrl)).data;
+    this.vf = (await axios.get(vfUrl)).data;
   }
 
   /* This function fetches the latest episodes from a website 
