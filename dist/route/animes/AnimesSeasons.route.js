@@ -164,7 +164,7 @@ var AnimesSeasonsRoute = /*#__PURE__*/ function(Route) {
                     return a.item;
                 });
             }
-            if (animes.length <= 0) {
+            if (seasons.length <= 0) {
                 console.log(animes);
                 return reply.status(404).send({
                     success: false,
@@ -173,7 +173,7 @@ var AnimesSeasonsRoute = /*#__PURE__*/ function(Route) {
             }
             return reply.send({
                 success: true,
-                data: animes
+                data: seasons
             });
         });
         return _this;
