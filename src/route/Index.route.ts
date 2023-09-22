@@ -25,3 +25,4 @@ export { UserFavorisPostRoute } from "./users/FavorisPost.route";
 export { UserFavorisDeleteRoute } from "./users/FavorisDelete.route";
 export { UserAnimesDeleteRoute } from "./users/AnimeDelete.route";
 export { AnimesTrends } from "./animes/AnimesTrends.route";
+import { AnimesSeasonsRoute } from "./animes/AnimesSeasons.route";
