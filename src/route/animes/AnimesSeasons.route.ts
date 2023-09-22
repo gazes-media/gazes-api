@@ -65,7 +65,7 @@ export class AnimesSeasonsRoute extends Route {
       seasons = fuse.search(title).map((a) => a.item);
     }
 
-    if (animes.length <= 0) {
+    if (seasons.length <= 0) {
       console.log(animes);
       return reply.status(404).send({
         success: false,
@@ -75,7 +75,7 @@ export class AnimesSeasonsRoute extends Route {
 
     return reply.send({
       success: true,
-      data: animes,
+      data: seasons,
     });
   };
 }
