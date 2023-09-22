@@ -54,8 +54,8 @@ export class GazeApi {
   private async toggleSmartCache() {
     return new Promise(async (resolve) => {
       if (!AnimeStore.all[0]) {
-        await AnimeStore.fetchAll();
-        await AnimeStore.fetchLatest();
+        AnimeStore.fetchAll();
+        AnimeStore.fetchLatest();
         console.log(`${AnimeStore.all.length} animes loaded (vf+vostfr)`);
         resolve(null);
       }
