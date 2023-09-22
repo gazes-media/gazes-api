@@ -330,37 +330,20 @@ var GazeApi = /*#__PURE__*/ function() {
                             new Promise(function() {
                                 var _ref = _async_to_generator(function(resolve) {
                                     return _ts_generator(this, function(_state) {
-                                        switch(_state.label){
-                                            case 0:
-                                                if (!!_animesstore.AnimeStore.all[0]) return [
-                                                    3,
-                                                    3
-                                                ];
-                                                return [
-                                                    4,
-                                                    _animesstore.AnimeStore.fetchAll()
-                                                ];
-                                            case 1:
-                                                _state.sent();
-                                                return [
-                                                    4,
-                                                    _animesstore.AnimeStore.fetchLatest()
-                                                ];
-                                            case 2:
-                                                _state.sent();
-                                                console.log("".concat(_animesstore.AnimeStore.all.length, " animes loaded (vf+vostfr)"));
-                                                resolve(null);
-                                                _state.label = 3;
-                                            case 3:
-                                                setInterval(function() {
-                                                    _animesstore.AnimeStore.fetchAll();
-                                                    _animesstore.AnimeStore.fetchLatest();
-                                                    console.log("♻️ cache refreshed");
-                                                }, 600000);
-                                                return [
-                                                    2
-                                                ];
+                                        if (!_animesstore.AnimeStore.all[0]) {
+                                            _animesstore.AnimeStore.fetchAll();
+                                            _animesstore.AnimeStore.fetchLatest();
+                                            console.log("".concat(_animesstore.AnimeStore.all.length, " animes loaded (vf+vostfr)"));
+                                            resolve(null);
                                         }
+                                        setInterval(function() {
+                                            _animesstore.AnimeStore.fetchAll();
+                                            _animesstore.AnimeStore.fetchLatest();
+                                            console.log("♻️ cache refreshed");
+                                        }, 600000);
+                                        return [
+                                            2
+                                        ];
                                     });
                                 });
                                 return function(resolve) {
