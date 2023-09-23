@@ -112,7 +112,7 @@ var AnimesSeasonsRoute = /*#__PURE__*/ function(Route) {
         _define_property(_assert_this_initialized(_this), "method", "GET");
         _define_property(_assert_this_initialized(_this), "handler", function(request, reply) {
             // récupérer les possible queries
-            var title = request.query.title;
+            var _request_query = request.query, title = _request_query.title, id = _request_query.id;
             var seasons = _animesstore.AnimeStore.seasons;
             if (seasons.length <= 0) {
                 _animesstore.AnimeStore.groupAnimeBySimilarName(_animesstore.AnimeStore.vostfr);
@@ -130,6 +130,11 @@ var AnimesSeasonsRoute = /*#__PURE__*/ function(Route) {
                 });
                 seasons = fuse.search(title).map(function(a) {
                     return a.item;
+                });
+            }
+            if (id) {
+                seasons = seasons.filter(function(a) {
+                    return a.ids.includes(parseInt(id));
                 });
             }
             if (seasons.length <= 0) {
