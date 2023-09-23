@@ -256,7 +256,7 @@ var AnimeStore = /*#__PURE__*/ function() {
                     return a.id - b.id;
                 });
                 animeList.forEach(function(anime) {
-                    var animeTitle = anime.title_english ? anime.title_english.trim() : anime.title_romanji ? anime.title_romanji.trim() : anime.title.trim();
+                    var animeTitle = anime.title_romanji ? anime.title_romanji.trim() : anime.title.trim();
                     var id = anime.id;
                     var matched = false;
                     for(var existingAnime in groupedAnime){
