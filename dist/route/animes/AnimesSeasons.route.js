@@ -9,8 +9,8 @@ function _export(target, all) {
     });
 }
 _export(exports, {
-    returnSeasonal: function() {
-        return returnSeasonal;
+    groupAnimeBySimilarName: function() {
+        return groupAnimeBySimilarName;
     },
     AnimesSeasonsRoute: function() {
         return AnimesSeasonsRoute;
@@ -108,35 +108,47 @@ function _create_super(Derived) {
         return _possible_constructor_return(this, result);
     };
 }
-function returnSeasonal(animes) {
-    var seasonal = [];
-    animes.forEach(function(anime) {
-        var animeName = anime.title;
+function groupAnimeBySimilarName(animeList) {
+    var groupedAnime = {};
+    animeList.forEach(function(anime) {
+        var animeTitle = anime.title.trim(); // Supprimez les espaces inutiles autour du titre
         var id = anime.id;
-        var year = parseInt(anime.start_date_year);
-        var index = seasonal.findIndex(function(seasonal) {
-            return seasonal.anime.startsWith(animeName);
-        });
-        if (index === -1) {
-            seasonal.push({
-                anime: animeName,
-                id: id,
-                seasons: [
-                    {
-                        year: year,
-                        fiche: anime
-                    }
-                ]
-            });
-        } else {
-            seasonal[index].seasons.push({
-                year: year,
-                fiche: anime
-            });
+        var matched = false;
+        for(var existingAnime in groupedAnime){
+            var regex = new RegExp("\\b".concat(existingAnime.replace("[", "").replace("]", ""), "\\b"), "i"); // Recherche correspondance avec des mots complets, insensible à la casse
+            if (regex.test(animeTitle)) {
+                groupedAnime[existingAnime].push(id);
+                matched = true;
+                break;
+            }
+        }
+        if (!matched) {
+            groupedAnime[animeTitle] = [
+                id
+            ];
         }
     });
-    // we make a sort.
-    return seasonal;
+    var result = Object.keys(groupedAnime).map(function(animeName) {
+        return {
+            anime: animeName,
+            id: animeList.find(function(anime) {
+                return anime.id === groupedAnime[animeName][0];
+            }).id,
+            seasons: groupedAnime[animeName].map(function(id) {
+                return {
+                    year: parseInt(animeList.find(function(anime) {
+                        return anime.id === id;
+                    }).start_date_year),
+                    fiche: animeList.find(function(anime) {
+                        return anime.id === id;
+                    })
+                };
+            }).sort(function(a, b) {
+                return a.year - b.year;
+            })
+        };
+    });
+    return result;
 }
 var AnimesSeasonsRoute = /*#__PURE__*/ function(Route) {
     "use strict";
@@ -152,7 +164,7 @@ var AnimesSeasonsRoute = /*#__PURE__*/ function(Route) {
             // récupérer les possible queries
             var title = request.query.title;
             var animes = _animesstore.AnimeStore.vostfr;
-            var seasons = returnSeasonal(animes);
+            var seasons = groupAnimeBySimilarName(animes);
             if (title) {
                 var fuse = new _fuse.default(seasons, {
                     keys: [
@@ -164,7 +176,7 @@ var AnimesSeasonsRoute = /*#__PURE__*/ function(Route) {
                     return a.item;
                 });
             }
-            if (animes.length <= 0) {
+            if (seasons.length <= 0) {
                 console.log(animes);
                 return reply.status(404).send({
                     success: false,
@@ -173,7 +185,7 @@ var AnimesSeasonsRoute = /*#__PURE__*/ function(Route) {
             }
             return reply.send({
                 success: true,
-                data: animes
+                data: seasons
             });
         });
         return _this;

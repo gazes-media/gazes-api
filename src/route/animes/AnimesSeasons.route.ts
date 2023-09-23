@@ -15,34 +15,39 @@ export type seasonal = {
     seasons: seasons[]
 }
 
-export function returnSeasonal(animes: Anime[]): seasonal[] {
-    let seasonal: seasonal[] = [];
-    animes.forEach((anime) => {
-        let animeName = anime.title;
-        let id = anime.id;
-        let year = parseInt(anime.start_date_year);
-        let index = seasonal.findIndex((seasonal) => seasonal.anime.startsWith(animeName));
-        if(index === -1) {
-            seasonal.push({
-                anime: animeName,
-                id: id,
-                seasons: [{
-                    year: year,
-                    fiche: anime
-                }]
-            })
-        }
-        else {
-            seasonal[index].seasons.push({
-                year: year,
-                fiche: anime
-            })
-        }
-    })
-
-    // we make a sort.
-    return seasonal;
-}
+export function groupAnimeBySimilarName(animeList: Anime[]):seasonal[] {
+        const groupedAnime: { [anime: string]: number[] } = {};
+      
+        animeList.forEach((anime) => {
+        let animeTitle = anime.title.trim(); // Supprimez les espaces inutiles autour du titre
+        let id = anime.id
+          let matched = false;
+      
+          for (const existingAnime in groupedAnime) {
+            const regex = new RegExp(`\\b${existingAnime.replace("[","").replace("]","")}\\b`, 'i'); // Recherche correspondance avec des mots complets, insensible à la casse
+            if (regex.test(animeTitle)) {
+              groupedAnime[existingAnime].push(id);
+              matched = true;
+              break;
+            }
+          }
+      
+          if (!matched) {
+            groupedAnime[animeTitle] = [id];
+          }
+        });
+      
+        const result = Object.keys(groupedAnime).map((animeName) => ({
+          anime: animeName,
+          id: animeList.find((anime) => anime.id === groupedAnime[animeName][0]).id,
+          seasons: groupedAnime[animeName].map((id) => ({
+            year: parseInt(animeList.find((anime) => anime.id === id).start_date_year),
+            fiche: animeList.find((anime) => anime.id === id),
+            })).sort((a, b) => a.year - b.year),
+        }));
+      
+        return result;
+      }
 
 export class AnimesSeasonsRoute extends Route {
   public url = "/animes/seasons";
@@ -53,7 +58,7 @@ export class AnimesSeasonsRoute extends Route {
     let { title } = request.query as { title?: string };
 
     let animes = AnimeStore.vostfr;
-    let seasons = returnSeasonal(animes);
+    let seasons = groupAnimeBySimilarName(animes);
 
 
     if (title) {
