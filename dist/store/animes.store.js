@@ -252,6 +252,9 @@ var AnimeStore = /*#__PURE__*/ function() {
             key: "groupAnimeBySimilarName",
             value: function groupAnimeBySimilarName(animeList) {
                 var groupedAnime = {};
+                animeList = animeList.sort(function(a, b) {
+                    return parseInt(a.start_date_year) - parseInt(b.start_date_year);
+                });
                 animeList.forEach(function(anime) {
                     var animeTitle = anime.title_english ? anime.title_english.trim() : anime.title_romanji ? anime.title_romanji.trim() : anime.title.trim();
                     var id = anime.id;
