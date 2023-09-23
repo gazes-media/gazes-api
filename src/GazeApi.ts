@@ -45,7 +45,7 @@ export class GazeApi {
         return;
       }
 
-      console.log(`Server is strating on ${adress}`);
+      console.log(`Server is starting on ${adress}`);
     });
   }
 
@@ -56,6 +56,7 @@ export class GazeApi {
       if (!AnimeStore.all[0]) {
         AnimeStore.fetchAll();
         AnimeStore.fetchLatest();
+        AnimeStore.groupAnimeBySimilarName(AnimeStore.vostfr);
         console.log(`${AnimeStore.all.length} animes loaded (vf+vostfr)`);
         resolve(null);
       }
@@ -63,6 +64,7 @@ export class GazeApi {
       setInterval(() => {
         AnimeStore.fetchAll();
         AnimeStore.fetchLatest();
+        AnimeStore.groupAnimeBySimilarName(AnimeStore.vostfr);
         console.log("♻️ cache refreshed");
       }, 600000);
     });

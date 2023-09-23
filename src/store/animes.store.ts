@@ -9,9 +9,20 @@ import { PstreamData } from "../interfaces/pstreamdata.interface";
 const vostfrUrl = "https://neko.ketsuna.com/animes-search-vostfr.json";
 const vfUrl = "https://neko.ketsuna.com/animes-search-vf.json";
 
+export type seasons = {
+  year: number,
+  fiche: Anime
+}
+
+export type seasonal = {
+  anime: string,
+  id: number,
+  seasons: seasons[]
+}
+
 export class AnimeStore {
   static all: Anime[] = [];
-
+  static seasons: seasonal[] = [];
   static vostfr: Anime[] = [];
   static vf: Anime[] = [];
 
@@ -25,6 +36,39 @@ export class AnimeStore {
     this.vf = (await axios.get(vfUrl)).data;
   }
 
+  static groupAnimeBySimilarName(animeList: Anime[]) {
+        const groupedAnime: { [anime: string]: number[] } = {};
+      
+        animeList.forEach((anime) => {
+        let animeTitle = anime.title.trim(); // Supprimez les espaces inutiles autour du titre
+        let id = anime.id
+          let matched = false;
+      
+          for (const existingAnime in groupedAnime) {
+            const regex = new RegExp(`\\b${existingAnime.replace("[","").replace("]","")}\\b`, 'i'); // Recherche correspondance avec des mots complets, insensible à la casse
+            if (regex.test(animeTitle)) {
+              groupedAnime[existingAnime].push(id);
+              matched = true;
+              break;
+            }
+          }
+      
+          if (!matched) {
+            groupedAnime[animeTitle] = [id];
+          }
+        });
+      
+        const result = Object.keys(groupedAnime).map((animeName) => ({
+          anime: animeName,
+          id: animeList.find((anime) => anime.id === groupedAnime[animeName][0]).id,
+          seasons: groupedAnime[animeName].map((id) => ({
+            year: parseInt(animeList.find((anime) => anime.id === id).start_date_year),
+            fiche: animeList.find((anime) => anime.id === id),
+            })).sort((a, b) => a.year - b.year),
+        }));
+      
+        this.seasons = result;
+      }
   /* This function fetches the latest episodes from a website 
   and stores them in an array. */
   static async fetchLatest(): Promise<void> {

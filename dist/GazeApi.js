@@ -309,7 +309,7 @@ var GazeApi = /*#__PURE__*/ function() {
                                         console.error(err);
                                         return;
                                     }
-                                    console.log("Server is strating on ".concat(adress));
+                                    console.log("Server is starting on ".concat(adress));
                                 });
                                 return [
                                     2
@@ -333,12 +333,14 @@ var GazeApi = /*#__PURE__*/ function() {
                                         if (!_animesstore.AnimeStore.all[0]) {
                                             _animesstore.AnimeStore.fetchAll();
                                             _animesstore.AnimeStore.fetchLatest();
+                                            _animesstore.AnimeStore.groupAnimeBySimilarName(_animesstore.AnimeStore.vostfr);
                                             console.log("".concat(_animesstore.AnimeStore.all.length, " animes loaded (vf+vostfr)"));
                                             resolve(null);
                                         }
                                         setInterval(function() {
                                             _animesstore.AnimeStore.fetchAll();
                                             _animesstore.AnimeStore.fetchLatest();
+                                            _animesstore.AnimeStore.groupAnimeBySimilarName(_animesstore.AnimeStore.vostfr);
                                             console.log("♻️ cache refreshed");
                                         }, 600000);
                                         return [

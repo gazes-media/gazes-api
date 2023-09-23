@@ -2,17 +2,9 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-function _export(target, all) {
-    for(var name in all)Object.defineProperty(target, name, {
-        enumerable: true,
-        get: all[name]
-    });
-}
-_export(exports, {
-    groupAnimeBySimilarName: function() {
-        return groupAnimeBySimilarName;
-    },
-    AnimesSeasonsRoute: function() {
+Object.defineProperty(exports, "AnimesSeasonsRoute", {
+    enumerable: true,
+    get: function() {
         return AnimesSeasonsRoute;
     }
 });
@@ -108,48 +100,6 @@ function _create_super(Derived) {
         return _possible_constructor_return(this, result);
     };
 }
-function groupAnimeBySimilarName(animeList) {
-    var groupedAnime = {};
-    animeList.forEach(function(anime) {
-        var animeTitle = anime.title.trim(); // Supprimez les espaces inutiles autour du titre
-        var id = anime.id;
-        var matched = false;
-        for(var existingAnime in groupedAnime){
-            var regex = new RegExp("\\b".concat(existingAnime.replace("[", "").replace("]", ""), "\\b"), "i"); // Recherche correspondance avec des mots complets, insensible à la casse
-            if (regex.test(animeTitle)) {
-                groupedAnime[existingAnime].push(id);
-                matched = true;
-                break;
-            }
-        }
-        if (!matched) {
-            groupedAnime[animeTitle] = [
-                id
-            ];
-        }
-    });
-    var result = Object.keys(groupedAnime).map(function(animeName) {
-        return {
-            anime: animeName,
-            id: animeList.find(function(anime) {
-                return anime.id === groupedAnime[animeName][0];
-            }).id,
-            seasons: groupedAnime[animeName].map(function(id) {
-                return {
-                    year: parseInt(animeList.find(function(anime) {
-                        return anime.id === id;
-                    }).start_date_year),
-                    fiche: animeList.find(function(anime) {
-                        return anime.id === id;
-                    })
-                };
-            }).sort(function(a, b) {
-                return a.year - b.year;
-            })
-        };
-    });
-    return result;
-}
 var AnimesSeasonsRoute = /*#__PURE__*/ function(Route) {
     "use strict";
     _inherits(AnimesSeasonsRoute, Route);
@@ -163,8 +113,7 @@ var AnimesSeasonsRoute = /*#__PURE__*/ function(Route) {
         _define_property(_assert_this_initialized(_this), "handler", function(request, reply) {
             // récupérer les possible queries
             var title = request.query.title;
-            var animes = _animesstore.AnimeStore.vostfr;
-            var seasons = groupAnimeBySimilarName(animes);
+            var seasons = _animesstore.AnimeStore.seasons;
             if (title) {
                 var fuse = new _fuse.default(seasons, {
                     keys: [
@@ -177,7 +126,6 @@ var AnimesSeasonsRoute = /*#__PURE__*/ function(Route) {
                 });
             }
             if (seasons.length <= 0) {
-                console.log(animes);
                 return reply.status(404).send({
                     success: false,
                     message: "La requ\xeate a \xe9t\xe9 trait\xe9e avec succ\xe8s, mais aucun contenu n'est disponible pour la r\xe9ponse demand\xe9e."

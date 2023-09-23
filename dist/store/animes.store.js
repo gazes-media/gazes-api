@@ -249,6 +249,51 @@ var AnimeStore = /*#__PURE__*/ function() {
             }
         },
         {
+            key: "groupAnimeBySimilarName",
+            value: function groupAnimeBySimilarName(animeList) {
+                var groupedAnime = {};
+                animeList.forEach(function(anime) {
+                    var animeTitle = anime.title.trim(); // Supprimez les espaces inutiles autour du titre
+                    var id = anime.id;
+                    var matched = false;
+                    for(var existingAnime in groupedAnime){
+                        var regex = new RegExp("\\b".concat(existingAnime.replace("[", "").replace("]", ""), "\\b"), "i"); // Recherche correspondance avec des mots complets, insensible à la casse
+                        if (regex.test(animeTitle)) {
+                            groupedAnime[existingAnime].push(id);
+                            matched = true;
+                            break;
+                        }
+                    }
+                    if (!matched) {
+                        groupedAnime[animeTitle] = [
+                            id
+                        ];
+                    }
+                });
+                var result = Object.keys(groupedAnime).map(function(animeName) {
+                    return {
+                        anime: animeName,
+                        id: animeList.find(function(anime) {
+                            return anime.id === groupedAnime[animeName][0];
+                        }).id,
+                        seasons: groupedAnime[animeName].map(function(id) {
+                            return {
+                                year: parseInt(animeList.find(function(anime) {
+                                    return anime.id === id;
+                                }).start_date_year),
+                                fiche: animeList.find(function(anime) {
+                                    return anime.id === id;
+                                })
+                            };
+                        }).sort(function(a, b) {
+                            return a.year - b.year;
+                        })
+                    };
+                });
+                this.seasons = result;
+            }
+        },
+        {
             key: "fetchLatest",
             value: /* This function fetches the latest episodes from a website 
   and stores them in an array. */ function fetchLatest() {
@@ -493,6 +538,7 @@ var AnimeStore = /*#__PURE__*/ function() {
     return AnimeStore;
 }();
 _define_property(AnimeStore, "all", []);
+_define_property(AnimeStore, "seasons", []);
 _define_property(AnimeStore, "vostfr", []);
 _define_property(AnimeStore, "vf", []);
 _define_property(AnimeStore, "latest", []);
