@@ -41,15 +41,13 @@ export class AnimeStore {
   static groupAnimeBySimilarName(animeList: Anime[]) {
         const groupedAnime: { [anime: string]: number[] } = {};
         animeList = animeList.sort((a, b) => a.id - b.id);
-
-
         animeList.forEach((anime) => {
-        let animeTitle = anime.title_romanji ? anime.title_romanji.trim() : anime.title.trim();
+        let animeTitle = anime.title_english ? anime.title_english.trim() : anime.title_romanji ? anime.title_romanji.trim() : anime.title.trim();
         let id = anime.id
           let matched = false;
       
           for (const existingAnime in groupedAnime) {
-            const regex = new RegExp(`\\b${existingAnime.replace("[","").replace("]","")}\\b`, 'i'); // Recherche correspondance avec des mots complets, insensible à la casse
+            const regex = new RegExp(`^\\b${existingAnime.replace("[","").replace("]","")}\\b`, 'i'); // Recherche correspondance avec des mots complets, insensible à la casse
             if (regex.test(animeTitle)) {
               groupedAnime[existingAnime].push(id);
               matched = true;
