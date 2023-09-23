@@ -280,8 +280,9 @@ var AnimeStore = /*#__PURE__*/ function() {
                     if (!animeFind) return;
                     return {
                         title: animeFind.title,
-                        id: animeFind.id,
+                        ids: groupedAnime[animeName],
                         title_english: animeFind.title_english,
+                        cover_url: animeFind.url_image,
                         others: animeFind.others,
                         genres: animeFind.genres,
                         title_romanji: animeFind.title_romanji,
