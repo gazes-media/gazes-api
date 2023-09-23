@@ -44,7 +44,7 @@ export class AnimeStore {
 
 
         animeList.forEach((anime) => {
-        let animeTitle = anime.title_english ? anime.title_english.trim() : anime.title_romanji ? anime.title_romanji.trim() : anime.title.trim();
+        let animeTitle = anime.title_romanji ? anime.title_romanji.trim() : anime.title.trim();
         let id = anime.id
           let matched = false;
       
