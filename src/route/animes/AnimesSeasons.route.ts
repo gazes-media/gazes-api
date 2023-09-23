@@ -14,7 +14,10 @@ export class AnimesSeasonsRoute extends Route {
     // récupérer les possible queries
     let { title } = request.query as { title?: string };
     let seasons = AnimeStore.seasons;
-
+    if(seasons.length <= 0) {
+      AnimeStore.groupAnimeBySimilarName(AnimeStore.vostfr);
+      seasons = AnimeStore.seasons;
+    }
     if (title) {
       const fuse = new Fuse(seasons, {
         keys: ["anime"],

@@ -114,6 +114,10 @@ var AnimesSeasonsRoute = /*#__PURE__*/ function(Route) {
             // récupérer les possible queries
             var title = request.query.title;
             var seasons = _animesstore.AnimeStore.seasons;
+            if (seasons.length <= 0) {
+                _animesstore.AnimeStore.groupAnimeBySimilarName(_animesstore.AnimeStore.vostfr);
+                seasons = _animesstore.AnimeStore.seasons;
+            }
             if (title) {
                 var fuse = new _fuse.default(seasons, {
                     keys: [
