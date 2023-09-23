@@ -40,7 +40,7 @@ export class AnimeStore {
         const groupedAnime: { [anime: string]: number[] } = {};
       
         animeList.forEach((anime) => {
-        let animeTitle = anime.title.trim(); // Supprimez les espaces inutiles autour du titre
+        let animeTitle = anime.title_english.trim(); // Supprimez les espaces inutiles autour du titre
         let id = anime.id
           let matched = false;
       

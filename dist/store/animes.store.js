@@ -253,7 +253,7 @@ var AnimeStore = /*#__PURE__*/ function() {
             value: function groupAnimeBySimilarName(animeList) {
                 var groupedAnime = {};
                 animeList.forEach(function(anime) {
-                    var animeTitle = anime.title.trim(); // Supprimez les espaces inutiles autour du titre
+                    var animeTitle = anime.title_english.trim(); // Supprimez les espaces inutiles autour du titre
                     var id = anime.id;
                     var matched = false;
                     for(var existingAnime in groupedAnime){
