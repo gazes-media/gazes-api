@@ -12,7 +12,7 @@ export class AnimesSeasonsRoute extends Route {
 
   public handler: RouteHandlerMethod = (request, reply) => {
     // récupérer les possible queries
-    let { title } = request.query as { title?: string };
+    let { title, id } = request.query as { title?: string, id?: string };
     let seasons = AnimeStore.seasons;
     if(seasons.length <= 0) {
       AnimeStore.groupAnimeBySimilarName(AnimeStore.vostfr);
@@ -25,6 +25,10 @@ export class AnimesSeasonsRoute extends Route {
       });
 
       seasons = fuse.search(title).map((a) => a.item);
+    }
+
+    if (id) {
+      seasons = seasons.filter((a) => a.ids.includes(parseInt(id)));
     }
 
     if (seasons.length <= 0) {

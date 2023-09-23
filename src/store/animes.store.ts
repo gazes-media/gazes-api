@@ -18,7 +18,9 @@ export type seasonal = {
   title: string,
   title_english: string,
   title_romanji: string,
-  id: number,
+  genres: string[],
+  cover_url: string,
+  ids: number[],
   seasons: seasons[]
 }
 
@@ -65,8 +67,9 @@ export class AnimeStore {
           if(!animeFind) return;
           return ({
           title: animeFind.title,
-          id: animeFind.id,
+          ids: groupedAnime[animeName],
           title_english: animeFind.title_english,
+          cover_url: animeFind.url_image,
           others: animeFind.others,
           genres: animeFind.genres,
           title_romanji: animeFind.title_romanji,
