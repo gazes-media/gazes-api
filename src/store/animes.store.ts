@@ -40,7 +40,9 @@ export class AnimeStore {
 
   static groupAnimeBySimilarName(animeList: Anime[]) {
         const groupedAnime: { [anime: string]: number[] } = {};
-      
+        animeList = animeList.sort((a, b) => parseInt(a.start_date_year) - parseInt(b.start_date_year));
+
+
         animeList.forEach((anime) => {
         let animeTitle = anime.title_english ? anime.title_english.trim() : anime.title_romanji ? anime.title_romanji.trim() : anime.title.trim();
         let id = anime.id
