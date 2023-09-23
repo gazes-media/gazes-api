@@ -2,74 +2,14 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-function _export(target, all) {
-    for(var name in all)Object.defineProperty(target, name, {
-        enumerable: true,
-        get: all[name]
-    });
-}
-_export(exports, {
-    IndexRoute: function() {
-        return IndexRoute;
-    },
-    AnimesRssRoute: function() {
-        return _AnimesRssroute.AnimesRssRoute;
-    },
-    AnimesRoute: function() {
-        return _Animesroute.AnimesRoute;
-    },
-    AnimeHighlightedRoute: function() {
-        return _AnimesHighlightedroute.AnimeHighlightedRoute;
-    },
-    AnimesLatestRoute: function() {
-        return _AnimesLatestroute.AnimesLatestRoute;
-    },
-    AnimesSeasonsRoute: function() {
-        return _AnimesSeasonsroute.AnimesSeasonsRoute;
-    },
-    AnimesIdRoute: function() {
-        return _AnimesIdroute.AnimesIdRoute;
-    },
-    AnimesIdEpisodeRoute: function() {
-        return _AnimesIdEpisoderoute.AnimesIdEpisodeRoute;
-    },
-    UserHistoryRoute: function() {
-        return _Historyroute.UserHistoryRoute;
-    },
-    UserAnimesRoute: function() {
-        return _Animeroute.UserAnimesRoute;
-    },
-    UserFavorisRoute: function() {
-        return _Favorisroute.UserFavorisRoute;
-    },
-    UserFavorisPostRoute: function() {
-        return _FavorisPostroute.UserFavorisPostRoute;
-    },
-    UserFavorisDeleteRoute: function() {
-        return _FavorisDeleteroute.UserFavorisDeleteRoute;
-    },
-    UserAnimesDeleteRoute: function() {
-        return _AnimeDeleteroute.UserAnimesDeleteRoute;
-    },
-    AnimesTrends: function() {
-        return _AnimesTrendsroute.AnimesTrends;
+Object.defineProperty(exports, "AnimesLatestRoute", {
+    enumerable: true,
+    get: function() {
+        return AnimesLatestRoute;
     }
 });
-var _Route = require("./Route");
-var _AnimesRssroute = require("./animes/AnimesRss.route");
-var _Animesroute = require("./animes/Animes.route");
-var _AnimesHighlightedroute = require("./animes/AnimesHighlighted.route");
-var _AnimesLatestroute = require("./animes/AnimesLatest.route");
-var _AnimesSeasonsroute = require("./animes/AnimesSeasons.route");
-var _AnimesIdroute = require("./animes/AnimesId.route");
-var _AnimesIdEpisoderoute = require("./animes/AnimesIdEpisode.route");
-var _Historyroute = require("./users/History.route");
-var _Animeroute = require("./users/Anime.route");
-var _Favorisroute = require("./users/Favoris.route");
-var _FavorisPostroute = require("./users/FavorisPost.route");
-var _FavorisDeleteroute = require("./users/FavorisDelete.route");
-var _AnimeDeleteroute = require("./users/AnimeDelete.route");
-var _AnimesTrendsroute = require("./animes/AnimesTrends.route");
+var _Route = require("../Route");
+var _animesstore = require("../../store/animes.store");
 function _assert_this_initialized(self) {
     if (self === void 0) {
         throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -154,22 +94,25 @@ function _create_super(Derived) {
         return _possible_constructor_return(this, result);
     };
 }
-var IndexRoute = /*#__PURE__*/ function(Route) {
+var AnimesLatestRoute = /*#__PURE__*/ function(Route) {
     "use strict";
-    _inherits(IndexRoute, Route);
-    var _super = _create_super(IndexRoute);
-    function IndexRoute() {
-        _class_call_check(this, IndexRoute);
+    _inherits(AnimesLatestRoute, Route);
+    var _super = _create_super(AnimesLatestRoute);
+    function AnimesLatestRoute() {
+        _class_call_check(this, AnimesLatestRoute);
         var _this;
         _this = _super.apply(this, arguments);
-        _define_property(_assert_this_initialized(_this), "url", "/");
+        _define_property(_assert_this_initialized(_this), "url", "/animes/latest");
         _define_property(_assert_this_initialized(_this), "method", "GET");
         _define_property(_assert_this_initialized(_this), "handler", function(request, reply) {
-            reply.send({
-                message: "testing"
+            // récupérer les possible queries
+            var animes = _animesstore.AnimeStore.latest;
+            return reply.send({
+                success: true,
+                data: animes
             });
         });
         return _this;
     }
-    return IndexRoute;
+    return AnimesLatestRoute;
 }(_Route.Route);
