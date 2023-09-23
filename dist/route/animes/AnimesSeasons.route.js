@@ -121,7 +121,10 @@ var AnimesSeasonsRoute = /*#__PURE__*/ function(Route) {
             if (title) {
                 var fuse = new _fuse.default(seasons, {
                     keys: [
-                        "anime"
+                        "title",
+                        "title_english",
+                        "title_romanji",
+                        "others"
                     ],
                     includeScore: false
                 });

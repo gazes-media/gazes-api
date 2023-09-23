@@ -15,7 +15,9 @@ export type seasons = {
 }
 
 export type seasonal = {
-  anime: string,
+  title: string,
+  title_english: string,
+  title_romanji: string,
   id: number,
   seasons: seasons[]
 }
@@ -40,7 +42,7 @@ export class AnimeStore {
         const groupedAnime: { [anime: string]: number[] } = {};
       
         animeList.forEach((anime) => {
-        let animeTitle = anime.title_english.trim(); // Supprimez les espaces inutiles autour du titre
+        let animeTitle = anime.title_english ? anime.title_english.trim() : anime.title_romanji ? anime.title_romanji.trim() : anime.title.trim();
         let id = anime.id
           let matched = false;
       
@@ -58,14 +60,22 @@ export class AnimeStore {
           }
         });
       
-        const result = Object.keys(groupedAnime).map((animeName) => ({
-          anime: animeName,
-          id: animeList.find((anime) => anime.id === groupedAnime[animeName][0]).id,
+        const result = Object.keys(groupedAnime).map((animeName) => {
+          let animeFind = animeList.find((anime) => anime.id === groupedAnime[animeName][0]);
+          if(!animeFind) return;
+          return ({
+          title: animeFind.title,
+          id: animeFind.id,
+          title_english: animeFind.title_english,
+          others: animeFind.others,
+          genres: animeFind.genres,
+          title_romanji: animeFind.title_romanji,
           seasons: groupedAnime[animeName].map((id) => ({
             year: parseInt(animeList.find((anime) => anime.id === id).start_date_year),
             fiche: animeList.find((anime) => anime.id === id),
             })).sort((a, b) => a.year - b.year),
-        }));
+        })
+        });
       
         this.seasons = result;
       }

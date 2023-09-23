@@ -253,7 +253,7 @@ var AnimeStore = /*#__PURE__*/ function() {
             value: function groupAnimeBySimilarName(animeList) {
                 var groupedAnime = {};
                 animeList.forEach(function(anime) {
-                    var animeTitle = anime.title_english.trim(); // Supprimez les espaces inutiles autour du titre
+                    var animeTitle = anime.title_english ? anime.title_english.trim() : anime.title_romanji ? anime.title_romanji.trim() : anime.title.trim();
                     var id = anime.id;
                     var matched = false;
                     for(var existingAnime in groupedAnime){
@@ -271,11 +271,17 @@ var AnimeStore = /*#__PURE__*/ function() {
                     }
                 });
                 var result = Object.keys(groupedAnime).map(function(animeName) {
+                    var animeFind = animeList.find(function(anime) {
+                        return anime.id === groupedAnime[animeName][0];
+                    });
+                    if (!animeFind) return;
                     return {
-                        anime: animeName,
-                        id: animeList.find(function(anime) {
-                            return anime.id === groupedAnime[animeName][0];
-                        }).id,
+                        title: animeFind.title,
+                        id: animeFind.id,
+                        title_english: animeFind.title_english,
+                        others: animeFind.others,
+                        genres: animeFind.genres,
+                        title_romanji: animeFind.title_romanji,
                         seasons: groupedAnime[animeName].map(function(id) {
                             return {
                                 year: parseInt(animeList.find(function(anime) {

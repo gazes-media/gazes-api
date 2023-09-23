@@ -20,7 +20,7 @@ export class AnimesSeasonsRoute extends Route {
     }
     if (title) {
       const fuse = new Fuse(seasons, {
-        keys: ["anime"],
+        keys: ["title", "title_english", "title_romanji","others"],
         includeScore: false,
       });
 
