@@ -40,7 +40,7 @@ export class AnimeStore {
 
   static groupAnimeBySimilarName(animeList: Anime[]) {
         const groupedAnime: { [anime: string]: number[] } = {};
-        animeList = animeList.sort((a, b) => parseInt(a.start_date_year) - parseInt(b.start_date_year));
+        animeList = animeList.sort((a, b) => a.id - b.id);
 
 
         animeList.forEach((anime) => {
