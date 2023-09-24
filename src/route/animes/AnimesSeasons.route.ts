@@ -12,10 +12,7 @@ export class AnimesSeasonsRoute extends Route {
 
   public handler: RouteHandlerMethod = (request, reply) => {
     // récupérer les possible queries
-    let { title, id, page } = request.query as { title?: string, id?: string, page?: string };
-    if(!page) page = "1";
-    if(page && isNaN(parseInt(page))) page = "1";
-    if(page == "0") page = "1";
+    let { title, id } = request.query as { title?: string, id?: string };
     let seasons = AnimeStore.seasons;
     if(seasons.length <= 0) {
       AnimeStore.groupAnimeBySimilarName(AnimeStore.vostfr);
@@ -43,7 +40,7 @@ export class AnimesSeasonsRoute extends Route {
 
     return reply.send({
       success: true,
-      data: seasons.splice((parseInt(page) - 1) * 20, 20),
+      data: seasons,
     });
   };
 }
