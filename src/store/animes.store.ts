@@ -57,19 +57,19 @@ export class AnimeStore {
               let currentId = parseInt(existingAnime.split("-")[0]);
               let animeToCheck = animeList.find(e => e.id === currentId);
               let title_en = animeToCheck?.title_english, title_ro= animeToCheck?.title_romanji, title_fa = animeToCheck?.title
-              if(animeEnglish){
+              if(title_en && animeEnglish){
                     const regex = this.buildRegex(title_en)// Recherche correspondance avec des mots complets, insensible à la casse
               if (regex.test(animeEnglish)) {
                 groupedAnime[existingAnime].push(id);
                 matched = true;
                 break;
-              }else if(animeRomanji){
+              }else if(animeRomanji && title_ro){
                 const regex = this.buildRegex(title_ro)// Recherche correspondance avec des mots complets, insensible à la casse
                 if (regex.test(animeRomanji)) {
                   groupedAnime[existingAnime].push(id);
                   matched = true;
                   break;
-                }else if(animeTitle){
+                }else if(animeTitle && title_fa){
                   const regex = this.buildRegex(title_fa)// Recherche correspondance avec des mots complets, insensible à la casse
                   if (regex.test(animeTitle)) {
                     groupedAnime[existingAnime].push(id);
