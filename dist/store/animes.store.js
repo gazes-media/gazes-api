@@ -263,14 +263,12 @@ var AnimeStore = /*#__PURE__*/ function() {
                 });
                 animeList.forEach(function(anime) {
                     var _loop = function(existingAnime) {
-                        if (animeTitle) {
-                            if (animeTitle.length < 2) return "continue";
-                        }
                         var currentId = parseInt(existingAnime.split("-")[0]);
                         var animeToCheck = animeList.find(function(e) {
                             return e.id === currentId;
                         });
                         var title_en = animeToCheck === null || animeToCheck === void 0 ? void 0 : animeToCheck.title_english, title_ro = animeToCheck === null || animeToCheck === void 0 ? void 0 : animeToCheck.title_romanji, title_fa = animeToCheck === null || animeToCheck === void 0 ? void 0 : animeToCheck.title;
+                        if (title_fa.length < 2) return "continue";
                         if (title_en && animeEnglish) {
                             if (animeEnglish.startsWith(title_en)) {
                                 groupedAnime[existingAnime].push(id);
