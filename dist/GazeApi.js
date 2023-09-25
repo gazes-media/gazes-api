@@ -333,14 +333,12 @@ var GazeApi = /*#__PURE__*/ function() {
                                         if (!_animesstore.AnimeStore.all[0]) {
                                             _animesstore.AnimeStore.fetchAll();
                                             _animesstore.AnimeStore.fetchLatest();
-                                            _animesstore.AnimeStore.groupAnimeBySimilarName(_animesstore.AnimeStore.vostfr);
                                             console.log("".concat(_animesstore.AnimeStore.all.length, " animes loaded (vf+vostfr)"));
                                             resolve(null);
                                         }
                                         setInterval(function() {
                                             _animesstore.AnimeStore.fetchAll();
                                             _animesstore.AnimeStore.fetchLatest();
-                                            _animesstore.AnimeStore.groupAnimeBySimilarName(_animesstore.AnimeStore.vostfr);
                                             console.log("♻️ cache refreshed");
                                         }, 600000);
                                         return [
