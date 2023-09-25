@@ -257,7 +257,6 @@ var AnimeStore = /*#__PURE__*/ function() {
         {
             key: "groupAnimeBySimilarName",
             value: function groupAnimeBySimilarName(animeList) {
-                var _this = this;
                 var groupedAnime = {};
                 animeList = animeList.sort(function(a, b) {
                     return a.id - b.id;
@@ -270,23 +269,17 @@ var AnimeStore = /*#__PURE__*/ function() {
                         });
                         var title_en = animeToCheck === null || animeToCheck === void 0 ? void 0 : animeToCheck.title_english, title_ro = animeToCheck === null || animeToCheck === void 0 ? void 0 : animeToCheck.title_romanji, title_fa = animeToCheck === null || animeToCheck === void 0 ? void 0 : animeToCheck.title;
                         if (title_en && animeEnglish) {
-                            var regex = _this.buildRegex(title_en) // Recherche correspondance avec des mots complets, insensible à la casse
-                            ;
-                            if (regex.test(animeEnglish)) {
+                            if (animeEnglish.startsWith(title_en)) {
                                 groupedAnime[existingAnime].push(id);
                                 matched = true;
                                 return "break";
                             } else if (animeRomanji && title_ro) {
-                                var regex1 = _this.buildRegex(title_ro) // Recherche correspondance avec des mots complets, insensible à la casse
-                                ;
-                                if (regex1.test(animeRomanji)) {
+                                if (animeRomanji.startsWith(title_ro)) {
                                     groupedAnime[existingAnime].push(id);
                                     matched = true;
                                     return "break";
                                 } else if (animeTitle && title_fa) {
-                                    var regex2 = _this.buildRegex(title_fa) // Recherche correspondance avec des mots complets, insensible à la casse
-                                    ;
-                                    if (regex2.test(animeTitle)) {
+                                    if (animeTitle.startsWith(title_fa)) {
                                         groupedAnime[existingAnime].push(id);
                                         matched = true;
                                         return "break";
