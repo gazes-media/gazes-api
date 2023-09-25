@@ -48,28 +48,28 @@ export class AnimeStore {
         const groupedAnime: { [anime: string]: number[] } = {};
         animeList = animeList.sort((a, b) => a.id - b.id);
         animeList.forEach((anime) => {
-          let animeTitle = anime.title.trim();
-          let animeEnglish = anime.title_english.trim();
-          let animeRomanji = anime.title_romanji.trim();
+          let animeTitle = anime.title ? anime.title.trim() : false;
+          let animeEnglish = anime.title_english ? anime.title_english.trim() : false;
+          let animeRomanji = anime.title_romanji ? anime.title_romanji.trim() : false;
           let id = anime.id
             let matched = false;
             for (const existingAnime in groupedAnime) {
               let currentId = parseInt(existingAnime.split("-")[0]);
               let animeToCheck = animeList.find(e => e.id === currentId);
               let title_en = animeToCheck?.title_english, title_ro= animeToCheck?.title_romanji, title_fa = animeToCheck?.title
-              if(title_en){
+              if(animeEnglish){
                     const regex = this.buildRegex(title_en)// Recherche correspondance avec des mots complets, insensible à la casse
               if (regex.test(animeEnglish)) {
                 groupedAnime[existingAnime].push(id);
                 matched = true;
                 break;
-              }else if(title_ro){
+              }else if(animeRomanji){
                 const regex = this.buildRegex(title_ro)// Recherche correspondance avec des mots complets, insensible à la casse
                 if (regex.test(animeRomanji)) {
                   groupedAnime[existingAnime].push(id);
                   matched = true;
                   break;
-                }else if(title_fa){
+                }else if(animeTitle){
                   const regex = this.buildRegex(title_fa)// Recherche correspondance avec des mots complets, insensible à la casse
                   if (regex.test(animeTitle)) {
                     groupedAnime[existingAnime].push(id);
