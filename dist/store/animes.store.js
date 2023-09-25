@@ -249,26 +249,63 @@ var AnimeStore = /*#__PURE__*/ function() {
             }
         },
         {
+            key: "buildRegex",
+            value: function buildRegex(title) {
+                return new RegExp("^\\b".concat(title.replace("[", "").replace("]", ""), "\\b"), "i");
+            }
+        },
+        {
             key: "groupAnimeBySimilarName",
             value: function groupAnimeBySimilarName(animeList) {
+                var _this = this;
                 var groupedAnime = {};
                 animeList = animeList.sort(function(a, b) {
                     return a.id - b.id;
                 });
                 animeList.forEach(function(anime) {
-                    var animeTitle = anime.title_english ? anime.title_english.trim() : anime.title_romanji ? anime.title_romanji.trim() : anime.title.trim();
+                    var _loop = function(existingAnime) {
+                        var currentId = parseInt(existingAnime.split("-")[0]);
+                        var animeToCheck = animeList.find(function(e) {
+                            return e.id === currentId;
+                        });
+                        var title_en = animeToCheck === null || animeToCheck === void 0 ? void 0 : animeToCheck.title_english, title_ro = animeToCheck === null || animeToCheck === void 0 ? void 0 : animeToCheck.title_romanji, title_fa = animeToCheck === null || animeToCheck === void 0 ? void 0 : animeToCheck.title;
+                        if (title_en) {
+                            var regex = _this.buildRegex(title_en) // Recherche correspondance avec des mots complets, insensible à la casse
+                            ;
+                            if (regex.test(animeEnglish)) {
+                                groupedAnime[existingAnime].push(id);
+                                matched = true;
+                                return "break";
+                            } else if (title_ro) {
+                                var regex1 = _this.buildRegex(title_ro) // Recherche correspondance avec des mots complets, insensible à la casse
+                                ;
+                                if (regex1.test(animeRomanji)) {
+                                    groupedAnime[existingAnime].push(id);
+                                    matched = true;
+                                    return "break";
+                                } else if (title_fa) {
+                                    var regex2 = _this.buildRegex(title_fa) // Recherche correspondance avec des mots complets, insensible à la casse
+                                    ;
+                                    if (regex2.test(animeTitle)) {
+                                        groupedAnime[existingAnime].push(id);
+                                        matched = true;
+                                        return "break";
+                                    }
+                                }
+                            }
+                        }
+                    };
+                    var animeTitle = anime.title.trim();
+                    var animeEnglish = anime.title_english.trim();
+                    var animeRomanji = anime.title_romanji.trim();
                     var id = anime.id;
                     var matched = false;
                     for(var existingAnime in groupedAnime){
-                        var regex = new RegExp("^\\b".concat(existingAnime.replace("[", "").replace("]", ""), "\\b"), "i"); // Recherche correspondance avec des mots complets, insensible à la casse
-                        if (regex.test(animeTitle)) {
-                            groupedAnime[existingAnime].push(id);
-                            matched = true;
-                            break;
-                        }
+                        var _ret = _loop(existingAnime);
+                        if (_ret === "break") break;
                     }
                     if (!matched) {
-                        groupedAnime[animeTitle] = [
+                        groupedAnime[id.toString() + "-anime"] = [
                             id
                         ];
                     }
