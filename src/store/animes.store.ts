@@ -40,27 +40,52 @@ export class AnimeStore {
     this.vf = (await axios.get(vfUrl)).data;
   }
 
+  static buildRegex(title: string){
+    return new RegExp(`^\\b${title.replace("[","").replace("]","")}\\b`, 'i');
+  }
+
   static groupAnimeBySimilarName(animeList: Anime[]) {
         const groupedAnime: { [anime: string]: number[] } = {};
         animeList = animeList.sort((a, b) => a.id - b.id);
         animeList.forEach((anime) => {
-        let animeTitle = anime.title_english ? anime.title_english.trim() : anime.title_romanji ? anime.title_romanji.trim() : anime.title.trim();
-        let id = anime.id
-          let matched = false;
-      
-          for (const existingAnime in groupedAnime) {
-            const regex = new RegExp(`^\\b${existingAnime.replace("[","").replace("]","")}\\b`, 'i'); // Recherche correspondance avec des mots complets, insensible à la casse
-            if (regex.test(animeTitle)) {
-              groupedAnime[existingAnime].push(id);
-              matched = true;
-              break;
+          let animeTitle = anime.title.trim();
+          let animeEnglish = anime.title_english.trim();
+          let animeRomanji = anime.title_romanji.trim();
+          let id = anime.id
+            let matched = false;
+            for (const existingAnime in groupedAnime) {
+              let currentId = parseInt(existingAnime.split("-")[0]);
+              let animeToCheck = animeList.find(e => e.id === currentId);
+              let title_en = animeToCheck?.title_english, title_ro= animeToCheck?.title_romanji, title_fa = animeToCheck?.title
+              if(title_en){
+                    const regex = this.buildRegex(title_en)// Recherche correspondance avec des mots complets, insensible à la casse
+              if (regex.test(animeEnglish)) {
+                groupedAnime[existingAnime].push(id);
+                matched = true;
+                break;
+              }else if(title_ro){
+                const regex = this.buildRegex(title_ro)// Recherche correspondance avec des mots complets, insensible à la casse
+                if (regex.test(animeRomanji)) {
+                  groupedAnime[existingAnime].push(id);
+                  matched = true;
+                  break;
+                }else if(title_fa){
+                  const regex = this.buildRegex(title_fa)// Recherche correspondance avec des mots complets, insensible à la casse
+                  if (regex.test(animeTitle)) {
+                    groupedAnime[existingAnime].push(id);
+                    matched = true;
+                    break;
+                  }
+                }
+              }
+          
             }
-          }
-      
-          if (!matched) {
-            groupedAnime[animeTitle] = [id];
-          }
-        });
+         }
+            if (!matched) {
+              groupedAnime[id.toString() + "-anime"] = [id];
+            }
+         
+          });
       
         const result = Object.keys(groupedAnime).map((animeName) => {
           let animeFind = animeList.find((anime) => anime.id === groupedAnime[animeName][0]);
