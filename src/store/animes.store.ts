@@ -98,6 +98,7 @@ export class AnimeStore {
             })).sort((a, b) => a.year - b.year),
         })
         });
+        console.log(result.length);
         fs.writeFileSync("./saisons.json", JSON.stringify(result));
       }
   /* This function fetches the latest episodes from a website 
