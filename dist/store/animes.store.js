@@ -326,6 +326,7 @@ var AnimeStore = /*#__PURE__*/ function() {
                         })
                     };
                 });
+                console.log(result.length);
                 _fs.default.writeFileSync("./saisons.json", JSON.stringify(result));
             }
         },
