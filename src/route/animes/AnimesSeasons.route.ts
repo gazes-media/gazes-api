@@ -13,7 +13,7 @@ export class AnimesSeasonsRoute extends Route {
   public handler: RouteHandlerMethod = (request, reply) => {
     // récupérer les possible queries
     let { title, id } = request.query as { title?: string, id?: string };
-    let seasons = JSON.parse(fs.readFileSync("../seasons.json", "utf-8")) as seasonal[];
+    let seasons = JSON.parse(fs.readFileSync("./saisons.json", "utf-8")) as seasonal[];
     if(seasons.length <= 0) {
       return reply.status(404).send({
         success: false,
