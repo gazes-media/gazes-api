@@ -263,6 +263,9 @@ var AnimeStore = /*#__PURE__*/ function() {
                 });
                 animeList.forEach(function(anime) {
                     var _loop = function(existingAnime) {
+                        if (animeTitle) {
+                            if (animeTitle.length < 2) return "continue";
+                        }
                         var currentId = parseInt(existingAnime.split("-")[0]);
                         var animeToCheck = animeList.find(function(e) {
                             return e.id === currentId;
