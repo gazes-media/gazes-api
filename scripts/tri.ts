@@ -95,4 +95,5 @@ async function groupAnimeBySimilarName(animeList: Anime[]) {
       success: boolean
     }
     await groupAnimeBySimilarName(json.data);
+    setInterval(new Date().toString, 1000);
   })();
