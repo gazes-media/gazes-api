@@ -10,7 +10,6 @@ Object.defineProperty(exports, "AnimeStore", {
 });
 var _axios = /*#__PURE__*/ _interop_require_default(require("axios"));
 var _cheerio = require("cheerio");
-var _fs = /*#__PURE__*/ _interop_require_default(require("fs"));
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
     try {
         var info = gen[key](arg);
@@ -250,87 +249,6 @@ var AnimeStore = /*#__PURE__*/ function() {
             }
         },
         {
-            key: "groupAnimeBySimilarName",
-            value: function groupAnimeBySimilarName(animeList) {
-                var groupedAnime = {};
-                animeList = animeList.sort(function(a, b) {
-                    return a.id - b.id;
-                });
-                animeList.forEach(function(anime) {
-                    var _loop = function(existingAnime) {
-                        var currentId = parseInt(existingAnime.split("-")[0]);
-                        var animeToCheck = animeList.find(function(e) {
-                            return e.id === currentId;
-                        });
-                        var title_en = animeToCheck === null || animeToCheck === void 0 ? void 0 : animeToCheck.title_english, title_ro = animeToCheck === null || animeToCheck === void 0 ? void 0 : animeToCheck.title_romanji, title_fa = animeToCheck === null || animeToCheck === void 0 ? void 0 : animeToCheck.title;
-                        if (title_fa.length < 2) return "continue";
-                        if (title_en && animeEnglish) {
-                            if (animeEnglish.startsWith(title_en)) {
-                                groupedAnime[existingAnime].push(id);
-                                matched = true;
-                                return "break";
-                            } else if (animeRomanji && title_ro) {
-                                if (animeRomanji.startsWith(title_ro)) {
-                                    groupedAnime[existingAnime].push(id);
-                                    matched = true;
-                                    return "break";
-                                } else if (animeTitle && title_fa) {
-                                    if (animeTitle.startsWith(title_fa)) {
-                                        groupedAnime[existingAnime].push(id);
-                                        matched = true;
-                                        return "break";
-                                    }
-                                }
-                            }
-                        }
-                    };
-                    var animeTitle = anime.title ? anime.title.trim() : false;
-                    var animeEnglish = anime.title_english ? anime.title_english.trim() : false;
-                    var animeRomanji = anime.title_romanji ? anime.title_romanji.trim() : false;
-                    var id = anime.id;
-                    var matched = false;
-                    for(var existingAnime in groupedAnime){
-                        var _ret = _loop(existingAnime);
-                        if (_ret === "break") break;
-                    }
-                    if (!matched) {
-                        groupedAnime[id.toString() + "-anime"] = [
-                            id
-                        ];
-                    }
-                });
-                var result = Object.keys(groupedAnime).map(function(animeName) {
-                    var animeFind = animeList.find(function(anime) {
-                        return anime.id === groupedAnime[animeName][0];
-                    });
-                    if (!animeFind) return;
-                    return {
-                        title: animeFind.title,
-                        ids: groupedAnime[animeName],
-                        title_english: animeFind.title_english,
-                        cover_url: animeFind.url_image,
-                        others: animeFind.others,
-                        genres: animeFind.genres,
-                        title_romanji: animeFind.title_romanji,
-                        seasons: groupedAnime[animeName].map(function(id) {
-                            return {
-                                year: parseInt(animeList.find(function(anime) {
-                                    return anime.id === id;
-                                }).start_date_year),
-                                fiche: animeList.find(function(anime) {
-                                    return anime.id === id;
-                                })
-                            };
-                        }).sort(function(a, b) {
-                            return a.year - b.year;
-                        })
-                    };
-                });
-                console.log(result.length);
-                _fs.default.writeFileSync("./saisons.json", JSON.stringify(result));
-            }
-        },
-        {
             key: "fetchLatest",
             value: /* This function fetches the latest episodes from a website 
   and stores them in an array. */ function fetchLatest() {
@@ -340,9 +258,6 @@ var AnimeStore = /*#__PURE__*/ function() {
                     return _ts_generator(this, function(_state) {
                         switch(_state.label){
                             case 0:
-                                setTimeout(function() {
-                                    _this.groupAnimeBySimilarName(_this.vostfr);
-                                }, 1000);
                                 return [
                                     4,
                                     _axios.default.get("https://neko.ketsuna.com")
