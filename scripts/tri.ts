@@ -1,4 +1,3 @@
-import fs from "fs";
 enum animeType {
     "tv",
     "m0v1e",
@@ -27,7 +26,7 @@ enum animeType {
     lang?: "vf" | "vostfr";
   }
 
-function groupAnimeBySimilarName(animeList: Anime[]) {
+async function groupAnimeBySimilarName(animeList: Anime[]) {
     const groupedAnime: { [anime: string]: number[] } = {};
     animeList = animeList.sort((a, b) => a.id - b.id);
     animeList.forEach((anime) => {
@@ -86,7 +85,7 @@ function groupAnimeBySimilarName(animeList: Anime[]) {
     })
     });
     console.log(result.length);
-    fs.writeFileSync("./saisons.json", JSON.stringify(result));
+    await Bun.write("./saisons.json", JSON.stringify(result, null, 2));
   }
   
 (async () => {
@@ -95,5 +94,5 @@ function groupAnimeBySimilarName(animeList: Anime[]) {
       data: Anime[],
       success: boolean
     }
-    groupAnimeBySimilarName(json.data);
+    await groupAnimeBySimilarName(json.data);
   })();
