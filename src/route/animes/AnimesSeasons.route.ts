@@ -1,9 +1,9 @@
 import { Anime } from "../../interfaces/anime.interface";
 import { HTTPMethods, RouteHandlerMethod } from "fastify";
 import { Route } from "../Route";
-import { AnimeStore } from "../../store/animes.store";
+import { AnimeStore, seasonal } from "../../store/animes.store";
 import Fuse from "fuse.js";
-
+import fs from "fs";
 
 
 export class AnimesSeasonsRoute extends Route {
@@ -13,10 +13,12 @@ export class AnimesSeasonsRoute extends Route {
   public handler: RouteHandlerMethod = (request, reply) => {
     // récupérer les possible queries
     let { title, id } = request.query as { title?: string, id?: string };
-    let seasons = AnimeStore.seasons;
+    let seasons = JSON.parse(fs.readFileSync("./seasons.json", "utf-8")) as seasonal[];
     if(seasons.length <= 0) {
-      AnimeStore.groupAnimeBySimilarName(AnimeStore.vostfr);
-      seasons = AnimeStore.seasons;
+      return reply.status(404).send({
+        success: false,
+        message: "La requête a été traitée avec succès, mais aucun contenu n'est disponible pour la réponse demandée.",
+      });
     }
     if (title) {
       const fuse = new Fuse(seasons, {

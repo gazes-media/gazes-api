@@ -5,7 +5,7 @@ import { Episode } from "../interfaces/episode.interface";
 import { load } from "cheerio";
 import Subtitlesvtt from "../interfaces/subtitlesvtt.interface";
 import { PstreamData } from "../interfaces/pstreamdata.interface";
-
+import fs from "fs";
 const vostfrUrl = "https://neko.ketsuna.com/animes-search-vostfr.json";
 const vfUrl = "https://neko.ketsuna.com/animes-search-vf.json";
 
@@ -38,10 +38,6 @@ export class AnimeStore {
   static async fetchAll(): Promise<void> {
     this.vostfr = (await axios.get(vostfrUrl)).data;
     this.vf = (await axios.get(vfUrl)).data;
-  }
-
-  static buildRegex(title: string){
-    return new RegExp(`^\\b${title.replace("[","").replace("]","")}\\b`, 'i');
   }
 
   static groupAnimeBySimilarName(animeList: Anime[]) {
@@ -102,8 +98,7 @@ export class AnimeStore {
             })).sort((a, b) => a.year - b.year),
         })
         });
-      
-        this.seasons = result;
+        fs.writeFileSync("./saisons.json", JSON.stringify(result));
       }
   /* This function fetches the latest episodes from a website 
   and stores them in an array. */
