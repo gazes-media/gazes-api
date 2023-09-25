@@ -340,7 +340,9 @@ var AnimeStore = /*#__PURE__*/ function() {
                     return _ts_generator(this, function(_state) {
                         switch(_state.label){
                             case 0:
-                                _this.groupAnimeBySimilarName(_this.vostfr);
+                                setTimeout(function() {
+                                    _this.groupAnimeBySimilarName(_this.vostfr);
+                                }, 1000);
                                 return [
                                     4,
                                     _axios.default.get("https://neko.ketsuna.com")
