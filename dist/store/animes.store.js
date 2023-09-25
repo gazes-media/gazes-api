@@ -269,21 +269,21 @@ var AnimeStore = /*#__PURE__*/ function() {
                             return e.id === currentId;
                         });
                         var title_en = animeToCheck === null || animeToCheck === void 0 ? void 0 : animeToCheck.title_english, title_ro = animeToCheck === null || animeToCheck === void 0 ? void 0 : animeToCheck.title_romanji, title_fa = animeToCheck === null || animeToCheck === void 0 ? void 0 : animeToCheck.title;
-                        if (title_en) {
+                        if (animeEnglish) {
                             var regex = _this.buildRegex(title_en) // Recherche correspondance avec des mots complets, insensible à la casse
                             ;
                             if (regex.test(animeEnglish)) {
                                 groupedAnime[existingAnime].push(id);
                                 matched = true;
                                 return "break";
-                            } else if (title_ro) {
+                            } else if (animeRomanji) {
                                 var regex1 = _this.buildRegex(title_ro) // Recherche correspondance avec des mots complets, insensible à la casse
                                 ;
                                 if (regex1.test(animeRomanji)) {
                                     groupedAnime[existingAnime].push(id);
                                     matched = true;
                                     return "break";
-                                } else if (title_fa) {
+                                } else if (animeTitle) {
                                     var regex2 = _this.buildRegex(title_fa) // Recherche correspondance avec des mots complets, insensible à la casse
                                     ;
                                     if (regex2.test(animeTitle)) {
@@ -295,9 +295,9 @@ var AnimeStore = /*#__PURE__*/ function() {
                             }
                         }
                     };
-                    var animeTitle = anime.title.trim();
-                    var animeEnglish = anime.title_english.trim();
-                    var animeRomanji = anime.title_romanji.trim();
+                    var animeTitle = anime.title ? anime.title.trim() : false;
+                    var animeEnglish = anime.title_english ? anime.title_english.trim() : false;
+                    var animeRomanji = anime.title_romanji ? anime.title_romanji.trim() : false;
                     var id = anime.id;
                     var matched = false;
                     for(var existingAnime in groupedAnime){
