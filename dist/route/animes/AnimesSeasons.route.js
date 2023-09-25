@@ -9,8 +9,8 @@ Object.defineProperty(exports, "AnimesSeasonsRoute", {
     }
 });
 var _Route = require("../Route");
-var _animesstore = require("../../store/animes.store");
 var _fuse = /*#__PURE__*/ _interop_require_default(require("fuse.js"));
+var _fs = /*#__PURE__*/ _interop_require_default(require("fs"));
 function _assert_this_initialized(self) {
     if (self === void 0) {
         throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -113,10 +113,12 @@ var AnimesSeasonsRoute = /*#__PURE__*/ function(Route) {
         _define_property(_assert_this_initialized(_this), "handler", function(request, reply) {
             // récupérer les possible queries
             var _request_query = request.query, title = _request_query.title, id = _request_query.id;
-            var seasons = _animesstore.AnimeStore.seasons;
+            var seasons = JSON.parse(_fs.default.readFileSync("./seasons.json", "utf-8"));
             if (seasons.length <= 0) {
-                _animesstore.AnimeStore.groupAnimeBySimilarName(_animesstore.AnimeStore.vostfr);
-                seasons = _animesstore.AnimeStore.seasons;
+                return reply.status(404).send({
+                    success: false,
+                    message: "La requ\xeate a \xe9t\xe9 trait\xe9e avec succ\xe8s, mais aucun contenu n'est disponible pour la r\xe9ponse demand\xe9e."
+                });
             }
             if (title) {
                 var fuse = new _fuse.default(seasons, {

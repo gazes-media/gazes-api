@@ -10,6 +10,7 @@ Object.defineProperty(exports, "AnimeStore", {
 });
 var _axios = /*#__PURE__*/ _interop_require_default(require("axios"));
 var _cheerio = require("cheerio");
+var _fs = /*#__PURE__*/ _interop_require_default(require("fs"));
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
     try {
         var info = gen[key](arg);
@@ -249,12 +250,6 @@ var AnimeStore = /*#__PURE__*/ function() {
             }
         },
         {
-            key: "buildRegex",
-            value: function buildRegex(title) {
-                return new RegExp("^\\b".concat(title.replace("[", "").replace("]", ""), "\\b"), "i");
-            }
-        },
-        {
             key: "groupAnimeBySimilarName",
             value: function groupAnimeBySimilarName(animeList) {
                 var groupedAnime = {};
@@ -331,7 +326,7 @@ var AnimeStore = /*#__PURE__*/ function() {
                         })
                     };
                 });
-                this.seasons = result;
+                _fs.default.writeFileSync("./saisons.json", JSON.stringify(result));
             }
         },
         {
