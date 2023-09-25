@@ -104,7 +104,9 @@ export class AnimeStore {
   /* This function fetches the latest episodes from a website 
   and stores them in an array. */
   static async fetchLatest(): Promise<void> {
-    this.groupAnimeBySimilarName(this.vostfr);
+    setTimeout(() => {
+      this.groupAnimeBySimilarName(this.vostfr);
+    }, 1000);
     const { data } = await axios.get("https://neko.ketsuna.com");
     const parsedData = /var lastEpisodes = (.+)\;/gm.exec(data);
 
