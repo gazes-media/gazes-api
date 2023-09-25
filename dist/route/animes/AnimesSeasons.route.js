@@ -113,7 +113,7 @@ var AnimesSeasonsRoute = /*#__PURE__*/ function(Route) {
         _define_property(_assert_this_initialized(_this), "handler", function(request, reply) {
             // récupérer les possible queries
             var _request_query = request.query, title = _request_query.title, id = _request_query.id;
-            var seasons = JSON.parse(_fs.default.readFileSync("./seasons.json", "utf-8"));
+            var seasons = JSON.parse(_fs.default.readFileSync("../seasons.json", "utf-8"));
             if (seasons.length <= 0) {
                 return reply.status(404).send({
                     success: false,
