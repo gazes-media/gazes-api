@@ -1,5 +1,4 @@
 import fs from "fs";
-import fetch from "node-fetch";
 enum animeType {
     "tv",
     "m0v1e",
@@ -92,6 +91,9 @@ function groupAnimeBySimilarName(animeList: Anime[]) {
   
 (async () => {
   const fetched =  await fetch("https://api.gazes.fr/anime/animes")
-    const json = await fetched.json() as Anime[];
-    groupAnimeBySimilarName(json);
-})();
+    const json = await fetched.json() as {
+      data: Anime[],
+      success: boolean
+    }
+    groupAnimeBySimilarName(json.data);
+  })();
