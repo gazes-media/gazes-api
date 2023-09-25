@@ -269,21 +269,21 @@ var AnimeStore = /*#__PURE__*/ function() {
                             return e.id === currentId;
                         });
                         var title_en = animeToCheck === null || animeToCheck === void 0 ? void 0 : animeToCheck.title_english, title_ro = animeToCheck === null || animeToCheck === void 0 ? void 0 : animeToCheck.title_romanji, title_fa = animeToCheck === null || animeToCheck === void 0 ? void 0 : animeToCheck.title;
-                        if (animeEnglish) {
+                        if (title_en && animeEnglish) {
                             var regex = _this.buildRegex(title_en) // Recherche correspondance avec des mots complets, insensible à la casse
                             ;
                             if (regex.test(animeEnglish)) {
                                 groupedAnime[existingAnime].push(id);
                                 matched = true;
                                 return "break";
-                            } else if (animeRomanji) {
+                            } else if (animeRomanji && title_ro) {
                                 var regex1 = _this.buildRegex(title_ro) // Recherche correspondance avec des mots complets, insensible à la casse
                                 ;
                                 if (regex1.test(animeRomanji)) {
                                     groupedAnime[existingAnime].push(id);
                                     matched = true;
                                     return "break";
-                                } else if (animeTitle) {
+                                } else if (animeTitle && title_fa) {
                                     var regex2 = _this.buildRegex(title_fa) // Recherche correspondance avec des mots complets, insensible à la casse
                                     ;
                                     if (regex2.test(animeTitle)) {
