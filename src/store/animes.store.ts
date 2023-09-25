@@ -54,11 +54,10 @@ export class AnimeStore {
           let id = anime.id
             let matched = false;
             for (const existingAnime in groupedAnime) {
-              if(animeTitle)
-              if(animeTitle.length <2) continue;
               let currentId = parseInt(existingAnime.split("-")[0]);
               let animeToCheck = animeList.find(e => e.id === currentId);
               let title_en = animeToCheck?.title_english, title_ro= animeToCheck?.title_romanji, title_fa = animeToCheck?.title
+              if(title_fa.length < 2) continue;
               if(title_en && animeEnglish){
               if (animeEnglish.startsWith(title_en)) {
                 groupedAnime[existingAnime].push(id);
