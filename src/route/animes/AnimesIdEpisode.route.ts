@@ -13,9 +13,9 @@ export class AnimesIdEpisodeRoute extends Route {
   public method: HTTPMethods = "GET";
 
   public handler: RouteHandlerMethod = async (request, reply) => {
-    let { id, episodeNumber } = request.params as Params;
-    episodeNumber = parseInt(episodeNumber);
-    id = parseInt(id);
+    let { id, episodeNumber } = request.params as { id: number; episodeNumber: number}
+    episodeNumber = parseInt(episodeNumber.toString());
+    id = parseInt(id.toString());
 
     /* These are validation checks being performed on the `lang`, `id`, and `episode` parameters
       received in the request. */
@@ -51,16 +51,16 @@ export class AnimesIdEpisodeRoute extends Route {
       });
     }
 
-    animeVostfr = await AnimeStore.get(id, "vostfr");
+    animeVostfr = await AnimeStore.get(id.toString(), "vostfr");
 
-    if (animeVostfr.episodes.length < episodeNumber) {
+    if (animeVostfr.episodes.filter((e) => e.num === episodeNumber).length === 0) {
       return reply.status(404).send({
         success: false,
         message: `Anime with id ${id} has no episode ${episodeNumber}.`,
       });
     }
 
-    const episode = animeVostfr.episodes[episodeNumber - 1];
+    const episode = animeVostfr.episodes.find((e) => e.num === episodeNumber);
     const EpisodeURIExist = await AnimeStore.getEpisodeVideo(episode);
 
     if (!EpisodeURIExist) {
@@ -80,10 +80,10 @@ export class AnimesIdEpisodeRoute extends Route {
     };
 
     if (animeVf) {
-      animeVf = await AnimeStore.get(id, "vf");
+      animeVf = await AnimeStore.get(id.toString(), "vf");
 
-      if (animeVf.episodes.length > parseInt(episodeNumber)) {
-        const episodeVf = animeVf.episodes[episodeNumber - 1];
+      if (animeVf.episodes.filter((e) => e.num === episodeNumber).length > 0) {
+        const episodeVf = animeVf.episodes.find((e) => e.num === episodeNumber);
         const datas = await AnimeStore.getEpisodeVideo(episodeVf);
 
         if (datas) {
