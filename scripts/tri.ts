@@ -28,6 +28,12 @@ enum animeType {
     lang?: "vf" | "vostfr";
   }
 
+function buildRegex(title: string){
+  // remove every special character from the title
+  title = title.replace(/[^a-zA-Z0-9 ]/g, "");
+  return new RegExp(`^\\b${title}\\b`, 'i');
+}
+
 async function groupAnimeBySimilarName(animeList: Anime[]) {
     const groupedAnime: { [anime: string]: number[] } = {};
     animeList = animeList.sort((a, b) => a.id - b.id);
@@ -41,19 +47,21 @@ async function groupAnimeBySimilarName(animeList: Anime[]) {
           let currentId = parseInt(existingAnime.split("-")[0]);
           let animeToCheck = animeList.find(e => e.id === currentId);
           let title_en = animeToCheck?.title_english, title_ro= animeToCheck?.title_romanji, title_fa = animeToCheck?.title
-          if(title_fa && title_fa.length < 2) continue;
-          if(title_en && animeEnglish){
-          if (animeEnglish.startsWith(title_en)) {
+          if(title_en && animeEnglish){          
+            let regex = buildRegex(title_en);
+          if (regex.test(animeEnglish)) {
             groupedAnime[existingAnime].push(id);
             matched = true;
             break;
           }else if(animeRomanji && title_ro){
-            if (animeRomanji.startsWith(title_ro)){
+            regex = buildRegex(title_ro);
+            if (regex.test(animeRomanji)){
               groupedAnime[existingAnime].push(id);
               matched = true;
               break;
             }else if(animeTitle && title_fa){
-              if (animeTitle.startsWith(title_fa)){
+              regex = buildRegex(title_fa);
+              if (regex.test(animeTitle)){
                 groupedAnime[existingAnime].push(id);
                 matched = true;
                 break;
