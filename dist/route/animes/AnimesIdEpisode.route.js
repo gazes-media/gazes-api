@@ -250,8 +250,8 @@ var AnimesIdEpisodeRoute = /*#__PURE__*/ function(Route) {
                     switch(_state.label){
                         case 0:
                             _request_params = request.params, id = _request_params.id, episodeNumber = _request_params.episodeNumber;
-                            episodeNumber = parseInt(episodeNumber);
-                            id = parseInt(id);
+                            episodeNumber = parseInt(episodeNumber.toString());
+                            id = parseInt(id.toString());
                             /* These are validation checks being performed on the `lang`, `id`, and `episode` parameters
       received in the request. */ if (isNaN(id)) {
                                 return [
@@ -297,11 +297,13 @@ var AnimesIdEpisodeRoute = /*#__PURE__*/ function(Route) {
                             }
                             return [
                                 4,
-                                _animesstore.AnimeStore.get(id, "vostfr")
+                                _animesstore.AnimeStore.get(id.toString(), "vostfr")
                             ];
                         case 1:
                             animeVostfr = _state.sent();
-                            if (animeVostfr.episodes.length < episodeNumber) {
+                            if (animeVostfr.episodes.filter(function(e) {
+                                return e.num === episodeNumber;
+                            }).length === 0) {
                                 return [
                                     2,
                                     reply.status(404).send({
@@ -310,7 +312,9 @@ var AnimesIdEpisodeRoute = /*#__PURE__*/ function(Route) {
                                     })
                                 ];
                             }
-                            episode = animeVostfr.episodes[episodeNumber - 1];
+                            episode = animeVostfr.episodes.find(function(e) {
+                                return e.num === episodeNumber;
+                            });
                             return [
                                 4,
                                 _animesstore.AnimeStore.getEpisodeVideo(episode)
@@ -339,15 +343,19 @@ var AnimesIdEpisodeRoute = /*#__PURE__*/ function(Route) {
                             ];
                             return [
                                 4,
-                                _animesstore.AnimeStore.get(id, "vf")
+                                _animesstore.AnimeStore.get(id.toString(), "vf")
                             ];
                         case 3:
                             animeVf = _state.sent();
-                            if (!(animeVf.episodes.length > parseInt(episodeNumber))) return [
+                            if (!(animeVf.episodes.filter(function(e) {
+                                return e.num === episodeNumber;
+                            }).length > 0)) return [
                                 3,
                                 5
                             ];
-                            episodeVf = animeVf.episodes[episodeNumber - 1];
+                            episodeVf = animeVf.episodes.find(function(e) {
+                                return e.num === episodeNumber;
+                            });
                             return [
                                 4,
                                 _animesstore.AnimeStore.getEpisodeVideo(episodeVf)
