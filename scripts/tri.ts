@@ -86,7 +86,7 @@ async function groupAnimeBySimilarName(animeList: Anime[]) {
     })
     });
     console.log(result.length);
-    result.sort((a, b) => parseInt(a.seasons[0].fiche.score) - parseInt(b.seasons[0].fiche.score));
+    result.sort((a, b) => parseInt(a.seasons[0].fiche.score) - parseInt(b.seasons[0].fiche.score)).reverse();
     fs.writeFileSync("./saisons.json", JSON.stringify(result));
     return true;
   }
