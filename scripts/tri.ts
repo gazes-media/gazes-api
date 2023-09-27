@@ -72,6 +72,7 @@ async function groupAnimeBySimilarName(animeList: Anime[]) {
         }
      }
         if (!matched) {
+          console.log(`License ${anime.id} added to the list, ${Object.keys(groupedAnime).length} licenses in the list now`);
           groupedAnime[id.toString() + "-anime"] = [id];
         }
      
