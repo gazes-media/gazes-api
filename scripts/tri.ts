@@ -29,8 +29,8 @@ enum animeType {
   }
 
 function buildRegex(title: string){
-  // remove every special character from the title
-  title = title.replace(/[^a-zA-Z0-9 ]/g, "");
+  // escaoe every character that is not a letter or a number
+  title = title.replace(/[^a-z0-9]/gi, '\\$&');
   return new RegExp(`^\\b${title}\\b`, 'i');
 }
 
