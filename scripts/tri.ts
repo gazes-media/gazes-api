@@ -36,7 +36,7 @@ function buildRegex(title: string){
 
 async function groupAnimeBySimilarName(animeList: Anime[]) {
     const groupedAnime: { [anime: string]: number[] } = {};
-    animeList = animeList.sort((a, b) => a.id - b.id).sort((a, b) => parseInt(a.start_date_year) - parseInt(b.start_date_year));
+    animeList = animeList.sort((a, b) => a.id - b.id);
     animeList.forEach((anime) => {
       let animeTitle = anime.title ? anime.title.trim() : false;
       let animeRomanji = anime.title_romanji ? anime.title_romanji.trim() : false;
@@ -86,7 +86,6 @@ async function groupAnimeBySimilarName(animeList: Anime[]) {
     })
     });
     console.log(result.length);
-    result.sort((a, b) => parseInt(a.seasons[0].fiche.score) - parseInt(b.seasons[0].fiche.score)).reverse();
     fs.writeFileSync("./saisons.json", JSON.stringify(result));
     return true;
   }
