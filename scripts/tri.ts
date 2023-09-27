@@ -70,8 +70,7 @@ async function groupAnimeBySimilarName(animeList: Anime[]) {
       });
   
     const result = Object.keys(groupedAnime).map((animeName) => {
-      let animeFind = animeList.find((anime) => anime.id === groupedAnime[animeName][0]);
-      if(!animeFind) return;
+      let animeFind = animeList.find((anime) => anime.id === groupedAnime[animeName][0]) as Anime;
       return ({
       title: animeFind.title,
       ids: groupedAnime[animeName],
@@ -82,11 +81,12 @@ async function groupAnimeBySimilarName(animeList: Anime[]) {
       title_romanji: animeFind.title_romanji,
       seasons: groupedAnime[animeName].map((id) => ({
         year: parseInt((animeList.find((anime) => anime.id === id)as Anime).start_date_year),
-        fiche: animeList.find((anime) => anime.id === id),
+        fiche: animeList.find((anime) => anime.id === id) as Anime,
         })).sort((a, b) => a.year - b.year),
     })
     });
     console.log(result.length);
+    result.sort((a, b) => a.seasons[0].fiche.popularity - b.seasons[0].fiche.popularity);
     fs.writeFileSync("./saisons.json", JSON.stringify(result));
     return true;
   }
