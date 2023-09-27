@@ -59,9 +59,7 @@ async function groupAnimeBySimilarName(animeList: Anime[]) {
                 matched = true;
                 break;
               }
-            }
-          }
-      
+            }      
         }
      }
         if (!matched) {
