@@ -39,22 +39,15 @@ async function groupAnimeBySimilarName(animeList: Anime[]) {
     animeList = animeList.sort((a, b) => a.id - b.id).sort((a, b) => parseInt(a.start_date_year) - parseInt(b.start_date_year));
     animeList.forEach((anime) => {
       let animeTitle = anime.title ? anime.title.trim() : false;
-      let animeEnglish = anime.title_english ? anime.title_english.trim() : false;
       let animeRomanji = anime.title_romanji ? anime.title_romanji.trim() : false;
       let id = anime.id
         let matched = false;
         for (const existingAnime in groupedAnime) {
           let currentId = parseInt(existingAnime.split("-")[0]);
           let animeToCheck = animeList.find(e => e.id === currentId);
-          let title_en = animeToCheck?.title_english, title_ro= animeToCheck?.title_romanji, title_fa = animeToCheck?.title
-          if(title_en && animeEnglish){          
-            let regex = buildRegex(title_en);
-          if (regex.test(animeEnglish)) {
-            groupedAnime[existingAnime].push(id);
-            matched = true;
-            break;
-          }else if(animeRomanji && title_ro){
-            regex = buildRegex(title_ro);
+          let title_ro= animeToCheck?.title_romanji, title_fa = animeToCheck?.title
+          if(animeRomanji && title_ro){
+           let regex = buildRegex(title_ro);
             if (regex.test(animeRomanji)){
               groupedAnime[existingAnime].push(id);
               matched = true;
