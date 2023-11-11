@@ -281,7 +281,6 @@ var GazeApi = /*#__PURE__*/ function() {
             value: /* This function starts a server on a specified port and initializes a Firebase admin instance. */ function start(port) {
                 var _this = this;
                 return _async_to_generator(function() {
-                    var serviceAccount;
                     return _ts_generator(this, function(_state) {
                         switch(_state.label){
                             case 0:
@@ -297,11 +296,6 @@ var GazeApi = /*#__PURE__*/ function() {
                                 ];
                             case 2:
                                 _state.sent();
-                                serviceAccount = require("../animaflix-53e15-firebase-adminsdk-xvjq7-2c13172613.json");
-                                _firebaseadmin.initializeApp({
-                                    credential: (0, _app.cert)(serviceAccount),
-                                    databaseURL: "https://animaflix-53e15-default-rtdb.europe-west1.firebasedatabase.app/"
-                                }, "animaflix");
                                 _this.fastify.listen({
                                     port: port
                                 }, function(err, adress) {
@@ -309,6 +303,11 @@ var GazeApi = /*#__PURE__*/ function() {
                                         console.error(err);
                                         return;
                                     }
+                                    var serviceAccount = require("../animaflix-53e15-firebase-adminsdk-xvjq7-2c13172613.json");
+                                    _firebaseadmin.initializeApp({
+                                        credential: (0, _app.cert)(serviceAccount),
+                                        databaseURL: "https://animaflix-53e15-default-rtdb.europe-west1.firebasedatabase.app/"
+                                    }, "animaflix");
                                     console.log("Server is starting on ".concat(adress));
                                 });
                                 return [
