@@ -1,11 +1,9 @@
-import fastify, { FastifyInstance, RouteOptions } from "fastify";
-import { Route } from "./route/Route";
-import { Middleware } from "./middleware/Middleware";
-import * as admin from "firebase-admin";
-import { cert } from "firebase-admin/app";
-import fastifyMultipart from "@fastify/multipart";
-import { AnimeStore } from "./store/animes.store";
 import cors from "@fastify/cors";
+import fastifyMultipart from "@fastify/multipart";
+import fastify, { FastifyInstance, RouteOptions } from "fastify";
+import { Middleware } from "./middleware/Middleware";
+import { Route } from "./route/Route";
+import { AnimeStore } from "./store/animes.store";
 
 export class GazeApi {
   public fastify: FastifyInstance;
@@ -42,9 +40,6 @@ export class GazeApi {
         return;
       }
 
-      const serviceAccount = require("../animaflix-53e15-firebase-adminsdk-xvjq7-2c13172613.json");
-      admin.initializeApp({ credential: cert(serviceAccount), databaseURL: "https://animaflix-53e15-default-rtdb.europe-west1.firebasedatabase.app/" }, "animaflix");
-     
       console.log(`Server is starting on ${adress}`);
     });
   }
