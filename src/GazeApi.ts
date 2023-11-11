@@ -36,15 +36,15 @@ export class GazeApi {
     await this.toggleSmartCache();
     await this.fastify.register(fastifyMultipart);
 
-    const serviceAccount = require("../animaflix-53e15-firebase-adminsdk-xvjq7-2c13172613.json");
-    admin.initializeApp({ credential: cert(serviceAccount), databaseURL: "https://animaflix-53e15-default-rtdb.europe-west1.firebasedatabase.app/" }, "animaflix");
-
     this.fastify.listen({ port }, (err, adress) => {
       if (err) {
         console.error(err);
         return;
       }
 
+      const serviceAccount = require("../animaflix-53e15-firebase-adminsdk-xvjq7-2c13172613.json");
+      admin.initializeApp({ credential: cert(serviceAccount), databaseURL: "https://animaflix-53e15-default-rtdb.europe-west1.firebasedatabase.app/" }, "animaflix");
+     
       console.log(`Server is starting on ${adress}`);
     });
   }
