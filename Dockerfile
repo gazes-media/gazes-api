@@ -60,6 +60,8 @@ USER node
 
 # Copy package.json so that package manager commands can be used.
 COPY package.json .
+COPY saisons.json .
+COPY scripts .
 
 # Copy the production dependencies from the deps stage and also
 # the built application from the build stage into the image.

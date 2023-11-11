@@ -9,47 +9,47 @@ import { FastifyRequestNew } from "../../interfaces/requestNew.interface";
 
 type RouteBody = { user: DecodedIdToken } & Anime;
 export class UserAnimesDeleteRoute extends Route {
-  public url = "/users/animes";
-  public method: HTTPMethods = "DELETE";
+    public url = "/users/animes";
+    public method: HTTPMethods = "DELETE";
 
-  public handler: RouteHandlerMethod = async (request: FastifyRequestNew, reply) => {
-    const body = request.body as RouteBody;
+    public handler: RouteHandlerMethod = async (request: FastifyRequestNew, reply) => {
+        const body = request.body as RouteBody;
 
-    /* verify that every required fields of the body are gived */
-    if (!body.id) return reply.status(400).send({ success: false, message: "Anime id is required." });
-    if (!body.episode) return reply.status(400).send({ success: false, message: "Episode is required." });
+        /* verify that every required fields of the body are gived */
+        if (!body.id) return reply.status(400).send({ success: false, message: "Anime id is required." });
+        if (!body.episode) return reply.status(400).send({ success: false, message: "Episode is required." });
 
-    await AppDataSource.getRepository(User).save({ googleId: body.user.uid });
-    const animeRepository = AppDataSource.getRepository(AnimeEntity);
+        await AppDataSource.getRepository(User).save({ googleId: body.user.uid });
+        const animeRepository = AppDataSource.getRepository(AnimeEntity);
 
-    const anime = await animeRepository.findOne({
-      where: {
-        id: body.id,
-        episode: body.episode,
-        user: { googleId: body.user.uid },
-      },
-      loadRelationIds: true,
-    });
+        const anime = await animeRepository.findOne({
+            where: {
+                id: body.id,
+                episode: body.episode,
+                user: { googleId: body.user.uid },
+            },
+            loadRelationIds: true,
+        });
 
-    if (!anime) {
-      return reply.status(404).send({
-        success: false,
-        message: "Anime not found",
-      });
-    }
+        if (!anime) {
+            return reply.status(404).send({
+                success: false,
+                message: "Anime not found",
+            });
+        }
 
-    const deleted = await animeRepository.delete(anime);
+        const deleted = await animeRepository.delete(anime);
 
-    if (deleted.affected === 0) {
-      return reply.status(404).send({
-        succes: false,
-        error: "Anime not found",
-      });
-    }
+        if (deleted.affected === 0) {
+            return reply.status(404).send({
+                succes: false,
+                error: "Anime not found",
+            });
+        }
 
-    return reply.send({
-      success: true,
-      data: anime,
-    });
-  };
+        return reply.send({
+            success: true,
+            data: anime,
+        });
+    };
 }

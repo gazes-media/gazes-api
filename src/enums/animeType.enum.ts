@@ -3,5 +3,5 @@ export enum animeType {
     "m0v1e",
     "special",
     "ova",
-    ""
+    "",
 }

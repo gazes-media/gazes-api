@@ -1,7 +1,6 @@
-import "reflect-metadata"
-import { DataSource } from "typeorm"
+import "reflect-metadata";
+import { DataSource } from "typeorm";
 import * as Entity from "./entity/Entity";
-
 
 let entities = Object.values(Entity);
 export const AppDataSource = new DataSource({
@@ -16,4 +15,4 @@ export const AppDataSource = new DataSource({
     entities: entities,
     migrations: [],
     subscribers: [],
-})
+});

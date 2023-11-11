@@ -3,14 +3,14 @@ import { HTTPMethods, RouteHandlerMethod } from "fastify";
 
 /* The IndexRoute class is a GET route handler for the root URL that sends a "testing" message. */
 export class IndexRoute extends Route {
-  public url = "/";
-  public method: HTTPMethods = "GET";
+    public url = "/";
+    public method: HTTPMethods = "GET";
 
-  public handler: RouteHandlerMethod = (request, reply) => {
-    reply.send({
-      message: "testing",
-    });
-  };
+    public handler: RouteHandlerMethod = (request, reply) => {
+        reply.send({
+            message: "testing",
+        });
+    };
 }
 
 export { AnimesRssRoute } from "./animes/AnimesRss.route";

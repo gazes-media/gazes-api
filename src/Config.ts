@@ -1,3 +1,3 @@
 export class Config {
-  static port = 5300;
+    static port = 5300;
 }

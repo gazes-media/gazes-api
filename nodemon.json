@@ -3,5 +3,4 @@
     "ignore": ["src/**/*.spec.ts"],
     "exec": "npx ts-node --swc ./src/index.ts",
     "ext": "ts"
-  }
-  
+}

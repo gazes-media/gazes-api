@@ -1,12 +1,11 @@
-
 export interface Anime {
-    id: number
+    id: number;
 
-    episode: number
+    episode: number;
 
-    duration: number
+    duration: number;
 
-    time: number
+    time: number;
 
-    date: Date
+    date: Date;
 }

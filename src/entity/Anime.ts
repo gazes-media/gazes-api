@@ -1,29 +1,27 @@
-import "reflect-metadata"
-import { Entity, Column, OneToOne, PrimaryGeneratedColumn, ManyToOne } from "typeorm"
-import { User } from "./User"
+import "reflect-metadata";
+import { Entity, Column, OneToOne, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import { User } from "./User";
 
 @Entity()
 export class Anime {
-
     @PrimaryGeneratedColumn()
-    generatedId: number
-    
-    @Column()
-    id: number
-
-    @ManyToOne(() => User, user => user.googleId)
-    user: User
+    generatedId: number;
 
     @Column()
-    episode: number
+    id: number;
+
+    @ManyToOne(() => User, (user) => user.googleId)
+    user: User;
 
     @Column()
-    duration: number
+    episode: number;
 
     @Column()
-    time: number
+    duration: number;
 
     @Column()
-    date: Date
-    
+    time: number;
+
+    @Column()
+    date: Date;
 }
