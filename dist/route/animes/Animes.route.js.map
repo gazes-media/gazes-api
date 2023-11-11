@@ -1,1 +1,0 @@
-{"version":3,"file":"Animes.route.js","sourceRoot":"","sources":["../../../src/route/animes/Animes.route.ts"],"names":[],"mappings":";;;AACA,oCAAiC;AACjC,2DAAsD;AAEtD,MAAa,WAAY,SAAQ,aAAK;IAC7B,GAAG,GAAG,SAAS,CAAC;IAChB,MAAM,GAAgB,KAAK,CAAC;IAE5B,OAAO,GAAuB,CAAC,OAAO,EAAE,KAAK,EAAE,EAAE;QACtD,KAAK,CAAC,IAAI,CAAC,yBAAU,CAAC,GAAG,CAAC,CAAC;IAC7B,CAAC,CAAC;CACH;AAPD,kCAOC"}
