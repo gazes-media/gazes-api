@@ -62,10 +62,6 @@ export class GazeApi {
         await AnimeStore.fetchLatest();
         console.log(`♻️ cache refreshed (${AnimeStore.all.length} animes)`);
 
-        this.refreshSeasons();
-    }
-
-    private refreshSeasons() {
         try {
             const tri = spawn(`node`, [`${__dirname}/../scripts/tri.js`]);
             tri.on("close", (code) => console.log);
