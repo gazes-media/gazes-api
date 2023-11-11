@@ -36,7 +36,7 @@ export class GazeApi {
     await this.toggleSmartCache();
     await this.fastify.register(fastifyMultipart);
 
-    this.fastify.listen({ host: "localhost", port }, (err, adress) => {
+    this.fastify.listen({ host: "0.0.0.0", port }, (err, adress) => {
       if (err) {
         console.error(err);
         return;
