@@ -20,7 +20,7 @@ export class AnimesRssRoute extends Route {
             let id = anime.anime_url.match(regex);
             return {
                 title: anime.title,
-                link: `https://deril-fr.github.io/anime/${anime.lang}/${id[1]}/episode/${AnimeStore.episodeToNumber(anime.episode)}`,
+                link: `https://gazes.fr/anime/${id[1]}/episode/${AnimeStore.episodeToNumber(anime.episode)}`,
                 description: `Episode ${AnimeStore.episodeToNumber(anime.episode)} de ${anime.title}`,
                 pubDate: new Date(anime.timestamp * 1000).toUTCString(),
                 image: anime.url_bg,
