@@ -41,7 +41,7 @@ export class AnimesRssRoute extends Route {
             ${animesFiltered
                 .map((anime) => {
                     return `<item>
-                <guid>${(new Date(anime.pubDate)).valueOf()}</guid>
+                <guid>${anime.link}</guid>
                 <title>${anime.title}</title>
                 <link>${anime.link}</link>
                 <description>${anime.description}</description>
@@ -54,7 +54,7 @@ export class AnimesRssRoute extends Route {
     </rss>
         `;
         reply.header("Access-Control-Allow-Origin", "*");
-        reply.header("Content-Type", "text/xml");
+        reply.header("Content-Type", "application/xml");
         reply.send(rss);
     };
 }
