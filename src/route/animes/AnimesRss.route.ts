@@ -46,7 +46,7 @@ export class AnimesRssRoute extends Route {
                 <link>${anime.link}</link>
                 <description>${anime.description}</description>
                 <pubDate>${anime.pubDate}</pubDate>
-                <media:thumbnail url="${anime.image}" medium="image" width="300" height="300" xmlns:media="http://search.yahoo.com/mrss/" />
+                <media:thumbnail url="${anime.image}" width="300" height="300" xmlns:media="http://search.yahoo.com/mrss/" />
             </item>\n`;
                 })
                 .join("")}
