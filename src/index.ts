@@ -39,4 +39,4 @@ admin.initializeApp({
     databaseURL: "https://animaflix-53e15-default-rtdb.europe-west1.firebasedatabase.app",
 });
 
-gazeApi.start(Config.port);
+gazeApi.start(process.env.PORT);
