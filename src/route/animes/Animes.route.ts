@@ -1,8 +1,17 @@
 import { HTTPMethods, RouteHandlerMethod } from "fastify";
-import { Route } from "../Route";
-import { AnimeStore } from "../../store/animes.store";
-import { Anime } from "../../interfaces/anime.interface";
 import Fuse from "fuse.js";
+import { Anime } from "../../interfaces/anime.interface";
+import { AnimeStore } from "../../store/animes.store";
+import { Route } from "../Route";
+
+type AnimesQuery = {
+    types?: string;
+    status?: string;
+    genres?: string;
+    year?: string;
+    title?: string;
+    page?: number;
+};
 
 export class AnimesRoute extends Route {
     public url = "/animes";
@@ -10,7 +19,7 @@ export class AnimesRoute extends Route {
 
     public handler: RouteHandlerMethod = (request, reply) => {
         // récupérer les possible queries
-        let { types, status, genres, year, title } = request.query as { types?: string; status?: string; genres?: string; year?: string; title?: string };
+        let { types, status, genres, year, title, page }: AnimesQuery = request.query;
 
         let animes = AnimeStore.vostfr;
 
@@ -62,11 +71,18 @@ export class AnimesRoute extends Route {
         }
 
         if (animes.length <= 0) {
-            console.log(animes);
             return reply.status(404).send({
                 success: false,
                 message: "La requête a été traitée avec succès, mais aucun contenu n'est disponible pour la réponse demandée.",
             });
+        }
+
+        if (page) {
+            const perPage = 20;
+            const start = (page - 1) * perPage;
+            const end = start + perPage;
+
+            animes = animes.slice(start, end);
         }
 
         return reply.send({
