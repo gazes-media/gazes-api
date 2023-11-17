@@ -49,6 +49,15 @@ describe('AnimesService', () => {
             expect(animes.every((anime) => AnimeSchema.safeParse(anime).success));
             expect(animes).toHaveLength(25);
         });
+
+        // start date year
+        it('should return of animes where every anime have "2020" for start_date_year', async () => {
+            const animes = await service.getAnimes({ start_date_year: 2020 });
+            expect(animes).toBeDefined();
+            expect(animes).not.toHaveLength(0);
+            expect(animes.every((anime) => AnimeSchema.safeParse(anime).success));
+            expect(animes.every((anime) => anime.start_date_year == 2020));
+        });
     });
 
     // it('should return a array of animes; animes should have genre action but no ecchi', async () => {
