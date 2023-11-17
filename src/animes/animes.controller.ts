@@ -1,33 +1,29 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { BadRequestException, Controller, Get, Param, Query } from '@nestjs/common';
 import { AnimesService } from './animes.service';
 import { AnimeGenre } from './animes.type';
-import { z } from 'zod';
 
 @Controller('animes')
 export class AnimesController {
     constructor(private readonly animesService: AnimesService) {}
 
     @Get()
-    findAll(@Query('page') p: number, @Query('genres') g: string, @Query('year') y: number) {
-        let genres: undefined | z.infer<typeof AnimeGenre>[] = undefined;
-        let negativeGenres: undefined | z.infer<typeof AnimeGenre>[] = undefined;
-        let page: undefined | number;
-        let start_date_year: undefined | number;
+    findAll(@Query('page') page, @Query('genres') genres, @Query('year') start_date_year, @Query('title') title) {
+        page = parseInt(page);
+        if (page && isNaN(page)) throw new BadRequestException('page must be a number');
 
-        if (g) {
-            const tempGenresArr = g.split(',');
+        start_date_year = parseInt(start_date_year);
+        if (start_date_year && isNaN(start_date_year)) throw new BadRequestException('year must be a number');
 
-            const tempGenres = tempGenresArr.filter((genre) => !genre.startsWith('!') && AnimeGenre.safeParse(genre).success);
-            genres = tempGenres as z.infer<typeof AnimeGenre>[];
+        genres = genres?.split(',').filter((genre) => !genre.startsWith('!') && AnimeGenre.safeParse(genre).success);
+        const negativeGenres = genres
+            ?.split(',')
+            .filter((genre) => genre.startsWith('!'))
+            .map((genre) => genre.replace('!', ''))
+            .filter((genre) => AnimeGenre.safeParse(genre).success);
 
-            const tempNegativeGenres = tempGenresArr.filter((genre) => genre.startsWith('!') && AnimeGenre.safeParse(genre.slice(0, 1)).success);
-            negativeGenres = tempNegativeGenres.map((genre) => genre.slice(0, 1)) as z.infer<typeof AnimeGenre>[];
-        }
+        title = title?.trim().toLowerCase();
 
-        if (p) page = p;
-        if (y) start_date_year = y;
-
-        return this.animesService.getAnimes({ page, genres, negativeGenres, start_date_year });
+        return this.animesService.getAnimes({ page, start_date_year, genres, title, negativeGenres });
     }
 
     @Get(':id')

@@ -4,25 +4,44 @@ import axios from 'axios';
 import { Cache } from 'cache-manager';
 import { Anime, NekosamaAnime, AnimeGenre, nekoAnimeToAnime, nekoEpisodetoEpisode } from './animes.type';
 import { z } from 'zod';
+import Fuse from 'fuse.js';
 
 type getAnimesFields = {
     genres?: z.infer<typeof AnimeGenre>[];
     negativeGenres?: z.infer<typeof AnimeGenre>[];
     page?: number;
     start_date_year?: number;
+    title?: string;
 };
 
 @Injectable()
 export class AnimesService {
     constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
 
-    async getAnimes({ genres, negativeGenres, page, start_date_year }: getAnimesFields = {}) {
-        let animes: Anime[] = await this.cacheManager.get<Anime[]>('animes');
+    async getAnimes({ genres, negativeGenres, page, start_date_year, title }: getAnimesFields = {}) {
+        let nekoAnimes: NekosamaAnime[] = await this.cacheManager.get<NekosamaAnime[]>('animes');
 
-        if (!animes) {
+        if (!page) page = 1;
+
+        if (!nekoAnimes) {
             const { data }: { data: NekosamaAnime[] } = await axios.get('https://neko.ketsuna.com/animes-search-vostfr.json');
-            animes = data.map(nekoAnimeToAnime);
+            nekoAnimes = data;
         }
+
+        let animes = [];
+
+        if (title) {
+            const fuse = new Fuse(nekoAnimes, {
+                keys: ['title_english', 'title_romanji', 'others'],
+                includeScore: true,
+            });
+
+            animes = fuse.search(title).map((r) => r.item);
+        } else {
+            animes = nekoAnimes;
+        }
+
+        animes = animes.map(nekoAnimeToAnime);
 
         animes = animes.filter((anime) => {
             let test = true;
@@ -34,7 +53,7 @@ export class AnimesService {
             return test;
         });
 
-        if (page) animes = animes.slice(page, page + 25);
+        animes = animes.slice(page * 25 - 1, page * 25 + 25 - 1);
         return animes;
     }
 
