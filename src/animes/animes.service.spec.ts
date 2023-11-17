@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AnimesService } from './animes.service';
 import { CacheModule } from '@nestjs/cache-manager';
-import { AnimeSchema } from './animes.type';
+import { AnimeEpisodeSchema, AnimeSchema } from './animes.type';
 
 describe('AnimesService', () => {
     let service: AnimesService;
@@ -60,54 +60,20 @@ describe('AnimesService', () => {
         });
     });
 
-    // it('should return a array of animes; animes should have genre action but no ecchi', async () => {
-    //     const animes = await service.getAnimes({ genres: ['action'], negativeGenres: ['ecchi'] });
-    //     expect(animes).toBeDefined();
-    //     expect(animes).not.toHaveLength(0);
-    //     expect(animes.every((anime) => anime.genres.includes('action') && !anime.genres.includes('ecchi'))).toBe(true);
-    // });
+    describe('getAnime', () => {
+        it('should return a valid anime with 1 as id and all the optionnal fields', async () => {
+            const anime = await service.getAnime(1);
+            expect(anime).toBeDefined();
+            expect(AnimeSchema.safeParse(anime));
+            expect(anime.synopsis).toBeDefined();
+            expect(anime.banner_image_url).toBeDefined();
+            expect(anime.id).toEqual(1);
+        });
 
-    // it('should return a non empty array', async () => {
-    //     const animes = await service.getAnimes();
-    //     expect(animes).toBeDefined();
-    //     expect(animes).not.toHaveLength(0);
-    // });
-
-    // it('should return 25 animes', async () => {
-    //     const animes = await service.getAnimes({ page: 1 });
-    //     expect(animes).toBeDefined();
-    //     expect(animes).not.toHaveLength(0);
-    //     expect(animes).toHaveLength(25);
-    // });
-
-    // it('should return only animes that have action in their genres', async () => {
-    //     const animes = await service.getAnimes({ genres: ['action'] });
-    //     expect(animes).toBeDefined();
-    //     expect(animes).not.toHaveLength(0);
-    //     expect(animes.every((anime) => anime.genres.includes('action'))).toBe(true);
-    // });
-
-    // it('should return only animes that have a start_date_year of 2020', async () => {
-    //     const animes = await service.getAnimes({ start_date_year: 2020 });
-    //     expect(animes).toBeDefined();
-    //     expect(animes).not.toHaveLength(0);
-    //     expect(animes.every((anime) => anime.start_date_year == 2020)).toBe(true);
-    // });
-
-    // it('should return only animes that have a start_date_year of 2020, a genre of action and return only 25 animes', async () => {
-    //     const animes = await service.getAnimes({ start_date_year: 2020, genres: ['action'], page: 1 });
-    //     expect(animes).toBeDefined();
-    //     expect(animes).not.toHaveLength(0);
-    //     expect(animes.every((anime) => anime.start_date_year == 2020)).toBe(true);
-    //     expect(animes.every((anime) => anime.genres.includes('action'))).toBe(true);
-    //     expect(animes.length).toBeLessThanOrEqual(25);
-    // });
-
-    // it('should return a valid anime', async () => {
-    //     const anime = await service.getAnime(1);
-    //     expect(AnimeSchema.safeParse(anime).success).toBe(true);
-    // });
-
-    // it('should return a anime with the title of "hunter x hunter"', async () => {});
-    // })
+        it('should have valid episodes array with a length greater than 0', async () => {
+            const anime = await service.getAnime(1);
+            expect(anime.episodes).not.toHaveLength(0);
+            expect(anime.episodes.every((episode) => AnimeEpisodeSchema.safeParse(episode).success));
+        });
+    });
 });
