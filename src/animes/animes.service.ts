@@ -18,43 +18,48 @@ type getAnimesFields = {
 export class AnimesService {
     constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
 
+    /**
+     * Retrieves a list of anime based on specified filters.
+     * @async
+     * @param {getAnimesFields} [fields={}] - An object containing filter parameters.
+     * @returns {Promise<Anime[]>} - A Promise resolving to an array of Anime objects.
+     */
     async getAnimes({ genres, negativeGenres, page, start_date_year, title }: getAnimesFields = {}) {
         let nekoAnimes: NekosamaAnime[] = await this.cacheManager.get<NekosamaAnime[]>('animes');
-
-        if (!page) page = 1;
 
         if (!nekoAnimes) {
             const { data }: { data: NekosamaAnime[] } = await axios.get('https://neko.ketsuna.com/animes-search-vostfr.json');
             nekoAnimes = data;
+            await this.cacheManager.set('animes', nekoAnimes); // Cache fetched data for future use
         }
 
-        let animes = [];
+        let filteredAnimes = nekoAnimes.map(nekoAnimeToAnime);
 
         if (title) {
-            const fuse = new Fuse(nekoAnimes, {
+            const fuse = new Fuse(filteredAnimes, {
                 keys: ['title_english', 'title_romanji', 'others'],
                 includeScore: true,
             });
-
-            animes = fuse.search(title).map((r) => r.item);
-        } else {
-            animes = nekoAnimes;
+            filteredAnimes = fuse.search(title).map((r) => r.item);
         }
 
-        animes = animes.map(nekoAnimeToAnime);
+        if (genres) {
+            filteredAnimes = filteredAnimes.filter((anime) => genres.every((genre) => anime.genres.includes(genre)));
+        }
 
-        animes = animes.filter((anime) => {
-            let test = true;
+        if (negativeGenres) {
+            filteredAnimes = filteredAnimes.filter((anime) => !negativeGenres.some((genre) => anime.genres.includes(genre)));
+        }
 
-            if (genres && !genres.every((genre) => anime.genres.includes(genre))) test = false;
-            if (negativeGenres && !negativeGenres.every((genre) => !anime.genres.includes(genre))) test = false;
-            if (start_date_year && anime.start_date_year != start_date_year) test = false;
+        if (start_date_year) {
+            filteredAnimes = filteredAnimes.filter((anime) => anime.start_date_year === start_date_year);
+        }
 
-            return test;
-        });
+        const pageSize = 25;
+        const startIndex = ((page || 1) - 1) * pageSize;
+        const endIndex = startIndex + pageSize;
 
-        animes = animes.slice(page * 25 - 1, page * 25 + 25 - 1);
-        return animes;
+        return filteredAnimes.slice(startIndex, endIndex);
     }
 
     async getAnime(id: number): Promise<Anime | undefined> {
