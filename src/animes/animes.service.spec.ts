@@ -51,12 +51,24 @@ describe('AnimesService', () => {
         });
 
         // start date year
-        it('should return of animes where every anime have "2020" for start_date_year', async () => {
+        it('should return animes where every anime have "2020" for start_date_year', async () => {
             const animes = await service.getAnimes({ start_date_year: 2020 });
             expect(animes).toBeDefined();
             expect(animes).not.toHaveLength(0);
             expect(animes.every((anime) => AnimeSchema.safeParse(anime).success));
             expect(animes.every((anime) => anime.start_date_year == 2020));
+        });
+
+        it('should return a array of anime matching the title', async () => {
+            const animes = await service.getAnimes({ title: 'hunter x hunter' });
+            expect(animes).toBeDefined();
+            expect(animes).not.toHaveLength(0);
+        });
+
+        it('should return a empty array when no anime with specified title found', async () => {
+            const animes = await service.getAnimes({ title: 'zdjqoijdzqoijdioqzjdoiqzjdopqjpzoidjqiopzdjpioqjziopdjqpozd' });
+            expect(animes).toBeDefined();
+            expect(animes).toHaveLength(0);
         });
     });
 
