@@ -19,10 +19,12 @@ export class AnimesService {
     constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
 
     /**
-     * Retrieves a list of anime based on specified filters.
-     * @async
-     * @param {getAnimesFields} [fields={}] - An object containing filter parameters.
-     * @returns {Promise<Anime[]>} - A Promise resolving to an array of Anime objects.
+     * The function `getAnimes` retrieves a list of anime based on specified filters such as genres,
+     * negative genres, page number, start date year, and title.
+     * @param {getAnimesFields}  - - `genres`: An array of genres to filter the animes by. An anime
+     * must have all the specified genres to be included in the result.
+     * @returns a subset of filtered anime objects based on the provided filters and pagination
+     * parameters.
      */
     async getAnimes({ genres, negativeGenres, page, start_date_year, title }: getAnimesFields = {}) {
         let nekoAnimes: NekosamaAnime[] = await this.cacheManager.get<NekosamaAnime[]>('animes');
@@ -62,6 +64,14 @@ export class AnimesService {
         return filteredAnimes.slice(startIndex, endIndex);
     }
 
+    /**
+     * The function `getAnime` retrieves information about an anime, including its synopsis, banner
+     * image URL, and episodes, based on its ID.
+     * @param {number} id - The `id` parameter is a number that represents the unique identifier of an
+     * anime. It is used to retrieve a specific anime from a list of animes.
+     * @returns The function `getAnime` returns a `Promise` that resolves to an `Anime` object or
+     * `undefined`.
+     */
     async getAnime(id: number): Promise<Anime | undefined> {
         const animes = await this.getAnimes();
         const anime = animes.find((anime) => anime.id == id);
