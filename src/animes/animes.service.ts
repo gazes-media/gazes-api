@@ -5,11 +5,18 @@ import { Cache } from 'cache-manager';
 import { Anime, NekosamaAnime, AnimeGenre, nekoAnimeToAnime, nekoEpisodetoEpisode } from './animes.type';
 import { z } from 'zod';
 
+type getAnimesFields = {
+    genres?: z.infer<typeof AnimeGenre>[];
+    negativeGenres?: z.infer<typeof AnimeGenre>[];
+    page?: number;
+    start_date_year?: number;
+};
+
 @Injectable()
 export class AnimesService {
     constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
 
-    async getAnimes({ genres, page, start_date_year }: { page?: number; genres?: z.infer<typeof AnimeGenre>[]; start_date_year?: number } = {}): Promise<Anime[]> {
+    async getAnimes({ genres, negativeGenres, page, start_date_year }: getAnimesFields = {}) {
         let animes: Anime[] = await this.cacheManager.get<Anime[]>('animes');
 
         if (!animes) {
@@ -17,18 +24,17 @@ export class AnimesService {
             animes = data.map(nekoAnimeToAnime);
         }
 
-        if (genres) {
-            animes = animes.filter((anime) => genres.every((genre) => anime.genres.includes(genre)));
-        }
+        animes = animes.filter((anime) => {
+            let test = true;
 
-        if (start_date_year) {
-            animes = animes.filter((anime) => anime.start_date_year == start_date_year);
-        }
+            if (genres && !genres.every((genre) => anime.genres.includes(genre))) test = false;
+            if (negativeGenres && !negativeGenres.every((genre) => !anime.genres.includes(genre))) test = false;
+            if (start_date_year && anime.start_date_year != start_date_year) test = false;
 
-        if (page) {
-            animes = animes.slice((page - 1) * 25, page * 25);
-        }
+            return test;
+        });
 
+        if (page) animes = animes.slice(page, page + 25);
         return animes;
     }
 
