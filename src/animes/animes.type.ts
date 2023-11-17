@@ -2,9 +2,9 @@ import { z } from 'zod';
 
 export const AnimeEpisodeSchema = z.object({
     episode: z.number(),
-    title: z.string(),
     vf_video_url: z.string().optional(),
     vostfr_video_url: z.string().optional(),
+    nekosama_url: z.string().optional(),
 });
 
 export type AnimeEpisode = z.infer<typeof AnimeEpisodeSchema>;
@@ -184,7 +184,7 @@ export function nekoStatusToStatus(status: string): Anime['status'] {
 export function nekoEpisodetoEpisode(nekoEpisode: NekosamaAnimeEpisode): AnimeEpisode {
     return {
         episode: nekoEpisode.num,
-        title: nekoEpisode.title,
+        nekosama_url: nekoEpisode.url,
     };
 }
 

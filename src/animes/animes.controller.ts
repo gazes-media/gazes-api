@@ -1,4 +1,4 @@
-import { BadRequestException, Controller, Get, Param, Query } from '@nestjs/common';
+import { BadRequestException, Controller, Get, NotFoundException, Param, Query } from '@nestjs/common';
 import { AnimesService } from './animes.service';
 import { AnimeGenre } from './animes.type';
 
@@ -28,7 +28,20 @@ export class AnimesController {
 
     @Get(':id')
     findOne(@Param('id') id: number) {
-        console.log(id);
         return this.animesService.getAnime(id);
+    }
+
+    @Get(':id/:episode')
+    async findEpisode(@Param('id') id, @Param('episode') ep) {
+        id = parseInt(id);
+        if (id && isNaN(id)) throw new BadRequestException('id must be a number');
+
+        ep = parseInt(ep);
+        if (ep && isNaN(ep)) throw new BadRequestException('episode must be a number');
+
+        const episode = await this.animesService.getAnimeEpisode({ id, ep });
+        if (!episode) throw new NotFoundException(`anime with id ${id} doesn't have episode ${ep}`);
+
+        return episode;
     }
 }
