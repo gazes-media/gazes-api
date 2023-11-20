@@ -26,6 +26,13 @@ export class AnimesController {
         return this.animesService.getAnimes({ page, start_date_year, genres, title, negativeGenres });
     }
 
+    @Get('trends')
+    async findTrendingAnimes() {
+        console.log('test');
+        const animes = await this.animesService.getAnimesTrending();
+        return animes;
+    }
+
     @Get(':id')
     findOne(@Param('id') id: number) {
         return this.animesService.getAnime(id);

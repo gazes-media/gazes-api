@@ -14,6 +14,7 @@ type getAnimesFields = {
     start_date_year?: number;
     title?: string;
     vf?: boolean;
+    status?: 'en cours' | 'terminé';
 };
 
 @Injectable()
@@ -28,9 +29,11 @@ export class AnimesService {
      * @returns a subset of filtered anime objects based on the provided filters and pagination
      * parameters.
      */
-    async getAnimes({ genres, negativeGenres, page, start_date_year, title, vf = false }: getAnimesFields = {}): Promise<Anime[]> {
+    async getAnimes({ genres, status, negativeGenres, page, start_date_year, title, vf = false }: getAnimesFields = {}): Promise<Anime[]> {
         const { data: nekoAnimes }: { data: NekosamaAnime[] } = await axios.get(`https://neko.ketsuna.com/animes-search-${vf ? 'vf' : 'vostfr'}.json`);
         let filteredAnimes = nekoAnimes.map(nekoAnimeToAnime);
+
+        if (status) filteredAnimes = filteredAnimes.filter((a) => a.status == status);
 
         if (title) {
             const fuse = new Fuse(filteredAnimes, {
@@ -47,7 +50,7 @@ export class AnimesService {
             const pageSize = 25;
             const startIndex = page * pageSize;
             const endIndex = startIndex + pageSize;
-            filteredAnimes.slice(startIndex, endIndex);
+            filteredAnimes = filteredAnimes.slice(startIndex, endIndex);
         }
 
         return filteredAnimes;
@@ -95,6 +98,15 @@ export class AnimesService {
         }
 
         return foundEpisode;
+    }
+
+    async getAnimesTrending(): Promise<Anime[]> {
+        let trends = await this.getAnimes({ status: 'en cours' });
+
+        trends = trends.sort((a, b) => b.start_date_year - a.start_date_year).slice(0, trends.length / 2);
+        trends = trends.sort((a, b) => b.popularity - a.popularity).slice(0, trends.length / 2);
+
+        return trends;
     }
 
     async getEpisodeVideo({ episode }: { episode: AnimeEpisode }) {
