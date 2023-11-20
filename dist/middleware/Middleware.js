@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", {
-    value: true,
+    value: true
 });
 Object.defineProperty(exports, "Middleware", {
     enumerable: true,
-    get: function () {
+    get: function() {
         return Middleware;
-    },
+    }
 });
 function _class_call_check(instance, Constructor) {
     if (!(instance instanceof Constructor)) {

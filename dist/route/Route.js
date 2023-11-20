@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", {
-    value: true,
+    value: true
 });
 Object.defineProperty(exports, "Route", {
     enumerable: true,
-    get: function () {
+    get: function() {
         return Route;
-    },
+    }
 });
 function _class_call_check(instance, Constructor) {
     if (!(instance instanceof Constructor)) {

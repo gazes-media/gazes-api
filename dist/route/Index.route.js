@@ -1,60 +1,59 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", {
-    value: true,
+    value: true
 });
 function _export(target, all) {
-    for (var name in all)
-        Object.defineProperty(target, name, {
-            enumerable: true,
-            get: all[name],
-        });
+    for(var name in all)Object.defineProperty(target, name, {
+        enumerable: true,
+        get: all[name]
+    });
 }
 _export(exports, {
-    IndexRoute: function () {
-        return IndexRoute;
-    },
-    AnimesRssRoute: function () {
-        return _AnimesRssroute.AnimesRssRoute;
-    },
-    AnimesRoute: function () {
-        return _Animesroute.AnimesRoute;
-    },
-    AnimeHighlightedRoute: function () {
+    AnimeHighlightedRoute: function() {
         return _AnimesHighlightedroute.AnimeHighlightedRoute;
     },
-    AnimesLatestRoute: function () {
-        return _AnimesLatestroute.AnimesLatestRoute;
-    },
-    AnimesSeasonsRoute: function () {
-        return _AnimesSeasonsroute.AnimesSeasonsRoute;
-    },
-    AnimesIdRoute: function () {
-        return _AnimesIdroute.AnimesIdRoute;
-    },
-    AnimesIdEpisodeRoute: function () {
+    AnimesIdEpisodeRoute: function() {
         return _AnimesIdEpisoderoute.AnimesIdEpisodeRoute;
     },
-    UserHistoryRoute: function () {
-        return _Historyroute.UserHistoryRoute;
+    AnimesIdRoute: function() {
+        return _AnimesIdroute.AnimesIdRoute;
     },
-    UserAnimesRoute: function () {
-        return _Animeroute.UserAnimesRoute;
+    AnimesLatestRoute: function() {
+        return _AnimesLatestroute.AnimesLatestRoute;
     },
-    UserFavorisRoute: function () {
-        return _Favorisroute.UserFavorisRoute;
+    AnimesRoute: function() {
+        return _Animesroute.AnimesRoute;
     },
-    UserFavorisPostRoute: function () {
-        return _FavorisPostroute.UserFavorisPostRoute;
+    AnimesRssRoute: function() {
+        return _AnimesRssroute.AnimesRssRoute;
     },
-    UserFavorisDeleteRoute: function () {
-        return _FavorisDeleteroute.UserFavorisDeleteRoute;
+    AnimesSeasonsRoute: function() {
+        return _AnimesSeasonsroute.AnimesSeasonsRoute;
     },
-    UserAnimesDeleteRoute: function () {
-        return _AnimeDeleteroute.UserAnimesDeleteRoute;
-    },
-    AnimesTrends: function () {
+    AnimesTrends: function() {
         return _AnimesTrendsroute.AnimesTrends;
     },
+    IndexRoute: function() {
+        return IndexRoute;
+    },
+    UserAnimesDeleteRoute: function() {
+        return _AnimeDeleteroute.UserAnimesDeleteRoute;
+    },
+    UserAnimesRoute: function() {
+        return _Animeroute.UserAnimesRoute;
+    },
+    UserFavorisDeleteRoute: function() {
+        return _FavorisDeleteroute.UserFavorisDeleteRoute;
+    },
+    UserFavorisPostRoute: function() {
+        return _FavorisPostroute.UserFavorisPostRoute;
+    },
+    UserFavorisRoute: function() {
+        return _Favorisroute.UserFavorisRoute;
+    },
+    UserHistoryRoute: function() {
+        return _Historyroute.UserHistoryRoute;
+    }
 });
 var _Route = require("./Route");
 var _AnimesRssroute = require("./animes/AnimesRss.route");
@@ -88,7 +87,7 @@ function _define_property(obj, key, value) {
             value: value,
             enumerable: true,
             configurable: true,
-            writable: true,
+            writable: true
         });
     } else {
         obj[key] = value;
@@ -96,11 +95,9 @@ function _define_property(obj, key, value) {
     return obj;
 }
 function _get_prototype_of(o) {
-    _get_prototype_of = Object.setPrototypeOf
-        ? Object.getPrototypeOf
-        : function getPrototypeOf(o) {
-              return o.__proto__ || Object.getPrototypeOf(o);
-          };
+    _get_prototype_of = Object.setPrototypeOf ? Object.getPrototypeOf : function getPrototypeOf(o) {
+        return o.__proto__ || Object.getPrototypeOf(o);
+    };
     return _get_prototype_of(o);
 }
 function _inherits(subClass, superClass) {
@@ -111,8 +108,8 @@ function _inherits(subClass, superClass) {
         constructor: {
             value: subClass,
             writable: true,
-            configurable: true,
-        },
+            configurable: true
+        }
     });
     if (superClass) _set_prototype_of(subClass, superClass);
 }
@@ -123,12 +120,10 @@ function _possible_constructor_return(self, call) {
     return _assert_this_initialized(self);
 }
 function _set_prototype_of(o, p) {
-    _set_prototype_of =
-        Object.setPrototypeOf ||
-        function setPrototypeOf(o, p) {
-            o.__proto__ = p;
-            return o;
-        };
+    _set_prototype_of = Object.setPrototypeOf || function setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+    };
     return _set_prototype_of(o, p);
 }
 function _type_of(obj) {
@@ -140,7 +135,7 @@ function _is_native_reflect_construct() {
     if (Reflect.construct.sham) return false;
     if (typeof Proxy === "function") return true;
     try {
-        Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+        Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {}));
         return true;
     } catch (e) {
         return false;
@@ -149,8 +144,7 @@ function _is_native_reflect_construct() {
 function _create_super(Derived) {
     var hasNativeReflectConstruct = _is_native_reflect_construct();
     return function _createSuperInternal() {
-        var Super = _get_prototype_of(Derived),
-            result;
+        var Super = _get_prototype_of(Derived), result;
         if (hasNativeReflectConstruct) {
             var NewTarget = _get_prototype_of(this).constructor;
             result = Reflect.construct(Super, arguments, NewTarget);
@@ -160,7 +154,7 @@ function _create_super(Derived) {
         return _possible_constructor_return(this, result);
     };
 }
-var IndexRoute = /*#__PURE__*/ (function (Route) {
+var IndexRoute = /*#__PURE__*/ function(Route) {
     "use strict";
     _inherits(IndexRoute, Route);
     var _super = _create_super(IndexRoute);
@@ -170,12 +164,12 @@ var IndexRoute = /*#__PURE__*/ (function (Route) {
         _this = _super.apply(this, arguments);
         _define_property(_assert_this_initialized(_this), "url", "/");
         _define_property(_assert_this_initialized(_this), "method", "GET");
-        _define_property(_assert_this_initialized(_this), "handler", function (request, reply) {
+        _define_property(_assert_this_initialized(_this), "handler", function(request, reply) {
             reply.send({
-                message: "testing",
+                message: "testing"
             });
         });
         return _this;
     }
     return IndexRoute;
-})(_Route.Route);
+}(_Route.Route);

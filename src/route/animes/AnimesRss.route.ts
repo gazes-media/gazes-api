@@ -8,6 +8,7 @@ type RSSItem = {
     description: string;
     pubDate: string;
     image: string;
+    lang: "vostfr" | "vf";
 };
 
 export class AnimesRssRoute extends Route {
@@ -24,6 +25,7 @@ export class AnimesRssRoute extends Route {
                 description: `Episode ${AnimeStore.episodeToNumber(anime.episode)} de ${anime.title}`,
                 pubDate: new Date(anime.timestamp * 1000).toUTCString(),
                 image: anime.url_bg,
+                lang: anime.lang,
             };
         });
 
@@ -44,6 +46,7 @@ export class AnimesRssRoute extends Route {
                 <guid>${anime.link}</guid>
                 <title>${anime.title}</title>
                 <link>${anime.link}</link>
+                <lang>${anime.lang}</lang>
                 <description>${anime.description}</description>
                 <pubDate>${anime.pubDate}</pubDate>
                 <media:thumbnail url="${anime.image}" width="300" height="300" xmlns:media="http://search.yahoo.com/mrss/" />

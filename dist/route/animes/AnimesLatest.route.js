@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", {
-    value: true,
+    value: true
 });
 Object.defineProperty(exports, "AnimesLatestRoute", {
     enumerable: true,
-    get: function () {
+    get: function() {
         return AnimesLatestRoute;
-    },
+    }
 });
 var _Route = require("../Route");
 var _animesstore = require("../../store/animes.store");
@@ -27,7 +27,7 @@ function _define_property(obj, key, value) {
             value: value,
             enumerable: true,
             configurable: true,
-            writable: true,
+            writable: true
         });
     } else {
         obj[key] = value;
@@ -35,11 +35,9 @@ function _define_property(obj, key, value) {
     return obj;
 }
 function _get_prototype_of(o) {
-    _get_prototype_of = Object.setPrototypeOf
-        ? Object.getPrototypeOf
-        : function getPrototypeOf(o) {
-              return o.__proto__ || Object.getPrototypeOf(o);
-          };
+    _get_prototype_of = Object.setPrototypeOf ? Object.getPrototypeOf : function getPrototypeOf(o) {
+        return o.__proto__ || Object.getPrototypeOf(o);
+    };
     return _get_prototype_of(o);
 }
 function _inherits(subClass, superClass) {
@@ -50,8 +48,8 @@ function _inherits(subClass, superClass) {
         constructor: {
             value: subClass,
             writable: true,
-            configurable: true,
-        },
+            configurable: true
+        }
     });
     if (superClass) _set_prototype_of(subClass, superClass);
 }
@@ -62,12 +60,10 @@ function _possible_constructor_return(self, call) {
     return _assert_this_initialized(self);
 }
 function _set_prototype_of(o, p) {
-    _set_prototype_of =
-        Object.setPrototypeOf ||
-        function setPrototypeOf(o, p) {
-            o.__proto__ = p;
-            return o;
-        };
+    _set_prototype_of = Object.setPrototypeOf || function setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+    };
     return _set_prototype_of(o, p);
 }
 function _type_of(obj) {
@@ -79,7 +75,7 @@ function _is_native_reflect_construct() {
     if (Reflect.construct.sham) return false;
     if (typeof Proxy === "function") return true;
     try {
-        Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+        Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {}));
         return true;
     } catch (e) {
         return false;
@@ -88,8 +84,7 @@ function _is_native_reflect_construct() {
 function _create_super(Derived) {
     var hasNativeReflectConstruct = _is_native_reflect_construct();
     return function _createSuperInternal() {
-        var Super = _get_prototype_of(Derived),
-            result;
+        var Super = _get_prototype_of(Derived), result;
         if (hasNativeReflectConstruct) {
             var NewTarget = _get_prototype_of(this).constructor;
             result = Reflect.construct(Super, arguments, NewTarget);
@@ -99,7 +94,7 @@ function _create_super(Derived) {
         return _possible_constructor_return(this, result);
     };
 }
-var AnimesLatestRoute = /*#__PURE__*/ (function (Route) {
+var AnimesLatestRoute = /*#__PURE__*/ function(Route) {
     "use strict";
     _inherits(AnimesLatestRoute, Route);
     var _super = _create_super(AnimesLatestRoute);
@@ -109,15 +104,15 @@ var AnimesLatestRoute = /*#__PURE__*/ (function (Route) {
         _this = _super.apply(this, arguments);
         _define_property(_assert_this_initialized(_this), "url", "/animes/latest");
         _define_property(_assert_this_initialized(_this), "method", "GET");
-        _define_property(_assert_this_initialized(_this), "handler", function (request, reply) {
+        _define_property(_assert_this_initialized(_this), "handler", function(request, reply) {
             // récupérer les possible queries
             var animes = _animesstore.AnimeStore.latest;
             return reply.send({
                 success: true,
-                data: animes,
+                data: animes
             });
         });
         return _this;
     }
     return AnimesLatestRoute;
-})(_Route.Route);
+}(_Route.Route);

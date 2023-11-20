@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", {
-    value: true,
+    value: true
 });
 Object.defineProperty(exports, "AppDataSource", {
     enumerable: true,
-    get: function () {
+    get: function() {
         return AppDataSource;
-    },
+    }
 });
 require("reflect-metadata");
 var _typeorm = require("typeorm");
@@ -15,7 +15,7 @@ function _getRequireWildcardCache(nodeInterop) {
     if (typeof WeakMap !== "function") return null;
     var cacheBabelInterop = new WeakMap();
     var cacheNodeInterop = new WeakMap();
-    return (_getRequireWildcardCache = function (nodeInterop) {
+    return (_getRequireWildcardCache = function(nodeInterop) {
         return nodeInterop ? cacheNodeInterop : cacheBabelInterop;
     })(nodeInterop);
 }
@@ -23,18 +23,20 @@ function _interop_require_wildcard(obj, nodeInterop) {
     if (!nodeInterop && obj && obj.__esModule) {
         return obj;
     }
-    if (obj === null || (typeof obj !== "object" && typeof obj !== "function")) {
+    if (obj === null || typeof obj !== "object" && typeof obj !== "function") {
         return {
-            default: obj,
+            default: obj
         };
     }
     var cache = _getRequireWildcardCache(nodeInterop);
     if (cache && cache.has(obj)) {
         return cache.get(obj);
     }
-    var newObj = {};
+    var newObj = {
+        __proto__: null
+    };
     var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;
-    for (var key in obj) {
+    for(var key in obj){
         if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) {
             var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;
             if (desc && (desc.get || desc.set)) {
@@ -62,5 +64,5 @@ var AppDataSource = new _typeorm.DataSource({
     logging: false,
     entities: entities,
     migrations: [],
-    subscribers: [],
+    subscribers: []
 });

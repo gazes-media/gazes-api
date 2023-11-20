@@ -25,9 +25,6 @@ AppDataSource.initialize()
         console.log(error);
     });
 
-const test = readdirSync("/usr");
-console.log(test);
-
 admin.initializeApp({
     credential: admin.credential.cert({
         clientEmail: "firebase-adminsdk-xvjq7@animaflix-53e15.iam.gserviceaccount.com",

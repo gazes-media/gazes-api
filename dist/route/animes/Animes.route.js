@@ -1,16 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", {
-    value: true,
+    value: true
 });
 Object.defineProperty(exports, "AnimesRoute", {
     enumerable: true,
-    get: function () {
+    get: function() {
         return AnimesRoute;
-    },
+    }
 });
-var _Route = require("../Route");
-var _animesstore = require("../../store/animes.store");
 var _fuse = /*#__PURE__*/ _interop_require_default(require("fuse.js"));
+var _animesstore = require("../../store/animes.store");
+var _Route = require("../Route");
 function _assert_this_initialized(self) {
     if (self === void 0) {
         throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -28,7 +28,7 @@ function _define_property(obj, key, value) {
             value: value,
             enumerable: true,
             configurable: true,
-            writable: true,
+            writable: true
         });
     } else {
         obj[key] = value;
@@ -36,11 +36,9 @@ function _define_property(obj, key, value) {
     return obj;
 }
 function _get_prototype_of(o) {
-    _get_prototype_of = Object.setPrototypeOf
-        ? Object.getPrototypeOf
-        : function getPrototypeOf(o) {
-              return o.__proto__ || Object.getPrototypeOf(o);
-          };
+    _get_prototype_of = Object.setPrototypeOf ? Object.getPrototypeOf : function getPrototypeOf(o) {
+        return o.__proto__ || Object.getPrototypeOf(o);
+    };
     return _get_prototype_of(o);
 }
 function _inherits(subClass, superClass) {
@@ -51,17 +49,15 @@ function _inherits(subClass, superClass) {
         constructor: {
             value: subClass,
             writable: true,
-            configurable: true,
-        },
+            configurable: true
+        }
     });
     if (superClass) _set_prototype_of(subClass, superClass);
 }
 function _interop_require_default(obj) {
-    return obj && obj.__esModule
-        ? obj
-        : {
-              default: obj,
-          };
+    return obj && obj.__esModule ? obj : {
+        default: obj
+    };
 }
 function _possible_constructor_return(self, call) {
     if (call && (_type_of(call) === "object" || typeof call === "function")) {
@@ -70,12 +66,10 @@ function _possible_constructor_return(self, call) {
     return _assert_this_initialized(self);
 }
 function _set_prototype_of(o, p) {
-    _set_prototype_of =
-        Object.setPrototypeOf ||
-        function setPrototypeOf(o, p) {
-            o.__proto__ = p;
-            return o;
-        };
+    _set_prototype_of = Object.setPrototypeOf || function setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+    };
     return _set_prototype_of(o, p);
 }
 function _type_of(obj) {
@@ -87,7 +81,7 @@ function _is_native_reflect_construct() {
     if (Reflect.construct.sham) return false;
     if (typeof Proxy === "function") return true;
     try {
-        Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+        Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {}));
         return true;
     } catch (e) {
         return false;
@@ -96,8 +90,7 @@ function _is_native_reflect_construct() {
 function _create_super(Derived) {
     var hasNativeReflectConstruct = _is_native_reflect_construct();
     return function _createSuperInternal() {
-        var Super = _get_prototype_of(Derived),
-            result;
+        var Super = _get_prototype_of(Derived), result;
         if (hasNativeReflectConstruct) {
             var NewTarget = _get_prototype_of(this).constructor;
             result = Reflect.construct(Super, arguments, NewTarget);
@@ -107,7 +100,7 @@ function _create_super(Derived) {
         return _possible_constructor_return(this, result);
     };
 }
-var AnimesRoute = /*#__PURE__*/ (function (Route) {
+var AnimesRoute = /*#__PURE__*/ function(Route) {
     "use strict";
     _inherits(AnimesRoute, Route);
     var _super = _create_super(AnimesRoute);
@@ -117,73 +110,71 @@ var AnimesRoute = /*#__PURE__*/ (function (Route) {
         _this = _super.apply(this, arguments);
         _define_property(_assert_this_initialized(_this), "url", "/animes");
         _define_property(_assert_this_initialized(_this), "method", "GET");
-        _define_property(_assert_this_initialized(_this), "handler", function (request, reply) {
-            // récupérer les possible queries
-            var _request_query = request.query,
-                types = _request_query.types,
-                status = _request_query.status,
-                genres = _request_query.genres,
-                year = _request_query.year,
-                title = _request_query.title;
-            var animes = _animesstore.AnimeStore.vostfr;
-            /**
-             * The function filters an array of anime objects based on various criteria such as type, language,
-             * status, genres, and years.
-             */ function animesFilter(a) {
+        _define_property(_assert_this_initialized(_this), "handler", function(request, reply) {
+            var animesFilter = /**
+         * The function filters an array of anime objects based on various criteria such as type, language,
+         * status, genres, and years.
+         */ function animesFilter(a) {
                 var toreturn = true;
                 if (types && !types.split(",").includes(a.type.toString())) toreturn = false;
                 if (status && a.status !== status) toreturn = false;
                 if (genres) {
-                    genres
-                        .split(",")
-                        .filter(function (a) {
-                            return a.startsWith("!");
-                        })
-                        .map(function (a) {
-                            return a.replace("!", "");
-                        })
-                        .forEach(function (negativeGenre) {
-                            if (a.genres.includes(negativeGenre)) toreturn = false;
-                        });
-                    genres
-                        .split(",")
-                        .filter(function (a) {
-                            return !a.startsWith("!");
-                        })
-                        .forEach(function (positiveGenre) {
-                            if (!a.genres.includes(positiveGenre)) toreturn = false;
-                        });
+                    genres.split(",").filter(function(a) {
+                        return a.startsWith("!");
+                    }).map(function(a) {
+                        return a.replace("!", "");
+                    }).forEach(function(negativeGenre) {
+                        if (a.genres.includes(negativeGenre)) toreturn = false;
+                    });
+                    genres.split(",").filter(function(a) {
+                        return !a.startsWith("!");
+                    }).forEach(function(positiveGenre) {
+                        if (!a.genres.includes(positiveGenre)) toreturn = false;
+                    });
                 }
                 if (year && !year.includes(a.start_date_year)) toreturn = false;
                 return toreturn;
-            }
+            };
+            // récupérer les possible queries
+            var _request_query = request.query, types = _request_query.types, status = _request_query.status, genres = _request_query.genres, year = _request_query.year, title = _request_query.title, page = _request_query.page;
+            var animes = _animesstore.AnimeStore.vostfr;
             animes = animes.filter(animesFilter);
             /**
-             * The function `titleFilter` takes an `Anime` object and a `title` string as input, and returns
-             * `true` if any of the titles in the `Anime` object (including English, French, Romanji, and
-             * others) contain the `title` string (case-insensitive), otherwise it returns `false`.
-             */ if (title) {
+         * The function `titleFilter` takes an `Anime` object and a `title` string as input, and returns
+         * `true` if any of the titles in the `Anime` object (including English, French, Romanji, and
+         * others) contain the `title` string (case-insensitive), otherwise it returns `false`.
+         */ if (title) {
                 var fuse = new _fuse.default(animes, {
-                    keys: ["title", "title_english", "title_romanji", "title_french"],
-                    includeScore: false,
+                    keys: [
+                        "title",
+                        "title_english",
+                        "title_romanji",
+                        "title_french"
+                    ],
+                    includeScore: false
                 });
-                animes = fuse.search(title).map(function (a) {
+                animes = fuse.search(title).map(function(a) {
                     return a.item;
                 });
             }
             if (animes.length <= 0) {
-                console.log(animes);
                 return reply.status(404).send({
                     success: false,
-                    message: "La requ\xeate a \xe9t\xe9 trait\xe9e avec succ\xe8s, mais aucun contenu n'est disponible pour la r\xe9ponse demand\xe9e.",
+                    message: "La requ\xeate a \xe9t\xe9 trait\xe9e avec succ\xe8s, mais aucun contenu n'est disponible pour la r\xe9ponse demand\xe9e."
                 });
+            }
+            if (page) {
+                var perPage = 20;
+                var start = (page - 1) * perPage;
+                var end = start + perPage;
+                animes = animes.slice(start, end);
             }
             return reply.send({
                 success: true,
-                data: animes,
+                data: animes
             });
         });
         return _this;
     }
     return AnimesRoute;
-})(_Route.Route);
+}(_Route.Route);

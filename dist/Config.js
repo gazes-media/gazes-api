@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", {
-    value: true,
+    value: true
 });
 Object.defineProperty(exports, "Config", {
     enumerable: true,
-    get: function () {
+    get: function() {
         return Config;
-    },
+    }
 });
 function _class_call_check(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -19,7 +19,7 @@ function _define_property(obj, key, value) {
             value: value,
             enumerable: true,
             configurable: true,
-            writable: true,
+            writable: true
         });
     } else {
         obj[key] = value;

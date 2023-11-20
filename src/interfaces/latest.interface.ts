@@ -2,7 +2,7 @@ export interface LatestEpisode {
     anime_url: string;
     episode: string;
     icons: string;
-    lang: string;
+    lang: "vf" | "vostfr";
     time: string;
     timestamp: number;
     title: string;
