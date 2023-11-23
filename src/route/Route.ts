@@ -11,3 +11,4 @@ export abstract class Route {
     public abstract handler: RouteHandlerMethod;
 }
 
+// portion du text
