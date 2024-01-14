@@ -15,7 +15,7 @@
         "@fastify/multipart": "^7.7.3",
         "@ffmpeg/core": "^0.11.0",
         "@ffmpeg/ffmpeg": "^0.11.6",
-        "axios": "^1.6.1",
+        "axios": "^1.6.0",
         "cheerio": "1.0.0-rc.12",
         "fastify": "^4.24.3",
         "firebase-admin": "^11.11.0",
