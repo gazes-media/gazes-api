@@ -35,9 +35,20 @@ export class AnimeStore {
   combines them into one array with a language property added to 
   each object.*/
     static async fetchAll(): Promise<void> {
-        this.vostfr = (await axios.get(vostfrUrl)).data;
-        this.vf = (await axios.get(vfUrl)).data;
+        try {
+    const responseVostfr = await axios.get(vostfrUrl);
+    const responseVF = await axios.get(vfUrl);
+    
+    if (responseVostfr.headers['content-type'] === 'application/json' &&
+        responseVF.headers['content-type'] === 'application/json') {
+        
+        this.vostfr = responseVostfr.data;
+        this.vf = responseVF.data;
         this.all = [...this.vostfr, ...this.vf];
+    }
+} catch (error) {
+    console.error('Error fetching data:', error);
+}
     }
     /* This function fetches the latest episodes from a website 
   and stores them in an array. */
