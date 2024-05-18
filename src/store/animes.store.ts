@@ -31,26 +31,25 @@ export class AnimeStore {
 
     static latest: LatestEpisode[] = [];
 
-    /* The function fetches data from two different URLs and 
-  combines them into one array with a language property added to 
+    /* The function fetches data from two different URLs and
+  combines them into one array with a language property added to
   each object.*/
     static async fetchAll(): Promise<void> {
         try {
-    const responseVostfr = await axios.get(vostfrUrl);
-    const responseVF = await axios.get(vfUrl);
-    
-    if (responseVostfr.headers['content-type'] === 'application/json' &&
-        responseVF.headers['content-type'] === 'application/json') {
-        
-        this.vostfr = responseVostfr.data;
-        this.vf = responseVF.data;
-        this.all = [...this.vostfr, ...this.vf];
+            const responseVostfr = await axios.get(vostfrUrl);
+            const responseVF = await axios.get(vfUrl);
+
+            JSON.stringify(responseVostfr.data);
+            JSON.stringify(responseVF.data);
+
+            this.vostfr = responseVostfr.data;
+            this.vf = responseVF.data;
+            this.all = [...this.vostfr, ...this.vf];
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
     }
-} catch (error) {
-    console.error('Error fetching data:', error);
-}
-    }
-    /* This function fetches the latest episodes from a website 
+    /* This function fetches the latest episodes from a website
   and stores them in an array. */
     static async fetchLatest(): Promise<void> {
         const { data } = await axios.get("https://neko.ketsuna.com");
@@ -68,8 +67,8 @@ export class AnimeStore {
         return Number(episode.replace("Ep. ", ""));
     }
 
-    /* This function retrieves information about an anime based on 
-  its ID and language, including its synopsis, cover image URL, 
+    /* This function retrieves information about an anime based on
+  its ID and language, including its synopsis, cover image URL,
   and episodes. */
     static async get(id: string, lang: "vf" | "vostfr"): Promise<undefined | Anime> {
         const anime = this[lang].find((anime) => anime.id.toString() == id);
