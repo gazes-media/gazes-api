@@ -4,7 +4,6 @@ import { Anime } from "../interfaces/anime.interface";
 import { Episode } from "../interfaces/episode.interface";
 import { LatestEpisode } from "../interfaces/latest.interface";
 import { PstreamData } from "../interfaces/pstreamdata.interface";
-import { readFileSync, writeFileSync} from "fs";
 import Subtitlesvtt from "../interfaces/subtitlesvtt.interface";
 const vostfrUrl = "https://neko.ketsuna.com/animes-search-vostfr.json";
 const vfUrl = "https://neko.ketsuna.com/animes-search-vf.json";
@@ -37,7 +36,6 @@ export class AnimeStore {
   each object.*/
     static async fetchAll(): Promise<void> {
         try {
-            writeFileSync("data.json", JSON.stringify(AnimeStore.all));
             const responseVostfr = await axios.get(vostfrUrl);
             const responseVF = await axios.get(vfUrl);
             JSON.stringify(responseVostfr.data);
@@ -48,7 +46,6 @@ export class AnimeStore {
             this.all = [...this.vostfr, ...this.vf];
         } catch (error) {
             console.error('Error fetching data:', error);
-            this.all = JSON.parse(readFileSync("data.json", "utf-8"));
         }
     }
     /* This function fetches the latest episodes from a website
