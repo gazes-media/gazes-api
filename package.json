@@ -21,9 +21,7 @@
         "firebase-admin": "^11.11.0",
         "fuse.js": "^6.6.2",
         "mysql2": "^3.6.3",
-        "node-fetch": "^3.3.2",
-        "reflect-metadata": "^0.1.13",
-        "typeorm": "^0.3.17"
+        "node-fetch": "^3.3.2"
     },
     "devDependencies": {
         "@swc/cli": "^0.1.62",

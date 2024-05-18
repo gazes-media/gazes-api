@@ -1,11 +1,10 @@
 import admin from "firebase-admin";
-import { readdirSync } from "fs";
 import "reflect-metadata";
-import { Config } from "./Config";
+import { writeFileSync } from "fs"
 import { GazeApi } from "./GazeApi";
-import { AppDataSource } from "./data-source";
 import { AuthMiddleware } from "./middleware/Auth.middleware";
 import * as Router from "./route/Index.route";
+import { AnimeStore } from "./store/animes.store";
 const gazeApi = new GazeApi();
 const RouterIndex = Object.values(Router);
 
@@ -15,15 +14,6 @@ gazeApi.handleMiddleware([AuthMiddleware]);
 gazeApi.fastify.addHook("onReady", () => {
     console.log("⚡ ready to use");
 });
-
-AppDataSource.initialize()
-    .then(() => {
-        console.log("🗃️  database initialized");
-    })
-    .catch((error) => {
-        console.log("🗃️  database initialization failed");
-        console.log(error);
-    });
 
 admin.initializeApp({
     credential: admin.credential.cert({
@@ -36,4 +26,25 @@ admin.initializeApp({
     databaseURL: "https://animaflix-53e15-default-rtdb.europe-west1.firebasedatabase.app",
 });
 
-gazeApi.start(process.env.PORT);
+process.addListener("unhandledRejection", (reason, promise) => {
+    console.error("unhandledRejection", reason, promise);
+    writeFileSync("data.json", JSON.stringify(AnimeStore.all));
+});
+
+process.addListener("uncaughtException", (error) => {
+    console.error("uncaughtException", error);
+    writeFileSync("data.json", JSON.stringify(AnimeStore.all));
+});
+
+gazeApi.fastify.addHook("onClose", async () => {
+    admin.app().delete();
+    writeFileSync("data.json", JSON.stringify(AnimeStore.all));
+    process.exit(0);
+});
+
+gazeApi.fastify.addHook("onError", async (request, reply, error) => {
+    console.error(error);
+    writeFileSync("data.json", JSON.stringify(AnimeStore.all));
+});
+
+gazeApi.start(Number(process.env.PORT));
