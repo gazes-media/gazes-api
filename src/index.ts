@@ -1,5 +1,4 @@
 import admin from "firebase-admin";
-import "reflect-metadata";
 import { writeFileSync } from "fs"
 import { GazeApi } from "./GazeApi";
 import { AuthMiddleware } from "./middleware/Auth.middleware";
