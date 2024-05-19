@@ -38,12 +38,14 @@ export class AnimeStore {
         try {
             const responseVostfr = await axios.get(vostfrUrl);
             const responseVF = await axios.get(vfUrl);
-            JSON.stringify(responseVostfr.data);
-            JSON.stringify(responseVF.data);
+            if(Array.isArray(responseVostfr.data) && Array.isArray(responseVF.data)){
 
             this.vostfr = responseVostfr.data;
             this.vf = responseVF.data;
             this.all = [...this.vostfr, ...this.vf];
+            }else{
+                console.log("Problem occured while retrieving data from the server.")
+            }
         } catch (error) {
             console.error('Error fetching data:', error);
         }
