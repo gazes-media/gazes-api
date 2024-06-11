@@ -24,7 +24,7 @@ export type seasonal = {
 };
 
 function buildProxiedUrl(url: string) {
-    return `https://proxy.gazes.com/?url=${encodeURIComponent(url)}`;
+    return `https://proxy.gazes.fr/?url=${url}`;
 }
 
 export class AnimeStore {
