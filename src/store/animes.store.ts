@@ -103,7 +103,7 @@ export class AnimeStore {
                 url: episode("a").attr("href") as string,
                 time: "24:00",
                 // to get the correct episode number we need to extract this from the text : "title - 01 VOSTFR - 01" // here we need to extract the last number
-                episode: episodeNumber[episodeNumber.length - 1],
+                episode: this.episodeToNumber(episodeNumber[episodeNumber.length - 1]).toString(),
                 url_image: buildProxiedUrl("https://neko.ketsuna.com"+ coverUrl as string),
                 m3u8: "",
             };
