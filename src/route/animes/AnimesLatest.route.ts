@@ -16,8 +16,8 @@ export class AnimesLatestRoute extends Route {
             data: animes.map(({ url_image, url_bg, ...rest}) => {
                 return {
                     ...rest,
-                    url_image: "https://neko.ketsuna.com/"+url_image,
-                    url_bg: "https://neko.ketsuna.com/"+url_bg,
+                    url_image: url_image,
+                    url_bg: url_bg,
                 };
             }),
         });
