@@ -47,7 +47,7 @@ export class AnimeStore {
             this.vostfr = responseVostfr.data.map(({ url_image, coverUrl,  ...anime}) => {
                 return {
                     ...anime,
-                    coverUrl: buildProxiedUrl("https://neko.ketsuna.com"+coverUrl),
+                    coverUrl: buildProxiedUrl("https://neko.ketsuna.com"+url_image),
                     url_image: buildProxiedUrl("https://neko.ketsuna.com"+url_image),
                 };
             });
