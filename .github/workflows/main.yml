@@ -11,7 +11,7 @@ env:
 
 jobs:
   build-and-push-image:
-    runs-on: gazes
+    runs-on: self-hosted
     permissions:
       contents: read
       packages: write
