@@ -47,8 +47,8 @@ export class AnimeStore {
             this.vostfr = responseVostfr.data.map(({ url_image, coverUrl,  ...anime}) => {
                 return {
                     ...anime,
-                    coverUrl: buildProxiedUrl("https://neko.ketsuna.com"+url_image),
-                    url_image: buildProxiedUrl("https://neko.ketsuna.com"+url_image),
+                    coverUrl: buildProxiedUrl("https://neko-sama.fr"+url_image),
+                    url_image: buildProxiedUrl("https://neko-sama.fr"+url_image),
                 };
             });
             this.vf = responseVF.data;
@@ -72,8 +72,8 @@ export class AnimeStore {
         this.latest = latestEpisodes.map(({url_bg, url_image, ...episode}) => {
             return {
                 ...episode,
-                url_image: buildProxiedUrl("https://neko.ketsuna.com"+url_image),
-                url_bg: buildProxiedUrl("https://neko.ketsuna.com"+url_bg),
+                url_image: buildProxiedUrl("https://neko-sama.fr"+url_image),
+                url_bg: buildProxiedUrl("https://neko-sama.fr"+url_bg),
             }
         });
     }
@@ -104,11 +104,11 @@ export class AnimeStore {
                 time: "24:00",
                 // to get the correct episode number we need to extract this from the text : "title - 01 VOSTFR - 01" // here we need to extract the last number
                 episode: episodeNumber[episodeNumber.length - 1],
-                url_image: buildProxiedUrl("https://neko.ketsuna.com"+ coverUrl as string),
+                url_image: buildProxiedUrl("https://neko-sama.fr"+ coverUrl as string),
                 m3u8: "",
             };
         }).get();
-        return { ...anime, synopsis, coverUrl: buildProxiedUrl("https://neko.ketsuna.com/"+ coverUrl), episodes };
+        return { ...anime, synopsis, coverUrl: buildProxiedUrl("https://neko-sama.fr"+ coverUrl), episodes };
     }
 
     /* This function retrieves the video URL and subtitle data for a given episode URL. */
