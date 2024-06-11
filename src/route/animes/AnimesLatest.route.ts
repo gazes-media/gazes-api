@@ -13,7 +13,13 @@ export class AnimesLatestRoute extends Route {
 
         return reply.send({
             success: true,
-            data: animes,
+            data: animes.map(({ url_image, url_bg, ...rest}) => {
+                return {
+                    ...rest,
+                    url_image: "https://neko.ketsuna.com/"+url_image,
+                    url_bg: "https://neko.ketsuna.com/"+url_bg,
+                };
+            }),
         });
     };
 }

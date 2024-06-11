@@ -4,7 +4,6 @@ import { Anime } from "../interfaces/anime.interface";
 import { Episode } from "../interfaces/episode.interface";
 import { LatestEpisode } from "../interfaces/latest.interface";
 import { PstreamData } from "../interfaces/pstreamdata.interface";
-import { readFileSync, writeFileSync} from "fs";
 import Subtitlesvtt from "../interfaces/subtitlesvtt.interface";
 const vostfrUrl = "https://neko.ketsuna.com/animes-search-vostfr.json";
 const vfUrl = "https://neko.ketsuna.com/animes-search-vf.json";
@@ -37,18 +36,24 @@ export class AnimeStore {
   each object.*/
     static async fetchAll(): Promise<void> {
         try {
-            writeFileSync("data.json", JSON.stringify(AnimeStore.all));
             const responseVostfr = await axios.get(vostfrUrl);
             const responseVF = await axios.get(vfUrl);
-            JSON.stringify(responseVostfr.data);
-            JSON.stringify(responseVF.data);
+            if(Array.isArray(responseVostfr.data) && Array.isArray(responseVF.data)){
 
             this.vostfr = responseVostfr.data;
             this.vf = responseVF.data;
-            this.all = [...this.vostfr, ...this.vf];
+            this.all = [...this.vostfr, ...this.vf].map(({ url_image, coverUrl,  ...anime}) => {
+                return {
+                    ...anime,
+                    coverUrl: "https://neko.ketsuna.com/"+coverUrl,
+                    url_image: "https://neko.ketsuna.com/"+url_image,
+                };
+            });
+            }else{
+                console.log("Problem occured while retrieving data from the server.")
+            }
         } catch (error) {
             console.error('Error fetching data:', error);
-            this.all = JSON.parse(readFileSync("data.json", "utf-8"));
         }
     }
     /* This function fetches the latest episodes from a website
@@ -76,20 +81,33 @@ export class AnimeStore {
         const anime = this[lang].find((anime) => anime.id.toString() == id);
         if (!anime) return Promise.resolve(undefined);
 
-        const { data: animeHtml } = await axios.get(`https://neko.ketsuna.com/${anime.url}`);
-
+        const { data: animeHtml } = await axios.get(`https://neko.ketsuna.com/${anime.url.replace("https://neko-sama.fr/", "")}`);
+        console.log(anime.url);
         const synopsis = /(<div class="synopsis">\n<p>\n)(.*)/gm.exec(animeHtml)?.[2];
         const coverUrl = /(<div id="head" style="background-image: url\()(.*)(\);)/gm.exec(animeHtml)?.[2];
-        const episodes = JSON.parse(/var episodes = (.+)\;/gm.exec(animeHtml)?.[1] as string);
-
-        return { ...anime, synopsis, coverUrl, episodes };
+        const episodes = load(animeHtml)(".episodes .col-xs-12").map((i, el) => {
+            const episode = load(el);
+            console.log(episode("a").text());
+            const episodeNumber = episode("a").text().trimEnd().split(" - ");
+            return {
+                title: episode("a").text().trimEnd().trimStart(),
+                num: i,
+                url: episode("a").attr("href") as string,
+                time: "24:00",
+                // to get the correct episode number we need to extract this from the text : "title - 01 VOSTFR - 01" // here we need to extract the last number
+                episode: episodeNumber[episodeNumber.length - 1],
+                url_image: "https://neko.ketsuna.com/"+ coverUrl as string,
+                m3u8: "",
+            };
+        }).get();
+        return { ...anime, synopsis, coverUrl: "https://neko.ketsuna.com/"+ coverUrl, episodes };
     }
 
     /* This function retrieves the video URL and subtitle data for a given episode URL. */
     static async getEpisodeVideo(episode: Episode): Promise<undefined | { uri: string; subtitlesVtt: Subtitlesvtt[]; baseUrl: string }> {
         return new Promise(async (resolve) => {
             try{
-                const episodeUrl = "https://neko.ketsuna.com" + episode.url;
+                const episodeUrl = "https://neko.ketsuna.com" + episode.url.replace("https://neko-sama.fr", "");
             const { data: nekoData } = await axios.get<string>(episodeUrl);
             const pstreamUrl = /(\n(.*)video\[0] = ')(.*)(';)/gm.exec(nekoData)?.[3] as string;
             if (!pstreamUrl) return resolve(undefined);

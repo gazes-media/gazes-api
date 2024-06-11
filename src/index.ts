@@ -1,10 +1,7 @@
 import admin from "firebase-admin";
-import "reflect-metadata";
-import { writeFileSync } from "fs"
 import { GazeApi } from "./GazeApi";
 import { AuthMiddleware } from "./middleware/Auth.middleware";
 import * as Router from "./route/Index.route";
-import { AnimeStore } from "./store/animes.store";
 const gazeApi = new GazeApi();
 const RouterIndex = Object.values(Router);
 
@@ -28,23 +25,19 @@ admin.initializeApp({
 
 process.addListener("unhandledRejection", (reason, promise) => {
     console.error("unhandledRejection", reason, promise);
-    writeFileSync("data.json", JSON.stringify(AnimeStore.all));
 });
 
 process.addListener("uncaughtException", (error) => {
     console.error("uncaughtException", error);
-    writeFileSync("data.json", JSON.stringify(AnimeStore.all));
 });
 
 gazeApi.fastify.addHook("onClose", async () => {
     admin.app().delete();
-    writeFileSync("data.json", JSON.stringify(AnimeStore.all));
     process.exit(0);
 });
 
 gazeApi.fastify.addHook("onError", async (request, reply, error) => {
     console.error(error);
-    writeFileSync("data.json", JSON.stringify(AnimeStore.all));
 });
 
-gazeApi.start(Number(process.env.PORT));
+gazeApi.start(Number(process.env.PORT) || 5300);
