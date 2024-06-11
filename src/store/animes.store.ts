@@ -99,7 +99,7 @@ export class AnimeStore {
             const episodeNumber = episode("a").text().trimEnd().split(" - ");
             return {
                 title: episode("a").text().trimEnd().trimStart(),
-                num: i+1,
+                num: this.episodeToNumber(episodeNumber[episodeNumber.length - 1]),
                 url: episode("a").attr("href") as string,
                 time: "24:00",
                 // to get the correct episode number we need to extract this from the text : "title - 01 VOSTFR - 01" // here we need to extract the last number
