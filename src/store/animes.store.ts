@@ -47,8 +47,8 @@ export class AnimeStore {
             this.vostfr = responseVostfr.data.map(({ url_image, coverUrl,  ...anime}) => {
                 return {
                     ...anime,
-                    coverUrl: buildProxiedUrl("https://neko.ketsuna.com"+url_image),
-                    url_image: buildProxiedUrl("https://neko.ketsuna.com"+url_image),
+                    coverUrl: buildProxiedUrl("https://neko.ketsuna.com"+url_image.replace("https://neko-sama.fr","")),
+                    url_image: buildProxiedUrl("https://neko.ketsuna.com"+url_image.replace("https://neko-sama.fr","")),
                 };
             });
             this.vf = responseVF.data;
@@ -72,8 +72,8 @@ export class AnimeStore {
         this.latest = latestEpisodes.map(({url_bg, url_image, ...episode}) => {
             return {
                 ...episode,
-                url_image: buildProxiedUrl("https://neko.ketsuna.com"+url_image),
-                url_bg: buildProxiedUrl("https://neko.ketsuna.com"+url_bg),
+                url_image: buildProxiedUrl("https://neko.ketsuna.com"+url_image.replace("https://neko-sama.fr","")),
+                url_bg: buildProxiedUrl("https://neko.ketsuna.com"+url_bg.replace("https://neko-sama.fr","")),
             }
         });
     }
@@ -99,16 +99,16 @@ export class AnimeStore {
             const episodeNumber = episode("a").text().trimEnd().split(" - ");
             return {
                 title: episode("a").text().trimEnd().trimStart(),
-                num: i,
+                num: i+1,
                 url: episode("a").attr("href") as string,
                 time: "24:00",
                 // to get the correct episode number we need to extract this from the text : "title - 01 VOSTFR - 01" // here we need to extract the last number
                 episode: this.episodeToNumber(episodeNumber[episodeNumber.length - 1]).toString(),
-                url_image: buildProxiedUrl("https://neko.ketsuna.com"+ coverUrl as string),
+                url_image: buildProxiedUrl("https://neko.ketsuna.com"+ coverUrl.replace("https://neko-sama.fr","") as string),
                 m3u8: "",
             };
         }).get();
-        return { ...anime, synopsis, coverUrl: buildProxiedUrl("https://neko.ketsuna.com/"+ coverUrl), episodes };
+        return { ...anime, synopsis, coverUrl: buildProxiedUrl("https://neko.ketsuna.com/"+ coverUrl.replace("https://neko-sama.fr","")), episodes };
     }
 
     /* This function retrieves the video URL and subtitle data for a given episode URL. */
