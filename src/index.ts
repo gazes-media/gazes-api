@@ -40,4 +40,4 @@ gazeApi.fastify.addHook("onError", async (request, reply, error) => {
     console.error(error);
 });
 
-gazeApi.start(Number(process.env.PORT));
+gazeApi.start(Number(process.env.PORT) || 5300);
