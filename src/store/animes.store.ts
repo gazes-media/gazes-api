@@ -42,7 +42,13 @@ export class AnimeStore {
 
             this.vostfr = responseVostfr.data;
             this.vf = responseVF.data;
-            this.all = [...this.vostfr, ...this.vf];
+            this.all = [...this.vostfr, ...this.vf].map(({ url_image, coverUrl,  ...anime}) => {
+                return {
+                    ...anime,
+                    coverUrl: "https://neko.ketsuna.com/"+coverUrl,
+                    url_image: "https://neko.ketsuna.com/"+url_image,
+                };
+            });
             }else{
                 console.log("Problem occured while retrieving data from the server.")
             }
@@ -75,20 +81,20 @@ export class AnimeStore {
         const anime = this[lang].find((anime) => anime.id.toString() == id);
         if (!anime) return Promise.resolve(undefined);
 
-        const { data: animeHtml } = await axios.get(`https://neko.ketsuna.com/${anime.url}`);
+        const { data: animeHtml } = await axios.get(`https://neko.ketsuna.com/${anime.url.replace("https://neko-sama.fr/", "")}`);
 
         const synopsis = /(<div class="synopsis">\n<p>\n)(.*)/gm.exec(animeHtml)?.[2];
         const coverUrl = /(<div id="head" style="background-image: url\()(.*)(\);)/gm.exec(animeHtml)?.[2];
         const episodes = JSON.parse(/var episodes = (.+)\;/gm.exec(animeHtml)?.[1] as string);
 
-        return { ...anime, synopsis, coverUrl, episodes };
+        return { ...anime, synopsis, coverUrl: "https://neko.ketsuna.com/"+ coverUrl, episodes };
     }
 
     /* This function retrieves the video URL and subtitle data for a given episode URL. */
     static async getEpisodeVideo(episode: Episode): Promise<undefined | { uri: string; subtitlesVtt: Subtitlesvtt[]; baseUrl: string }> {
         return new Promise(async (resolve) => {
             try{
-                const episodeUrl = "https://neko.ketsuna.com" + episode.url;
+                const episodeUrl = "https://neko.ketsuna.com" + episode.url.replace("https://neko-sama.fr", "");
             const { data: nekoData } = await axios.get<string>(episodeUrl);
             const pstreamUrl = /(\n(.*)video\[0] = ')(.*)(';)/gm.exec(nekoData)?.[3] as string;
             if (!pstreamUrl) return resolve(undefined);
