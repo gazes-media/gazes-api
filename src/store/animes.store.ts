@@ -107,7 +107,7 @@ export class AnimeStore {
                 url_image: buildProxiedUrl("https://neko.ketsuna.com"+ coverUrl.replace("https://neko-sama.fr","") as string),
                 m3u8: "",
             };
-        }).get();
+        }).get().reverse();
         return { ...anime, synopsis, coverUrl: buildProxiedUrl("https://neko.ketsuna.com/"+ coverUrl.replace("https://neko-sama.fr","")), episodes };
     }
 
