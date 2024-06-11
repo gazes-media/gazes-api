@@ -24,7 +24,7 @@ export type seasonal = {
 };
 
 function buildProxiedUrl(url: string) {
-    return `https://proxy.ketsuna.com/?url=${encodeURIComponent(url)}`;
+    return `https://proxy.gazes.com/?url=${encodeURIComponent(url)}`;
 }
 
 export class AnimeStore {
@@ -47,8 +47,8 @@ export class AnimeStore {
             this.vostfr = responseVostfr.data.map(({ url_image, coverUrl,  ...anime}) => {
                 return {
                     ...anime,
-                    coverUrl: "https://neko.ketsuna.com"+coverUrl,
-                    url_image: "https://neko.ketsuna.com"+url_image,
+                    coverUrl: buildProxiedUrl("https://neko.ketsuna.com"+coverUrl),
+                    url_image: buildProxiedUrl("https://neko.ketsuna.com"+url_image),
                 };
             });
             this.vf = responseVF.data;
