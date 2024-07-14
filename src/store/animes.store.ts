@@ -23,6 +23,10 @@ export type seasonal = {
     seasons: seasons[];
 };
 
+function buildProxiedUrl(url: string) {
+    return `https://proxy.gazes.fr/?url=${encodeURIComponent(url)}`;
+}
+
 export class AnimeStore {
     static all: Anime[] = [];
     static seasons: seasonal[] = [];
@@ -40,15 +44,15 @@ export class AnimeStore {
             const responseVF = await axios.get(vfUrl);
             if(Array.isArray(responseVostfr.data) && Array.isArray(responseVF.data)){
 
-            this.vostfr = responseVostfr.data;
-            this.vf = responseVF.data;
-            this.all = [...this.vostfr, ...this.vf].map(({ url_image, coverUrl,  ...anime}) => {
+            this.vostfr = responseVostfr.data.map(({ url_image, coverUrl,  ...anime}) => {
                 return {
                     ...anime,
-                    coverUrl: "https://neko.ketsuna.com/"+coverUrl,
-                    url_image: "https://neko.ketsuna.com/"+url_image,
+                    coverUrl: buildProxiedUrl("https://neko.ketsuna.com"+url_image.replace("https://neko-sama.fr","")),
+                    url_image: buildProxiedUrl("https://neko.ketsuna.com"+url_image.replace("https://neko-sama.fr","")),
                 };
             });
+            this.vf = responseVF.data;
+            this.all = [...this.vostfr, ...this.vf]
             }else{
                 console.log("Problem occured while retrieving data from the server.")
             }
@@ -65,7 +69,13 @@ export class AnimeStore {
         let latestEpisodes: LatestEpisode[] = [];
         if (parsedData) latestEpisodes = JSON.parse(parsedData[1]);
 
-        this.latest = latestEpisodes;
+        this.latest = latestEpisodes.map(({url_bg, url_image, ...episode}) => {
+            return {
+                ...episode,
+                url_image: buildProxiedUrl("https://neko.ketsuna.com"+url_image.replace("https://neko-sama.fr","")),
+                url_bg: buildProxiedUrl("https://neko.ketsuna.com"+url_bg.replace("https://neko-sama.fr","")),
+            }
+        });
     }
 
     /* This function converts a string representing an episode
@@ -82,25 +92,23 @@ export class AnimeStore {
         if (!anime) return Promise.resolve(undefined);
 
         const { data: animeHtml } = await axios.get(`https://neko.ketsuna.com/${anime.url.replace("https://neko-sama.fr/", "")}`);
-        console.log(anime.url);
         const synopsis = /(<div class="synopsis">\n<p>\n)(.*)/gm.exec(animeHtml)?.[2];
         const coverUrl = /(<div id="head" style="background-image: url\()(.*)(\);)/gm.exec(animeHtml)?.[2];
         const episodes = load(animeHtml)(".episodes .col-xs-12").map((i, el) => {
             const episode = load(el);
-            console.log(episode("a").text());
             const episodeNumber = episode("a").text().trimEnd().split(" - ");
             return {
                 title: episode("a").text().trimEnd().trimStart(),
-                num: i,
+                num: this.episodeToNumber(episodeNumber[episodeNumber.length - 1]),
                 url: episode("a").attr("href") as string,
                 time: "24:00",
                 // to get the correct episode number we need to extract this from the text : "title - 01 VOSTFR - 01" // here we need to extract the last number
-                episode: episodeNumber[episodeNumber.length - 1],
-                url_image: "https://neko.ketsuna.com/"+ coverUrl as string,
+                episode: this.episodeToNumber(episodeNumber[episodeNumber.length - 1]).toString(),
+                url_image: buildProxiedUrl("https://neko.ketsuna.com"+ coverUrl.replace("https://neko-sama.fr","") as string),
                 m3u8: "",
             };
-        }).get();
-        return { ...anime, synopsis, coverUrl: "https://neko.ketsuna.com/"+ coverUrl, episodes };
+        }).get().reverse();
+        return { ...anime, synopsis, coverUrl: buildProxiedUrl("https://neko.ketsuna.com/"+ coverUrl.replace("https://neko-sama.fr","")), episodes };
     }
 
     /* This function retrieves the video URL and subtitle data for a given episode URL. */
